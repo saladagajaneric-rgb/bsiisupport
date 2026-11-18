@@ -1,0 +1,3911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSIISUPPORT — Bright Star Industries Inc. Internal Support</title>
+  <style>
+    :root {
+      --navy-primary: #002147;
+      --navy-secondary: #0f2747;
+      --gold-primary: #e5a823;
+      --gold-secondary: #d4af37;
+      --bg-slate: #f8fafc;
+      --bg-white: #ffffff;
+      --border-subtle: #e2e8f0;
+      --text-dark: #0f172a;
+      --text-muted: #475569;
+      --alert-red: #ef4444;
+      --alert-green: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-slate);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    /* STRICTLY STATIC & NON-INTERACTIVE LOGO */
+    .static-brand-logo {
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      cursor: default;
+    }
+
+    /* TOP CORPORATE HEADER */
+    .corporate-header {
+      background: linear-gradient(135deg, var(--navy-primary) 0%, var(--navy-secondary) 100%);
+      color: var(--bg-white);
+      border-bottom: 3px solid var(--gold-primary);
+    }
+
+    .top-action-bar {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-identity {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: default;
+    }
+
+    .brand-identity img {
+      height: 50px;
+      width: 96px;
+      object-fit: cover;
+      object-position: center;
+      background: #ffffff;
+      padding: 0;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .brand-titles h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-titles h1 span.gold-badge {
+      background: var(--gold-primary);
+      color: var(--navy-primary);
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .brand-titles p {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+    }
+
+    .user-action-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .employee-pill {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(229, 168, 35, 0.45);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .employee-pill .role-tag {
+      background: var(--gold-primary);
+      color: var(--navy-primary);
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .top-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .top-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .top-btn.signout-btn {
+      background: var(--alert-red);
+      border-color: var(--alert-red);
+      color: #ffffff;
+    }
+
+    .top-btn.signout-btn:hover {
+      background: #dc2626;
+    }
+
+    /* PRIMARY NAVIGATION BAR */
+    .primary-nav-bar {
+      background: var(--bg-white);
+      border-bottom: 1px solid var(--border-subtle);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .primary-nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .nav-tab {
+      padding: 14px 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .nav-tab:hover {
+      color: var(--navy-primary);
+      background: #f1f5f9;
+    }
+
+    .nav-tab.active {
+      color: var(--navy-primary);
+      border-bottom-color: var(--gold-primary);
+      background: #f8fafc;
+    }
+
+    .nav-tab .count-pill {
+      background: var(--navy-primary);
+      color: #ffffff;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-left: 6px;
+    }
+
+    /* MAIN CONTAINER */
+    main {
+      flex: 1;
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 24px 48px;
+    }
+
+    /* LOGIN SCREEN LAYOUT */
+    .login-wrapper {
+      display: grid;
+      grid-template-columns: 1.08fr 1fr;
+      background: var(--bg-white);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(0, 33, 71, 0.08);
+      margin-top: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .login-wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .login-Showcase {
+      background: linear-gradient(145deg, var(--navy-primary) 0%, var(--navy-secondary) 100%);
+      color: #ffffff;
+      padding: 36px 32px 0 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .login-showcase-badge {
+      display: inline-block;
+      background: rgba(229, 168, 35, 0.2);
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-primary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+    }
+
+    .login-Showcase h2 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    .login-Showcase p {
+      color: #cbd5e1;
+      font-size: 0.92rem;
+      margin-bottom: 20px;
+    }
+
+    .models-img-container {
+      text-align: center;
+      margin-top: auto;
+    }
+
+    .models-img-container img {
+      max-width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .login-form-pane {
+      padding: 40px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .login-title {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--navy-primary);
+      margin-bottom: 6px;
+    }
+
+    .login-subtitle {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .portal-type-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .portal-option-card {
+      border: 2px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 16px 18px;
+      background: var(--bg-white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s ease;
+      text-align: left;
+    }
+
+    .portal-option-card:hover {
+      border-color: var(--navy-primary);
+      background: #f8fafc;
+    }
+
+    .portal-option-card.selected {
+      border-color: var(--navy-primary);
+      background: #f0f6ff;
+      box-shadow: 0 0 0 2px rgba(0, 33, 71, 0.1);
+    }
+
+    .portal-option-card h4 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--navy-primary);
+      margin-bottom: 2px;
+    }
+
+    .portal-option-card p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .portal-option-card .option-arrow {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--gold-primary);
+    }
+
+    /* FORM ELEMENTS */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--navy-primary);
+      margin-bottom: 6px;
+    }
+
+    .form-group label span.label-hint {
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .input-control, select.input-control, textarea.input-control {
+      width: 100%;
+      padding: 11px 14px;
+      font-size: 0.94rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: var(--bg-white);
+      color: var(--text-dark);
+      transition: border-color 0.15s;
+    }
+
+    .input-control:focus {
+      outline: none;
+      border-color: var(--navy-primary);
+      box-shadow: 0 0 0 3px rgba(0, 33, 71, 0.12);
+    }
+
+    .password-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-input-wrapper .input-control {
+      padding-right: 76px;
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      right: 8px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: var(--navy-primary);
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-continue {
+      width: 100%;
+      background: var(--navy-primary);
+      color: #ffffff;
+      border: 2px solid var(--navy-primary);
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: 800;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-continue:hover {
+      background: var(--navy-secondary);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--navy-primary);
+      border: 1px solid #cbd5e1;
+      padding: 10px 18px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-gold {
+      background: var(--gold-primary);
+      color: var(--navy-primary);
+      border: none;
+      padding: 11px 20px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-danger {
+      background: var(--alert-red);
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-success {
+      background: var(--alert-green);
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* WIZARD (3-STEP FLOW) */
+    .wizard-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 4px 16px rgba(0, 33, 71, 0.04);
+    }
+
+    .wizard-stepper {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .step-indicator {
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: 2px solid var(--border-subtle);
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .step-indicator.active {
+      border-color: var(--navy-primary);
+      background: #f0f6ff;
+    }
+
+    .step-indicator.completed {
+      border-color: var(--alert-green);
+      background: #f0fdf4;
+    }
+
+    .step-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: var(--navy-primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .step-indicator.active .step-num {
+      background: var(--gold-primary);
+      color: var(--navy-primary);
+    }
+
+    .step-indicator.completed .step-num {
+      background: var(--alert-green);
+    }
+
+    .dept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .dept-tile {
+      border: 2px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 22px 20px;
+      background: var(--bg-white);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .dept-tile:hover {
+      border-color: var(--navy-primary);
+      transform: translateY(-2px);
+    }
+
+    .dept-tile.selected {
+      border-color: var(--navy-primary);
+      background: #f0f6ff;
+      box-shadow: 0 4px 12px rgba(0, 33, 71, 0.1);
+    }
+
+    .dept-tile .default-tag {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--gold-primary);
+      color: var(--navy-primary);
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .dept-tile h3 {
+      font-size: 1.05rem;
+      color: var(--navy-primary);
+      margin-bottom: 6px;
+      font-weight: 800;
+      padding-right: 72px;
+    }
+
+    .dept-tile p {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    /* CC CHIPS */
+    .cc-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 14px 0 18px;
+    }
+
+    .cc-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 2px solid #cbd5e1;
+      background: var(--bg-white);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .cc-chip.checked {
+      border-color: var(--navy-primary);
+      background: var(--navy-primary);
+      color: #ffffff;
+    }
+
+    .cc-count-badge {
+      display: inline-block;
+      background: var(--gold-primary);
+      color: var(--navy-primary);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 3px 12px;
+      border-radius: 999px;
+      margin-left: 10px;
+    }
+
+    /* ALERTS & BANNERS */
+    .alert-box {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+    }
+
+    .alert-success {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #15803d;
+    }
+
+    .alert-info {
+      background: #f0f6ff;
+      border: 1px solid #bfdbfe;
+      color: var(--navy-primary);
+    }
+
+    /* REQUEST CARDS & TABLES */
+    .request-card {
+      background: var(--bg-white);
+      border: 1px solid #bae6fd;
+      border-radius: 10px;
+      padding: 0;
+      margin-bottom: 18px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.06);
+    }
+
+    .request-card-body {
+      padding: 16px 22px 20px;
+    }
+
+    .request-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 14px 22px;
+      background: #e0f2fe;
+      border-bottom: 1px solid #bae6fd;
+    }
+
+    .sky-section-banner {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 4px solid #38bdf8;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+    }
+
+    .settings-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .settings-nav-btn {
+      background: #f0f9ff;
+      border: 2px solid #bae6fd;
+      border-radius: 10px;
+      padding: 16px 18px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .settings-nav-btn:hover {
+      background: #e0f2fe;
+      border-color: #38bdf8;
+    }
+
+    .settings-nav-btn.active {
+      background: #e0f2fe;
+      border-color: var(--navy-primary);
+      box-shadow: 0 4px 12px rgba(0, 33, 71, 0.08);
+    }
+
+    .settings-nav-btn h4 {
+      color: var(--navy-primary);
+      font-size: 0.96rem;
+      font-weight: 800;
+      margin-bottom: 3px;
+    }
+
+    .settings-nav-btn span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      background: #e2e8f0;
+      color: var(--navy-primary);
+    }
+
+    .status-badge.completed {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .status-badge.progress {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      background: #f8fafc;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 14px;
+    }
+
+    .details-item small {
+      display: block;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .details-item strong {
+      font-size: 0.9rem;
+      color: var(--text-dark);
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 33, 71, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-panel {
+      background: var(--bg-white);
+      border-radius: 12px;
+      max-width: 520px;
+      width: 100%;
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      border-top: 5px solid var(--navy-primary);
+    }
+
+    /* FOOTER */
+    footer.corporate-footer {
+      background: var(--navy-primary);
+      color: #cbd5e1;
+      text-align: center;
+      padding: 22px 24px;
+      border-top: 3px solid var(--gold-primary);
+      font-size: 0.85rem;
+    }
+
+    footer.corporate-footer p.footer-brand {
+      color: var(--gold-primary);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .demo-accounts-box {
+      margin-top: 22px;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .demo-accounts-box strong {
+      color: var(--navy-primary);
+    }
+
+    table.corp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    table.corp-table th, table.corp-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      text-align: left;
+    }
+
+    table.corp-table th {
+      background: #f1f5f9;
+      color: var(--navy-primary);
+      font-weight: 800;
+    }
+
+    /* Google Forms-style visual builder */
+    .gf-section-card {
+      border: 1px solid #bae6fd;
+      border-top: 6px solid var(--navy-primary);
+      border-radius: 10px;
+      background: #f8fafc;
+      margin-bottom: 20px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    }
+    .gf-section-header {
+      background: #e0f2fe;
+      padding: 12px 16px;
+      border-bottom: 1px solid #bae6fd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .gf-section-title-input {
+      flex: 1;
+      min-width: 220px;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--navy-primary);
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid transparent;
+      border-bottom: 2px solid #93c5fd;
+      border-radius: 6px;
+      padding: 6px 10px;
+    }
+    .gf-section-title-input:focus {
+      outline: none;
+      background: #fff;
+      border-color: var(--navy-primary);
+    }
+    .gf-section-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .gf-question-card {
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-left: 5px solid #38bdf8;
+      border-radius: 8px;
+      padding: 16px;
+      transition: box-shadow 0.15s ease, border-left-color 0.15s ease;
+    }
+    .gf-question-card:focus-within {
+      border-left-color: var(--navy-primary);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    }
+    .gf-question-top {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .gf-question-title {
+      flex: 2;
+      min-width: 220px;
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--navy-primary);
+      background: #f8fafc;
+      border: none;
+      border-bottom: 2px solid #cbd5e1;
+      border-radius: 6px 6px 0 0;
+      padding: 9px 12px;
+    }
+    .gf-question-title:focus {
+      outline: none;
+      background: #f0f9ff;
+      border-bottom-color: var(--navy-primary);
+    }
+    .gf-type-select {
+      flex: 1;
+      min-width: 170px;
+      max-width: 220px;
+      padding: 9px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      background: #fff;
+      font-weight: 600;
+      color: var(--navy-primary);
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+    .gf-options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .gf-option-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .gf-option-marker {
+      width: 18px;
+      text-align: center;
+      color: #64748b;
+      font-size: 0.9rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .gf-option-input {
+      flex: 1;
+      padding: 6px 10px;
+      border: none;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+      color: #1e293b;
+    }
+    .gf-option-input:focus {
+      outline: none;
+      border-bottom: 2px solid var(--navy-primary);
+    }
+    .gf-icon-btn {
+      background: transparent;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      border-radius: 6px;
+      padding: 4px 9px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .gf-icon-btn:hover {
+      background: #f1f5f9;
+      color: var(--navy-primary);
+    }
+    .gf-icon-btn.danger:hover {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+    .gf-question-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-top: 12px;
+      margin-top: 12px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .gf-required-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--navy-primary);
+      cursor: pointer;
+      padding-left: 10px;
+      border-left: 1px solid #e2e8f0;
+    }
+    .gf-add-btn {
+      background: #fff;
+      border: 1px dashed #38bdf8;
+      color: var(--navy-primary);
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .gf-add-btn:hover {
+      background: #f0f9ff;
+      border-style: solid;
+    }
+
+    /* RESPONSIVE & MOBILE-SAFE LAYOUT RULES */
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    p, h1, h2, h3, h4, span, div, label, small, strong, code, td, th, a, button {
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .brand-titles h1,
+    .employee-pill {
+      flex-wrap: wrap;
+    }
+
+    .responsive-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .password-input-wrapper .input-control {
+      padding-right: 76px !important;
+    }
+
+    @media (max-width: 768px) {
+      .top-action-bar {
+        padding: 12px 14px;
+        gap: 10px;
+      }
+
+      .brand-identity {
+        gap: 10px;
+        max-width: 100%;
+      }
+
+      .brand-identity img {
+        height: 40px;
+        width: 76px;
+      }
+
+      .brand-titles h1 {
+        font-size: 1rem;
+        gap: 6px;
+      }
+
+      .user-action-controls {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 8px;
+      }
+
+      .employee-pill {
+        border-radius: 10px;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        max-width: 100%;
+      }
+
+      .primary-nav-inner {
+        padding: 0 12px;
+        gap: 4px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .nav-tab {
+        padding: 11px 12px;
+        font-size: 0.82rem;
+      }
+
+      main {
+        padding: 16px 12px 32px;
+      }
+
+      .login-Showcase {
+        padding: 24px 18px 0 18px;
+      }
+
+      .login-Showcase h2 {
+        font-size: 1.28rem;
+      }
+
+      .models-img-container img {
+        max-height: 200px;
+      }
+
+      .login-form-pane {
+        padding: 24px 18px;
+      }
+
+      .login-title {
+        font-size: 1.35rem;
+      }
+
+      .portal-option-card {
+        padding: 12px 14px;
+        gap: 10px;
+      }
+
+      .wizard-card {
+        padding: 18px 14px !important;
+      }
+
+      .wizard-stepper {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+
+      .step-indicator {
+        padding: 10px 12px;
+      }
+
+      .dept-grid,
+      .settings-nav-grid,
+      .details-grid,
+      .responsive-two-col {
+        grid-template-columns: 1fr !important;
+      }
+
+      .dept-tile {
+        padding: 16px 14px;
+      }
+
+      .dept-tile .default-tag {
+        position: static;
+        display: inline-block;
+        margin-bottom: 6px;
+      }
+
+      .dept-tile h3 {
+        padding-right: 0;
+      }
+
+      .request-card-header,
+      .request-card-body {
+        padding: 12px 14px;
+      }
+
+      .modal-backdrop {
+        padding: 12px;
+      }
+
+      .modal-panel {
+        padding: 18px 14px;
+        max-height: 92vh;
+        overflow-y: auto;
+      }
+
+      .gf-section-title-input,
+      .gf-question-title,
+      .gf-type-select {
+        min-width: 100% !important;
+        max-width: 100% !important;
+        flex: 1 1 100%;
+      }
+
+      .btn-continue,
+      .btn-gold,
+      .btn-secondary {
+        max-width: 100%;
+        white-space: normal !important;
+        text-align: center;
+        line-height: 1.35;
+      }
+
+      table.corp-table th,
+      table.corp-table td {
+        padding: 8px 8px;
+        font-size: 0.78rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="corporate-header">
+    <div class="top-action-bar">
+      <!-- STRICTLY STATIC & NON-INTERACTIVE LOGO -->
+      <div class="brand-identity">
+        <img src="/assets/bsii-logo.png" alt="Bright Star Industries Inc. Official Oval Logo" class="static-brand-logo" />
+        <div class="brand-titles">
+          <h1>BSIISUPPORT <span class="gold-badge">Internal Support</span></h1>
+        </div>
+      </div>
+
+      <!-- Top Action Bar: ONLY visible when authenticated (NEVER on logged-out /login) -->
+      <div id="topUserActionArea" class="user-action-controls" style="display: none;"></div>
+    </div>
+
+    <!-- Primary Navigation Bar: Distinct tabs for "+ New Support Request" and "My Requests (X)" -->
+    <nav id="primaryNavBar" class="primary-nav-bar" style="display: none;">
+      <div class="primary-nav-inner" id="primaryNavTabs"></div>
+    </nav>
+  </header>
+
+  <!-- MAIN VIEWPORT -->
+  <main id="appViewport"></main>
+
+  <!-- PROFILE MODAL -->
+  <div id="profileModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-panel" style="max-width:540px; max-height:88vh; overflow-y:auto;">
+      <h3 style="color: var(--navy-primary); font-size: 1.25rem; margin-bottom: 6px;">My Account &amp; Profile</h3>
+      <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 14px;">
+        Updates synchronize across the header bar, directory, and all support requests. Verify via your Gmail inbox to save changes.
+      </p>
+      <div id="profileModalAlert"></div>
+      <div class="form-group">
+        <label>Employee ID</label>
+        <input type="text" id="profReadonlyName" class="input-control" disabled style="background:#f1f5f9;" />
+      </div>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="profFullNameInput" class="input-control" />
+      </div>
+      <div id="profOfficerFields" style="display:none;">
+        <div class="form-group">
+          <label>Role Title</label>
+          <input type="text" id="profRoleInput" class="input-control" />
+        </div>
+        <div class="form-group">
+          <label>Admin / Officer Username</label>
+          <input type="text" id="profAdminUserInput" class="input-control" />
+        </div>
+        <div class="form-group">
+          <label>New Admin / Officer Password <span class="label-hint">(leave blank to keep current)</span></label>
+          <input type="text" id="profAdminPassInput" class="input-control" placeholder="Strong password (8+ chars, upper, lower, num, symbol)" />
+        </div>
+      </div>
+      <div id="profEmployeePassBox" style="display:none;">
+        <div class="form-group">
+          <label>Login Password <span class="label-hint">(Last Name — ALL CAPS, no spaces)</span></label>
+          <input type="text" id="profLastNameInput" class="input-control" oninput="this.value = this.value.replace(/\s+/g, '').toUpperCase()" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Corporate / Personal Email <span class="label-hint">(Admins receive related requests &amp; security codes at this email)</span></label>
+        <input type="email" id="profEmailInput" class="input-control" placeholder="yourname@gmail.com" />
+      </div>
+      <div class="form-group">
+        <label>Mobile / Contact Number</label>
+        <input type="text" id="profMobileInput" class="input-control" placeholder="0917-XXX-XXXX" />
+      </div>
+      <div id="profConfirmPassBox" style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:14px; margin-top:12px;">
+        <div id="profGmailVerifyPane">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+            <label style="color:var(--navy-primary); font-weight:800; font-size:0.88rem; margin:0;">Verify via Gmail Inbox</label>
+            <button type="button" id="profSendCodeBtn" class="btn-gold" style="padding:7px 14px; font-size:0.8rem;" onclick="sendProfileVerificationEmail()">Send Verification to Gmail</button>
+          </div>
+          <p id="profGmailVerifyStatus" style="font-size:0.79rem; color:#475569; margin-bottom:8px;">
+            Click <strong>Send Verification to Gmail</strong> to receive a 6-digit security code and a 1-click verification link in your inbox.
+          </p>
+          <input type="text" id="profVerifyCodeInput" class="input-control" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="Enter 6-digit code from Gmail (or click link in email)" style="letter-spacing:0.15em; font-weight:800;" />
+          <div style="margin-top:8px; text-align:right;">
+            <a href="javascript:void(0)" onclick="toggleProfileVerifyMethod('password')" style="font-size:0.76rem; color:#0369a1; font-weight:700; text-decoration:underline;">Or verify with current password instead</a>
+          </div>
+        </div>
+        <div id="profPasswordVerifyPane" style="display:none;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label style="color:var(--navy-primary);">Re-enter Current Password to Verify</label>
+            <input type="password" id="profCurrentPassInput" class="input-control" autocomplete="new-password" placeholder="Enter your current password to save changes" />
+          </div>
+          <div style="margin-top:8px; text-align:right;">
+            <a href="javascript:void(0)" onclick="toggleProfileVerifyMethod('gmail')" style="font-size:0.76rem; color:#0369a1; font-weight:700; text-decoration:underline;">Back to Gmail Inbox Verification</a>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button type="button" class="btn-secondary" onclick="closeProfileModal()">Cancel</button>
+        <button type="button" id="profSaveBtn" class="btn-gold" onclick="saveProfileChanges()">Save &amp; Sync</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HR EDIT EMPLOYEE MODAL -->
+  <div id="hrEditEmployeeModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-panel" style="max-width:560px;">
+      <h3 style="color: var(--navy-primary); font-size: 1.2rem; margin-bottom: 12px;">Edit Employee Directory Account</h3>
+      <input type="hidden" id="editEmpOriginalId" />
+      <div class="form-group">
+        <label>Employee ID</label>
+        <input type="text" id="editEmpId" class="input-control" />
+      </div>
+      <div class="responsive-two-col">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="editEmpFull" class="input-control" />
+        </div>
+        <div class="form-group">
+          <label>Password (UPPERCASE)</label>
+          <input type="text" id="editEmpLast" class="input-control" />
+        </div>
+      </div>
+      <div class="responsive-two-col">
+        <div class="form-group">
+          <label>Classification</label>
+          <select id="editEmpComp" class="input-control"></select>
+        </div>
+        <div class="form-group">
+          <label>Department / Role</label>
+          <input type="text" id="editEmpDept" class="input-control" placeholder="e.g., Operations" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Role Title</label>
+        <input type="text" id="editEmpRole" class="input-control" />
+      </div>
+      <div class="responsive-two-col">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="editEmpEmail" class="input-control" />
+        </div>
+        <div class="form-group">
+          <label>Mobile</label>
+          <input type="text" id="editEmpMobile" class="input-control" />
+        </div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">
+        <button type="button" class="btn-secondary" onclick="closeHrEditModal()">Cancel</button>
+        <button type="button" class="btn-gold" onclick="saveHrEmployeeEdit()">Save Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOFT DELETE CONFIRMATION MODAL -->
+  <div id="softDeleteModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-panel" style="border-top-color: var(--alert-red);">
+      <h3 style="color: var(--navy-primary); font-size: 1.2rem; margin-bottom: 10px;">Move Request to Retention Trash</h3>
+      <p style="font-size: 0.92rem; color: var(--text-dark); background: #fef2f2; border: 1px solid #fecaca; padding: 14px; border-radius: 8px; margin-bottom: 20px;">
+        This request will be moved to the 1-Year Retention Trash. It can be reviewed and restored by an Administrator before permanent purge.
+      </p>
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button type="button" class="btn-secondary" onclick="closeSoftDeleteModal()">Cancel</button>
+        <button type="button" class="btn-danger" id="confirmSoftDeleteBtn">Move to Retention Trash</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SENDER HIDE CONFIRMATION MODAL -->
+  <div id="senderDeleteModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-panel" style="border-top-color: var(--alert-red);">
+      <h3 style="color: var(--navy-primary); font-size: 1.2rem; margin-bottom: 10px;">Remove Request from Your View</h3>
+      <p style="font-size: 0.92rem; color: var(--text-dark); background: #fefce8; border: 1px solid #fde68a; padding: 14px; border-radius: 8px; margin-bottom: 20px;">
+        Deleting this request will only remove it from your personal list (<strong>My Requests</strong>). It will <strong>remain active and visible</strong> to the assigned Department Officer and HR for processing.
+      </p>
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button type="button" class="btn-secondary" onclick="closeSenderDeleteModal()">Cancel</button>
+        <button type="button" class="btn-danger" id="confirmSenderDeleteBtn">Remove from My View</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="corporate-footer">
+    <p>Copyright &copy; 2026 Bright Star Industries Inc. - All rights reserved.</p>
+    <p class="footer-brand">BSIISUPPORT — Bright Star Industries Inc. Internal Support</p>
+  </footer>
+
+  <script>
+    let DEPARTMENT_CONFIG = {
+      'HR Admin': {
+        subtitle: 'Employee Leaves, Certificate of Employment (COE), and Office Facilities / Maintenance.',
+        isDefault: true,
+        categories: {
+          'Leave Request': [
+            { name: 'Leave Type', type: 'select', options: ['Vacation Leave', 'Sick Leave', 'Emergency Leave', 'Maternity Leave', 'Paternity Leave', 'Bereavement Leave', 'Solo Parent Leave', 'Leave Without Pay (LWOP)'] },
+            { name: 'Start Date', type: 'date' },
+            { name: 'End Date', type: 'date' },
+            { name: 'Number of Days', type: 'number', placeholder: 'e.g., 3' },
+            { name: 'Reason', type: 'textarea', placeholder: 'Provide brief details for your leave request...' }
+          ],
+          'Certificate of Employment (COE)': [
+            { name: 'Purpose', type: 'select', options: ['Visa Application', 'Loan / Bank Requirement', 'Employment Verification', 'SSS / Pag-IBIG / PhilHealth', 'Credit Card / Financing', 'Government / Embassy Requirement', 'Travel / Immigration'] },
+            { name: 'COE Compensation Format', type: 'select', options: ['With Compensation Breakdown', 'Without Compensation Breakdown', 'With Annualized Gross & Allowances'] }
+          ],
+          'Facilities / Maintenance': [
+            { name: 'Office Location', type: 'text', placeholder: 'e.g., 3rd Floor Main Operations Area / Conference Room B' },
+            { name: 'Urgency', type: 'select', options: ['Low (Routine Maintenance)', 'Standard', 'High Priority', 'Critical / Immediate (Safety Hazard)'] },
+            { name: 'Issue Description', type: 'textarea', placeholder: 'Describe the facility or maintenance issue...' }
+          ]
+        }
+      },
+      'Purchasing Officer': {
+        subtitle: 'Internal Office Supplies & Operational Equipment Requests (Strictly for Office Supplies, not for trade).',
+        categories: {
+          'Item / Supply Request': [
+            { name: 'Item Description (Office Supplies Only — Not For Trade)', type: 'text', placeholder: 'e.g., A4 Bond Paper, Printer Toner, Desk Staplers' },
+            { name: 'Quantity', type: 'text', placeholder: 'e.g., 10 Reams / 4 Units' },
+            { name: 'Estimated Budget (PHP / ₱)', type: 'text', placeholder: 'e.g., ₱2,500.00' },
+            { name: 'Urgency', type: 'select', options: ['Low (Next Monthly Cycle)', 'Standard (Within 7 Days)', 'Urgent (Within 48 Hours)', 'Critical (Same Day)'] },
+            { name: 'Business Justification', type: 'textarea', placeholder: 'Explain how these office supplies support departmental operations...' }
+          ]
+        }
+      },
+      'Office of the Vice President, BSII': {
+        subtitle: 'Executive Approvals, Corporate Directives & Inter-Departmental Endorsements for BSII.',
+        categories: {
+          'Executive Memo / Approval Request': [
+            { name: 'Subject / Directive Title', type: 'text', placeholder: 'Enter executive request subject...' },
+            { name: 'Urgency', type: 'select', options: ['Informational / FYI', 'Routine Review', 'Priority Endorsement', 'Immediate Executive Action'] },
+            { name: 'Executive Summary & Justification', type: 'textarea', placeholder: 'Provide comprehensive background for the Vice President, BSII...' }
+          ]
+        }
+      },
+      'Office of the Vice President, Esteems': {
+        subtitle: 'Executive Approvals, Brand Directives & Operational Endorsements for Esteems.',
+        categories: {
+          'Esteems Executive Endorsement': [
+            { name: 'Proposal / Operation Title', type: 'text', placeholder: 'Enter Esteems proposal title...' },
+            { name: 'Urgency', type: 'select', options: ['Informational / FYI', 'Routine Review', 'Priority Endorsement', 'Immediate Executive Action'] },
+            { name: 'Operational Summary & Notes', type: 'textarea', placeholder: 'Provide background for the Vice President, Esteems...' }
+          ]
+        }
+      },
+      'Team Leader': {
+        subtitle: 'Accounting & Payroll of Employees, Overtime Approvals, Attendance Adjustments & Reimbursements.',
+        categories: {
+          'Overtime Approval': [
+            { name: 'Date Rendered', type: 'date' },
+            { name: 'Hours Rendered', type: 'number', placeholder: 'e.g., 4' },
+            { name: 'Tasks Completed', type: 'textarea', placeholder: 'List specific deliverables completed during overtime...' }
+          ],
+          'Attendance Adjustment / Discrepancy': [
+            { name: 'Date of Discrepancy', type: 'date' },
+            { name: 'Biometric / Timekeeping Issue', type: 'select', options: ['Missed Time-In', 'Missed Time-Out', 'Missed Both Time-In & Time-Out', 'Biometric Scanner Offline', 'Official Field Assignment', 'Work From Home / Remote Log', 'Schedule / Shift Change'] },
+            { name: 'Supervisor Remarks', type: 'textarea', placeholder: 'Provide verification details or supervisor endorsement...' }
+          ],
+          'Reimbursement Pre-endorsement': [
+            { name: 'Expense Details', type: 'textarea', placeholder: 'Itemize planned or incurred operational expenses...' },
+            { name: 'Receipt Attachments Reference', type: 'text', placeholder: 'e.g., Official Receipt #10492 / Attached Scan filename' }
+          ],
+          'Expense Reimbursement': [
+            { name: 'Amount (PHP / ₱)', type: 'text', placeholder: 'e.g., ₱3,450.00' },
+            { name: 'Invoice / Receipt Attachments', type: 'text', placeholder: 'e.g., OR-88231 / Digital Receipt Link or Filename' },
+            { name: 'Disbursement Bank / Details', type: 'text', placeholder: 'e.g., BDO Payroll Account / GCash Corporate Disbursement' }
+          ],
+          'Payroll / Payslip Inquiry': [
+            { name: 'Pay Period', type: 'text', placeholder: 'e.g., November 1–15, 2026' },
+            { name: 'Inquiry Issues', type: 'textarea', placeholder: 'Describe your payroll or payslip question for Accounting & Payroll...' }
+          ]
+        }
+      }
+    };
+
+    const CC_OPTIONS = [
+      'HR Admin',
+      'Purchasing Officer',
+      'Team Leader',
+      'Office of the Vice President, BSII',
+      'Office of the Vice President, Esteems'
+    ];
+
+    let state = {
+      authenticated: false,
+      user: null,
+      settings: {},
+      currentRoute: window.location.pathname,
+      loginStepChoice: null, // null | 'Oncall' | 'BSII Employee' | 'Esteems Employee'
+      showPassword: false,
+      wizard: {
+        step: 1,
+        department: 'HR Admin',
+        category: 'Leave Request',
+        details: {},
+        ccDepartments: [],
+        colleagueEmail: ''
+      },
+      myRequests: [],
+      departmentQueue: [],
+      retentionTrash: [],
+      hrEmployees: [],
+      hrDirectoryRequiresPassword: false,
+      lastSubmittedNotice: null,
+      pendingDeleteId: null,
+      adminSettingsTab: null,
+      stepEditorDept: null,
+      stepEditorDraft: null,
+      stepEditorDraftDept: null,
+      registerAccountType: null
+    };
+
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    async function initApp() {
+      const res = await fetch('/api/session');
+      const data = await res.json();
+      state.authenticated = data.authenticated;
+      state.user = data.user;
+      state.settings = data.settings || {};
+      if (data.departmentConfig) {
+        DEPARTMENT_CONFIG = data.departmentConfig;
+      }
+
+      const path = window.location.pathname;
+      if (!state.authenticated) {
+        if (path !== '/login') {
+          window.history.replaceState({}, '', '/login');
+        }
+        state.currentRoute = '/login';
+        renderHeaderAndNav();
+        renderLoginScreen();
+        return;
+      }
+
+      // Active session on /login immediately redirects to /open
+      if (path === '/login' || path === '/') {
+        window.history.replaceState({}, '', '/open');
+        state.currentRoute = '/open';
+      } else {
+        state.currentRoute = path;
+      }
+
+      await refreshRequestsData();
+      if (state.user.isHR || state.user.isMasterAdmin || state.user.isModerator) {
+        await refreshHrData();
+      }
+      renderHeaderAndNav();
+      renderCurrentRoute();
+    }
+
+    async function refreshRequestsData() {
+      const res = await fetch('/api/requests');
+      if (res.ok) {
+        const payload = await res.json();
+        state.myRequests = payload.myRequests || [];
+        state.departmentQueue = payload.departmentQueue || [];
+        state.retentionTrash = payload.retentionTrash || [];
+      }
+    }
+
+    async function refreshHrData() {
+      const res = await fetch('/api/hr/employees');
+      if (res.ok) {
+        const payload = await res.json();
+        state.hrDirectoryRequiresPassword = Boolean(payload.requiresPassword);
+        state.hrEmployees = payload.employees || [];
+        state.settings = payload.settings || state.settings;
+      }
+    }
+
+    function navigateTo(route) {
+      window.history.pushState({}, '', route);
+      state.currentRoute = route;
+      renderHeaderAndNav();
+      renderCurrentRoute();
+    }
+
+    window.addEventListener('popstate', () => {
+      state.currentRoute = window.location.pathname;
+      renderHeaderAndNav();
+      renderCurrentRoute();
+    });
+
+    function renderHeaderAndNav() {
+      const topUserArea = document.getElementById('topUserActionArea');
+      const primaryNav = document.getElementById('primaryNavBar');
+      const primaryTabs = document.getElementById('primaryNavTabs');
+
+      // Session & Sign Out Hygiene: When logged out, NEVER show Sign Out button or profile pills
+      if (!state.authenticated || !state.user) {
+        topUserArea.style.display = 'none';
+        topUserArea.innerHTML = '';
+        primaryNav.style.display = 'none';
+        primaryTabs.innerHTML = '';
+        return;
+      }
+
+      // Top action bar: Employee Name pill, Profile button, Sign Out button (NO duplicate My Requests here)
+      topUserArea.style.display = 'flex';
+      topUserArea.innerHTML = `
+        <div class="employee-pill">
+          <span>${escapeHtml(state.user.fullName)}</span>
+          <span class="role-tag">${escapeHtml(state.user.isStaff ? state.user.role : state.user.company)}</span>
+        </div>
+        <button type="button" class="top-btn" onclick="openProfileModal()">Profile</button>
+        <a href="/api/logout" class="top-btn signout-btn">Sign Out</a>
+      `;
+
+      // Primary navigation bar: Distinct tabs for "+ New Support Request" and "My Requests (X)"
+      primaryNav.style.display = 'block';
+      let tabsHtml = `
+        <button type="button" class="nav-tab ${state.currentRoute === '/open' ? 'active' : ''}" onclick="navigateTo('/open')">
+          + New Support Request
+        </button>
+        <button type="button" class="nav-tab ${state.currentRoute === '/requests' ? 'active' : ''}" onclick="navigateTo('/requests')">
+          My Requests (${state.myRequests.length})
+        </button>
+      `;
+
+      if (state.user.isStaff) {
+        tabsHtml += `
+          <button type="button" class="nav-tab ${state.currentRoute === '/department' ? 'active' : ''}" onclick="navigateTo('/department')">
+            Messages <span class="count-pill">${state.departmentQueue.length}</span>
+          </button>
+        `;
+      }
+
+      if (state.user.isHR || state.user.isMasterAdmin || state.user.isStaff) {
+        tabsHtml += `
+          <button type="button" class="nav-tab ${state.currentRoute === '/hr' ? 'active' : ''}" onclick="navigateTo('/hr')">
+            Manage Accounts
+          </button>
+          <button type="button" class="nav-tab ${state.currentRoute === '/trash' ? 'active' : ''}" onclick="navigateTo('/trash')" title="History" aria-label="History" style="display:inline-flex; align-items:center; gap:5px; margin-left:auto;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+              <path d="M12 7v5l4 2"/>
+            </svg>
+            <span class="count-pill" style="margin-left:0;">${state.retentionTrash.length}</span>
+          </button>
+        `;
+      }
+
+      primaryTabs.innerHTML = tabsHtml;
+    }
+
+    function renderCurrentRoute() {
+      if (!state.authenticated) {
+        renderLoginScreen();
+        return;
+      }
+      switch (state.currentRoute) {
+        case '/open':
+          renderWizardView();
+          break;
+        case '/requests':
+          renderMyRequestsView();
+          break;
+        case '/department':
+          renderDepartmentQueueView();
+          break;
+        case '/hr':
+          renderHrAdminView();
+          break;
+        case '/trash':
+          renderTrashView();
+          break;
+        default:
+          renderWizardView();
+      }
+    }
+
+    /* ==========================================
+       3. AUTHENTICATION & ACCESS CONTROL VIEW
+       ========================================== */
+    function renderLoginScreen(errorMsg = '') {
+      const viewport = document.getElementById('appViewport');
+
+      let stepContent = '';
+      if (!state.loginStepChoice) {
+        stepContent = `
+          <p style="font-size:0.86rem; font-weight:700; color:var(--navy-primary); margin-bottom:12px;">
+            Select your personnel classification to proceed:
+          </p>
+          <div class="portal-type-grid">
+            <button type="button" class="portal-option-card" onclick="selectLoginCategory('BSII Employee')">
+              <div>
+                <h4>BSII Employee</h4>
+                <p>Bright Star Industries Inc. Regular &amp; Departmental Personnel</p>
+              </div>
+              <span class="option-arrow">&rarr;</span>
+            </button>
+            <button type="button" class="portal-option-card" onclick="selectLoginCategory('Esteems Employee')">
+              <div>
+                <h4>Esteems Employee</h4>
+                <p>Esteems Division Personnel &amp; Brand Operations Staff</p>
+              </div>
+              <span class="option-arrow">&rarr;</span>
+            </button>
+            <button type="button" class="portal-option-card" onclick="selectLoginCategory('Oncall')">
+              <div>
+                <h4>Oncall</h4>
+                <p>Passive Communication Access (Direct Name &amp; Contact Entry — No Login Required)</p>
+              </div>
+              <span class="option-arrow">&rarr;</span>
+            </button>
+          </div>
+        `;
+      } else if (state.loginStepChoice === 'Oncall') {
+        stepContent = `
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+            <span style="background:#f0f6ff; color:var(--navy-primary); font-weight:800; font-size:0.82rem; padding:4px 12px; border-radius:999px; border:1px solid #bfdbfe;">
+              Selected: Oncall (Passive Communication)
+            </span>
+            <button type="button" class="btn-secondary" style="padding:5px 12px; font-size:0.78rem;" onclick="selectLoginCategory(null)">
+              &larr; Change Option
+            </button>
+          </div>
+          <form onsubmit="submitLoginForm(event)">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="oncallNameInput" class="input-control" placeholder="e.g., Roberto Gomez" required />
+            </div>
+            <div class="form-group">
+              <label>Contact Number</label>
+              <input type="text" id="oncallNumberInput" class="input-control" placeholder="e.g., 0917-555-0192" required />
+            </div>
+            <div class="form-group">
+              <label>Email Address <span class="label-hint">(Optional)</span></label>
+              <input type="email" id="oncallEmailInput" class="input-control" placeholder="e.g., roberto@example.com" />
+            </div>
+            <button type="submit" class="btn-continue">Continue &rarr;</button>
+          </form>
+        `;
+      } else if (state.loginStepChoice === 'Admin') {
+        stepContent = `
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+            <span style="background:#fef3c7; color:#92400e; font-weight:800; font-size:0.82rem; padding:4px 12px; border-radius:999px; border:1px solid #fde68a;">
+              Admin &amp; Department Officer Portal
+            </span>
+            <button type="button" class="btn-secondary" style="padding:5px 12px; font-size:0.78rem;" onclick="selectLoginCategory(null)">
+              &larr; Back to Employee Login
+            </button>
+          </div>
+          <form onsubmit="submitLoginForm(event)">
+            <div class="form-group">
+              <label>Admin / Officer Username</label>
+              <input type="text" id="adminUsernameInput" class="input-control" required />
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <div class="password-input-wrapper">
+                <input type="${state.showPassword ? 'text' : 'password'}" id="empPasswordInput" class="input-control" placeholder="Enter password" required />
+                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()">
+                  ${state.showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="btn-continue">Sign In to Officer Portal &rarr;</button>
+          </form>
+        `;
+      } else {
+        stepContent = `
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+            <span style="background:#f0f6ff; color:var(--navy-primary); font-weight:800; font-size:0.82rem; padding:4px 12px; border-radius:999px; border:1px solid #bfdbfe;">
+              Selected: ${escapeHtml(state.loginStepChoice)}
+            </span>
+            <button type="button" class="btn-secondary" style="padding:5px 12px; font-size:0.78rem;" onclick="selectLoginCategory(null)">
+              &larr; Change Option
+            </button>
+          </div>
+          <form onsubmit="submitLoginForm(event)">
+            <div class="form-group">
+              <label>ID Number</label>
+              <input type="text" id="empIdInput" class="input-control" placeholder="e.g., 123456" required />
+            </div>
+            <div class="form-group">
+              <label>Password <span class="label-hint">(Last Name — no spaces, ALL CAPS)</span></label>
+              <div class="password-input-wrapper">
+                <input type="${state.showPassword ? 'text' : 'password'}" id="empPasswordInput" class="input-control" placeholder="e.g., DELACRUZ" required />
+                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()">
+                  ${state.showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="btn-continue">Continue &rarr;</button>
+          </form>
+        `;
+      }
+
+      viewport.innerHTML = `
+        <div class="login-wrapper">
+          <div class="login-Showcase">
+            <div>
+              <span class="login-showcase-badge">Bright Star Industries Inc.</span>
+              <h2>Internal Employee Support &amp; Departmental Operations Portal</h2>
+            </div>
+            <div class="models-img-container">
+              <img src="/assets/models.png" alt="Bright Star Employee Models" class="static-brand-logo" />
+            </div>
+          </div>
+
+          <div class="login-form-pane">
+            <h2 class="login-title">Employee Support</h2>
+            <p class="login-subtitle">Strictly for authorized Bright Star Industries Inc. (BSII) employees.</p>
+            ${errorMsg ? `<div class="alert-box alert-error">${escapeHtml(errorMsg)}</div>` : ''}
+            ${stepContent}
+
+            <div style="margin-top:24px; text-align:center; border-top:1px solid var(--border-subtle); padding-top:14px;">
+              <button type="button" onclick="selectLoginCategory('Admin')" style="background:none; border:none; color:#94a3b8; font-size:0.78rem; font-weight:600; cursor:pointer; text-decoration:underline;">
+                Admin &amp; Department Officer Portal
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function selectLoginCategory(choice) {
+      state.loginStepChoice = choice;
+      renderLoginScreen();
+    }
+
+    function togglePasswordVisibility() {
+      const inp = document.getElementById('empPasswordInput');
+      const currentVal = inp ? inp.value : '';
+      const idInp = document.getElementById('empIdInput');
+      const currentId = idInp ? idInp.value : '';
+      const adminInp = document.getElementById('adminUsernameInput');
+      const currentAdmin = adminInp ? adminInp.value : '';
+      state.showPassword = !state.showPassword;
+      renderLoginScreen();
+      if (document.getElementById('empIdInput')) document.getElementById('empIdInput').value = currentId;
+      if (document.getElementById('adminUsernameInput')) document.getElementById('adminUsernameInput').value = currentAdmin;
+      if (document.getElementById('empPasswordInput')) document.getElementById('empPasswordInput').value = currentVal;
+    }
+
+    function quickFillLogin(type, id, pass) {
+      state.loginStepChoice = type;
+      renderLoginScreen();
+      const idEl = document.getElementById('empIdInput');
+      const passEl = document.getElementById('empPasswordInput');
+      if (idEl) idEl.value = id;
+      if (passEl) passEl.value = pass;
+    }
+
+    async function submitLoginForm(e) {
+      e.preventDefault();
+      const payload = { loginType: state.loginStepChoice };
+      if (state.loginStepChoice === 'Oncall') {
+        payload.oncallName = document.getElementById('oncallNameInput').value;
+        payload.oncallNumber = document.getElementById('oncallNumberInput').value;
+        payload.oncallEmail = document.getElementById('oncallEmailInput').value;
+      } else if (state.loginStepChoice === 'Admin') {
+        payload.adminUsername = document.getElementById('adminUsernameInput').value;
+        payload.password = document.getElementById('empPasswordInput').value;
+      } else {
+        payload.idNumber = document.getElementById('empIdInput').value;
+        payload.password = document.getElementById('empPasswordInput').value;
+      }
+
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        renderLoginScreen(data.error || 'Authentication failed.');
+        return;
+      }
+      await initApp();
+    }
+
+    /* ==========================================
+       4. 3-STEP EMPLOYEE REQUEST SUBMISSION WIZARD
+       ========================================== */
+    function syncDepartmentHandInHandDefaults(dept) {
+      const firstCategory = Object.keys(DEPARTMENT_CONFIG[dept].categories)[0];
+      state.wizard.department = dept;
+      state.wizard.category = firstCategory;
+      state.wizard.details = {};
+
+      // Hand-in-Hand Logic:
+      // 1. Remove primary selected department from CC list so it's never duplicated
+      state.wizard.ccDepartments = state.wizard.ccDepartments.filter((d) => d !== dept);
+      // 2. If user selects Team Leader in Step 1, HR Admin CC chip must be pre-checked by default
+      if (dept === 'Team Leader' && !state.wizard.ccDepartments.includes('HR Admin')) {
+        state.wizard.ccDepartments.push('HR Admin');
+      }
+    }
+
+    function renderWizardView() {
+      const viewport = document.getElementById('appViewport');
+      const w = state.wizard;
+
+      let stepBodyHtml = '';
+
+      if (w.step === 1) {
+        const cardsHtml = Object.keys(DEPARTMENT_CONFIG).map((deptName) => {
+          const cfg = DEPARTMENT_CONFIG[deptName];
+          const isSelected = w.department === deptName;
+          return `
+            <div class="dept-tile ${isSelected ? 'selected' : ''}" onclick="chooseWizardDept('${escapeHtml(deptName)}')">
+              ${cfg.isDefault ? '<span class="default-tag">Default</span>' : ''}
+              <h3>${escapeHtml(deptName)}</h3>
+              <p>${escapeHtml(cfg.subtitle)}</p>
+            </div>
+          `;
+        }).join('');
+
+        stepBodyHtml = `
+          <h3 style="color:var(--navy-primary); font-size:1.25rem; margin-bottom:6px;">Step 1: Select Target Department</h3>
+          <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:20px;">
+            Choose the primary Bright Star Industries Inc. department that will handle your internal request.
+          </p>
+          <div class="dept-grid">${cardsHtml}</div>
+          <div style="display:flex; justify-content:flex-end;">
+            <button type="button" class="btn-continue" style="width:auto; padding:12px 28px;" onclick="goWizardStep(2)">
+              Continue to Step 2: Request Details &rarr;
+            </button>
+          </div>
+        `;
+      } else if (w.step === 2) {
+        const deptCfg = DEPARTMENT_CONFIG[w.department];
+        const categories = Object.keys(deptCfg.categories);
+        if (!categories.includes(w.category)) {
+          w.category = categories[0];
+        }
+        const fields = deptCfg.categories[w.category];
+
+        const categoryOptions = categories.map((cat) =>
+          `<option value="${escapeHtml(cat)}" ${w.category === cat ? 'selected' : ''}>${escapeHtml(cat)}</option>`
+        ).join('');
+
+        const fieldsHtml = fields.map((f, idx) => {
+          const val = w.details[f.name] || '';
+          const inputId = `dynField_${idx}`;
+          const reqMark = f.required ? ' <span style="color:#dc2626;" title="Required">*</span>' : '';
+          const reqAttr = f.required ? 'data-required="true"' : '';
+          if (f.type === 'select') {
+            const opts = (f.options || []).map((o) => `<option value="${escapeHtml(o)}" ${val === o ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('');
+            return `
+              <div class="form-group">
+                <label>${escapeHtml(f.name)}${reqMark}</label>
+                <select id="${inputId}" data-field-name="${escapeHtml(f.name)}" ${reqAttr} class="input-control dyn-wizard-input">
+                  ${opts}
+                </select>
+              </div>
+            `;
+          }
+          if (f.type === 'radio') {
+            const radios = (f.options || []).map((o, oIdx) => `
+              <label style="display:flex; align-items:center; gap:8px; font-weight:500; cursor:pointer; padding:4px 0;">
+                <input type="radio" name="dynRadio_${idx}" value="${escapeHtml(o)}" ${val === o ? 'checked' : ''} />
+                <span>${escapeHtml(o)}</span>
+              </label>
+            `).join('');
+            return `
+              <div class="form-group dyn-wizard-group" data-group-type="radio" data-field-name="${escapeHtml(f.name)}" data-radio-name="dynRadio_${idx}" ${reqAttr}>
+                <label>${escapeHtml(f.name)}${reqMark}</label>
+                <div style="display:flex; flex-direction:column; gap:2px; padding:6px 10px; background:#f8fafc; border:1px solid var(--border-subtle); border-radius:8px;">
+                  ${radios}
+                </div>
+              </div>
+            `;
+          }
+          if (f.type === 'checkbox') {
+            const selectedSet = new Set(String(val).split(',').map((s) => s.trim()).filter(Boolean));
+            const checks = (f.options || []).map((o) => `
+              <label style="display:flex; align-items:center; gap:8px; font-weight:500; cursor:pointer; padding:4px 0;">
+                <input type="checkbox" name="dynCheck_${idx}" value="${escapeHtml(o)}" ${selectedSet.has(o) ? 'checked' : ''} />
+                <span>${escapeHtml(o)}</span>
+              </label>
+            `).join('');
+            return `
+              <div class="form-group dyn-wizard-group" data-group-type="checkbox" data-field-name="${escapeHtml(f.name)}" data-check-name="dynCheck_${idx}" ${reqAttr}>
+                <label>${escapeHtml(f.name)}${reqMark}</label>
+                <div style="display:flex; flex-direction:column; gap:2px; padding:6px 10px; background:#f8fafc; border:1px solid var(--border-subtle); border-radius:8px;">
+                  ${checks}
+                </div>
+              </div>
+            `;
+          }
+          if (f.type === 'textarea') {
+            return `
+              <div class="form-group">
+                <label>${escapeHtml(f.name)}${reqMark}</label>
+                <textarea id="${inputId}" data-field-name="${escapeHtml(f.name)}" ${reqAttr} rows="3" class="input-control dyn-wizard-input" placeholder="${escapeHtml(f.placeholder || '')}">${escapeHtml(val)}</textarea>
+              </div>
+            `;
+          }
+          if (f.type === 'date') {
+            return `
+              <div class="form-group">
+                <label>${escapeHtml(f.name)}${reqMark}</label>
+                <input type="date" id="${inputId}" data-field-name="${escapeHtml(f.name)}" ${reqAttr} class="input-control dyn-wizard-input" value="${escapeHtml(val)}" style="cursor:pointer;" onclick="this.showPicker && this.showPicker()" />
+              </div>
+            `;
+          }
+          return `
+            <div class="form-group">
+              <label>${escapeHtml(f.name)}${reqMark}</label>
+              <input type="${f.type || 'text'}" id="${inputId}" data-field-name="${escapeHtml(f.name)}" ${reqAttr} class="input-control dyn-wizard-input" value="${escapeHtml(val)}" placeholder="${escapeHtml(f.placeholder || '')}" />
+            </div>
+          `;
+        }).join('');
+
+        stepBodyHtml = `
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:18px;">
+            <div>
+              <h3 style="color:var(--navy-primary); font-size:1.25rem;">Step 2: Request Category &amp; Specific Details</h3>
+              <p style="color:var(--text-muted); font-size:0.88rem;">Primary Department: <strong>${escapeHtml(w.department)}</strong></p>
+            </div>
+            <button type="button" class="btn-secondary" onclick="goWizardStep(1)">&larr; Change Department</button>
+          </div>
+
+          <div class="form-group" style="background:#f8fafc; padding:16px; border-radius:8px; border:1px solid var(--border-subtle);">
+            <label>Select Request Category for ${escapeHtml(w.department)}</label>
+            <select class="input-control" onchange="changeWizardCategory(this.value)">
+              ${categoryOptions}
+            </select>
+          </div>
+
+          <div id="dynamicCategoryFields">${fieldsHtml}</div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:24px;">
+            <button type="button" class="btn-secondary" onclick="goWizardStep(1)">&larr; Back to Step 1</button>
+            <button type="button" class="btn-continue" style="width:auto; padding:12px 28px;" onclick="saveStep2AndContinue()">
+              Continue to Step 3: Keep in the Loop &amp; Confirm &rarr;
+            </button>
+          </div>
+        `;
+      } else if (w.step === 3) {
+        // Ensure primary department chip is hidden and Team Leader -> HR Admin hand-in-hand rule holds
+        const visibleCcOptions = CC_OPTIONS.filter((d) => d !== w.department);
+        const activeCcList = w.ccDepartments.filter((d) => d !== w.department);
+        const selectedCount = activeCcList.length;
+        const badgeLabel = selectedCount > 0 ? `${selectedCount} Selected` : 'None (Direct Only)';
+
+        const summaryItemsHtml = Object.entries(w.details).map(([k, v]) => `
+          <div class="details-item">
+            <small>${escapeHtml(k)}</small>
+            <strong>${escapeHtml(v || '—')}</strong>
+          </div>
+        `).join('');
+
+        const chipsHtml = visibleCcOptions.map((deptOption) => {
+          const isChecked = activeCcList.includes(deptOption);
+          return `
+            <div class="cc-chip ${isChecked ? 'checked' : ''}" onclick="toggleCcChip('${escapeHtml(deptOption)}')">
+              <input type="checkbox" ${isChecked ? 'checked' : ''} style="pointer-events:none;" />
+              <span>${escapeHtml(deptOption)}</span>
+            </div>
+          `;
+        }).join('');
+
+        stepBodyHtml = `
+          <h3 style="color:var(--navy-primary); font-size:1.25rem; margin-bottom:6px;">Step 3: Keep in the Loop (CC Recipients) &amp; Confirmation</h3>
+          <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:20px;">
+            Review your request summary and select any collaborating departments to keep in the loop.
+          </p>
+
+          <div style="background:#f8fafc; border:1px solid var(--border-subtle); border-radius:10px; padding:18px; margin-bottom:22px;">
+            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+              <div>
+                <span style="font-size:0.76rem; text-transform:uppercase; color:var(--text-muted); font-weight:700;">Primary Routing Department</span>
+                <h4 style="color:var(--navy-primary); font-size:1.05rem;">${escapeHtml(w.department)}</h4>
+              </div>
+              <div>
+                <span style="font-size:0.76rem; text-transform:uppercase; color:var(--text-muted); font-weight:700;">Selected Category</span>
+                <h4 style="color:var(--navy-primary); font-size:1.05rem;">${escapeHtml(w.category)}</h4>
+              </div>
+            </div>
+            <div class="details-grid" style="background:#ffffff; margin-bottom:0;">
+              ${summaryItemsHtml}
+            </div>
+          </div>
+
+          <div style="border:1px solid var(--border-subtle); border-radius:10px; padding:20px; margin-bottom:22px;">
+            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+              <h4 style="color:var(--navy-primary); font-size:1rem;">Keep in the Loop (CC Department Officers)</h4>
+              <span class="cc-count-badge">${escapeHtml(badgeLabel)}</span>
+            </div>
+            ${w.department === 'Team Leader' ? `
+              <p style="font-size:0.82rem; color:var(--navy-primary); margin-top:6px; background:#f0f6ff; padding:8px 12px; border-radius:6px;">
+                <strong>Hand-in-Hand Policy Active:</strong> Because Team Leader is selected as your primary department, <strong>HR Admin</strong> is pre-checked by default so HR and Team Leader co-manage your request together.
+              </p>
+            ` : ''}
+            <div class="cc-chips-wrap">${chipsHtml}</div>
+
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Other Colleague / Supervisor Email <span class="label-hint">(Optional)</span></label>
+              <input type="email" id="colleagueEmailInput" class="input-control" placeholder="e.g., colleague@bsii.com.ph" value="${escapeHtml(w.colleagueEmail)}" oninput="state.wizard.colleagueEmail = this.value" />
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <button type="button" class="btn-secondary" onclick="goWizardStep(2)">&larr; Back to Step 2</button>
+            <button type="button" class="btn-gold" style="padding:14px 32px; font-size:1rem;" onclick="submitFinalEmployeeRequest()">
+              Submit Official Support Request &rarr;
+            </button>
+          </div>
+        `;
+      }
+
+      viewport.innerHTML = `
+        <div class="wizard-card">
+          <div class="wizard-stepper">
+            <div class="step-indicator ${w.step === 1 ? 'active' : w.step > 1 ? 'completed' : ''}">
+              <span class="step-num">1</span>
+              <div>
+                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">STEP 1</div>
+                <div style="font-weight:800; color:var(--navy-primary); font-size:0.9rem;">Department Selection</div>
+              </div>
+            </div>
+            <div class="step-indicator ${w.step === 2 ? 'active' : w.step > 2 ? 'completed' : ''}">
+              <span class="step-num">2</span>
+              <div>
+                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">STEP 2</div>
+                <div style="font-weight:800; color:var(--navy-primary); font-size:0.9rem;">Category &amp; Dynamic Fields</div>
+              </div>
+            </div>
+            <div class="step-indicator ${w.step === 3 ? 'active' : ''}">
+              <span class="step-num">3</span>
+              <div>
+                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">STEP 3</div>
+                <div style="font-weight:800; color:var(--navy-primary); font-size:0.9rem;">Keep in the Loop &amp; Confirm</div>
+              </div>
+            </div>
+          </div>
+          ${stepBodyHtml}
+        </div>
+      `;
+    }
+
+    function chooseWizardDept(deptName) {
+      syncDepartmentHandInHandDefaults(deptName);
+      renderWizardView();
+    }
+
+    function goWizardStep(stepNum) {
+      if (stepNum === 2 && state.wizard.step === 1) {
+        syncDepartmentHandInHandDefaults(state.wizard.department);
+      }
+      state.wizard.step = stepNum;
+      renderWizardView();
+    }
+
+    function changeWizardCategory(newCat) {
+      state.wizard.category = newCat;
+      state.wizard.details = {};
+      renderWizardView();
+    }
+
+    function saveStep2AndContinue() {
+      const inputs = document.querySelectorAll('.dyn-wizard-input');
+      const collected = {};
+      for (const el of inputs) {
+        const fieldName = el.getAttribute('data-field-name');
+        const val = el.value.trim();
+        if (el.getAttribute('data-required') === 'true' && !val) {
+          alert(`Please fill out the required field: ${fieldName}`);
+          el.focus();
+          return;
+        }
+        collected[fieldName] = val;
+      }
+      const groups = document.querySelectorAll('.dyn-wizard-group');
+      for (const grp of groups) {
+        const fieldName = grp.getAttribute('data-field-name');
+        const gType = grp.getAttribute('data-group-type');
+        let val = '';
+        if (gType === 'radio') {
+          const checked = grp.querySelector(`input[name="${grp.getAttribute('data-radio-name')}"]:checked`);
+          val = checked ? checked.value.trim() : '';
+        } else if (gType === 'checkbox') {
+          const checked = Array.from(grp.querySelectorAll(`input[name="${grp.getAttribute('data-check-name')}"]:checked`));
+          val = checked.map((c) => c.value.trim()).filter(Boolean).join(', ');
+        }
+        if (grp.getAttribute('data-required') === 'true' && !val) {
+          alert(`Please select an option for the required field: ${fieldName}`);
+          return;
+        }
+        collected[fieldName] = val;
+      }
+      state.wizard.details = collected;
+      state.wizard.step = 3;
+      renderWizardView();
+    }
+
+    function toggleCcChip(deptOption) {
+      const list = state.wizard.ccDepartments;
+      const idx = list.indexOf(deptOption);
+      if (idx === -1) {
+        list.push(deptOption);
+      } else {
+        list.splice(idx, 1);
+      }
+      renderWizardView();
+    }
+
+    function buildGmailComposeUrl(reqObj) {
+      const recipients = (reqObj.notifiedEmails && reqObj.notifiedEmails.length)
+        ? reqObj.notifiedEmails
+        : (reqObj.ccEmails || []);
+      const to = recipients.join(',');
+      const subject = `[BSIISUPPORT ${reqObj.id}] ${reqObj.department} — ${reqObj.category} (${reqObj.employeeName})`;
+      const detailLines = Object.entries(reqObj.details || {}).map(([k, v]) => `- ${k}: ${v}`).join('\n');
+      const body = [
+        `Request ID: ${reqObj.id}`,
+        `Department: ${reqObj.department}`,
+        `Category: ${reqObj.category}`,
+        `Submitted By: ${reqObj.employeeName} (ID: ${reqObj.employeeId})`,
+        `Email: ${reqObj.employeeEmail} | Mobile: ${reqObj.employeeMobile}`,
+        '',
+        'Details:',
+        detailLines || '(None)'
+      ].join('\n');
+      return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+
+    async function submitFinalEmployeeRequest() {
+      const w = state.wizard;
+      const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          department: w.department,
+          category: w.category,
+          details: w.details,
+          ccDepartments: w.ccDepartments,
+          colleagueEmail: w.colleagueEmail
+        })
+      });
+      if (res.ok) {
+        const d = await res.json();
+        const reqObj = d.request;
+        const recipients = d.notifiedEmails || [];
+        let browserSent = Boolean(d.sentViaLiveEmail);
+
+        if (!browserSent && recipients.length > 0) {
+          const detailObj = {};
+          Object.entries(reqObj.details || {}).forEach(([k, v]) => { detailObj[k] = v || '—'; });
+          await Promise.all(recipients.map(async (addr) => {
+            try {
+              const fsRes = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(addr)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({
+                  _subject: `[BSIISUPPORT ${reqObj.id}] ${reqObj.department} — ${reqObj.category} (${reqObj.employeeName})`,
+                  _template: 'table',
+                  _captcha: 'false',
+                  Request_ID: reqObj.id,
+                  Department: reqObj.department,
+                  Category: reqObj.category,
+                  Submitted_By: `${reqObj.employeeName} (ID: ${reqObj.employeeId})`,
+                  Contact: `${reqObj.employeeEmail} / ${reqObj.employeeMobile}`,
+                  ...detailObj
+                })
+              });
+              const fsJson = await fsRes.json().catch(() => ({}));
+              if (String(fsJson.success) === 'true') browserSent = true;
+            } catch (_) {}
+          }));
+        }
+
+        state.lastSubmittedNotice = {
+          request: reqObj,
+          notifiedEmails: recipients,
+          sentViaLiveEmail: browserSent,
+          deliveryStatus: d.emailDeliveryStatus || ''
+        };
+        // Reset wizard to step 1 default
+        state.wizard = {
+          step: 1,
+          department: 'HR Admin',
+          category: 'Leave Request',
+          details: {},
+          ccDepartments: [],
+          colleagueEmail: ''
+        };
+        await refreshRequestsData();
+        navigateTo('/requests');
+      }
+    }
+
+    /* ==========================================
+       MY REQUESTS VIEW (EMPLOYEE QUEUE)
+       ========================================== */
+    function renderMyRequestsView() {
+      const viewport = document.getElementById('appViewport');
+      const list = state.myRequests;
+
+      let noticeHtml = '';
+      if (state.lastSubmittedNotice) {
+        const notice = state.lastSubmittedNotice;
+        const emails = notice.notifiedEmails.join(', ') || 'Department Queue';
+        const gmailBtn = !notice.sentViaLiveEmail && notice.notifiedEmails.length
+          ? `<a href="${buildGmailComposeUrl(notice.request)}" target="_blank" rel="noopener" class="btn-secondary" style="text-decoration:none; padding:6px 12px; font-size:0.8rem; white-space:nowrap;">Send via Gmail &rarr;</a>`
+          : '';
+        noticeHtml = `
+          <div class="alert-box alert-success" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+            <div>
+              <strong>Request ${escapeHtml(notice.request.id)} submitted!</strong>
+              Routed to: <code>${escapeHtml(emails)}</code>
+            </div>
+            ${gmailBtn}
+          </div>
+        `;
+        state.lastSubmittedNotice = null;
+      }
+
+      const cardsHtml = list.length === 0
+        ? `<div class="wizard-card" style="text-align:center; padding:48px 24px;">
+             <h3 style="color:var(--navy-primary); margin-bottom:8px;">No Active Support Requests</h3>
+             <p style="color:var(--text-muted); margin-bottom:20px;">You have no active requests within the current 365-day operational window.</p>
+             <button type="button" class="btn-gold" onclick="navigateTo('/open')">+ Create New Support Request</button>
+           </div>`
+        : list.map((r) => renderRequestCardHtml(r, false)).join('');
+
+      viewport.innerHTML = `
+        ${noticeHtml}
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+          <div>
+            <h2 style="color:var(--navy-primary); font-size:1.45rem;">My Submitted Support Requests</h2>
+            <p style="color:var(--text-muted); font-size:0.88rem;">
+              Showing active employee requests. Requests older than 365 days automatically archive into the Retention Trash queue.
+            </p>
+          </div>
+          <button type="button" class="btn-gold" onclick="navigateTo('/open')">+ New Support Request</button>
+        </div>
+        ${cardsHtml}
+      `;
+    }
+
+    /* ==========================================
+       5. DEPARTMENT SUPPORT & INLINE MONITORING
+       ========================================== */
+    function renderDepartmentQueueView() {
+      const viewport = document.getElementById('appViewport');
+      const list = state.departmentQueue;
+
+      const cardsHtml = list.length === 0
+        ? `<div class="wizard-card" style="text-align:center; padding:40px;">No active requests in your Department Support queue.</div>`
+        : list.map((r) => renderRequestCardHtml(r, true)).join('');
+
+      viewport.innerHTML = `
+        <div class="sky-section-banner" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h2 style="color:var(--navy-primary); font-size:1.3rem;">Messages</h2>
+            <p style="color:var(--text-muted); font-size:0.84rem;">
+              <strong>${escapeHtml(state.user.fullName)}</strong> &bull; ${escapeHtml(state.user.role)}
+            </p>
+          </div>
+          <button type="button" class="btn-secondary" onclick="navigateTo('/hr')">Manage Accounts &rarr;</button>
+        </div>
+        ${cardsHtml}
+      `;
+    }
+
+    function renderRequestCardHtml(r, isOfficerView) {
+      const detailsHtml = Object.entries(r.details || {}).map(([k, v]) => `
+        <div class="details-item">
+          <small>${escapeHtml(k)}</small>
+          <strong>${escapeHtml(v || '—')}</strong>
+        </div>
+      `).join('');
+
+      const commentsHtml = (r.comments || []).map((c) => `
+        <div style="background:#f8fafc; border-left:3px solid var(--gold-primary); padding:8px 12px; margin-top:8px; font-size:0.84rem;">
+          <strong>${escapeHtml(c.authorName)} (${escapeHtml(c.authorRole)}):</strong> ${escapeHtml(c.message)}
+          <div style="font-size:0.72rem; color:var(--text-muted);">${new Date(c.createdAt).toLocaleString()}</div>
+        </div>
+      `).join('');
+
+      const ccBadges = (r.ccDepartments || []).map((d) =>
+        `<span style="background:#e2e8f0; color:var(--navy-primary); padding:2px 9px; border-radius:999px; font-size:0.75rem; font-weight:700;">CC: ${escapeHtml(d)}</span>`
+      ).join(' ');
+
+      const monitoringBadges = (r.ccEmails || []).map((em) =>
+        `<span style="background:#f0f6ff; border:1px solid #bfdbfe; color:var(--navy-primary); padding:2px 9px; border-radius:999px; font-size:0.75rem; font-weight:600;">
+          ${escapeHtml(em)}
+          ${isOfficerView ? `<button type="button" style="border:none;background:none;color:var(--alert-red);font-weight:800;margin-left:4px;cursor:pointer;" title="Remove monitoring email" onclick="removeMonitoringEmail('${escapeHtml(r.id)}','${escapeHtml(em)}')">&times;</button>` : ''}
+        </span>`
+      ).join(' ');
+
+      const statusClass = /approved|completed/i.test(r.status) ? 'completed' : /progress/i.test(r.status) ? 'progress' : '';
+
+      return `
+        <div class="request-card">
+          <div class="request-card-header">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <span style="font-weight:800; color:var(--navy-primary); font-size:1rem;">${escapeHtml(r.id)}</span>
+                <span style="color:var(--text-muted);">&bull;</span>
+                <span style="font-weight:800; color:var(--navy-secondary);">${escapeHtml(r.department)}</span>
+                <span style="color:var(--text-muted);">&rarr;</span>
+                <span style="background:var(--gold-primary); color:var(--navy-primary); font-size:0.76rem; font-weight:800; padding:2px 10px; border-radius:4px;">
+                  ${escapeHtml(r.category)}
+                </span>
+                ${ccBadges}
+              </div>
+              <div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">
+                Employee: <strong>${escapeHtml(r.employeeName)}</strong> (${escapeHtml(r.employeeCompany)} — ID: ${escapeHtml(r.employeeId)}) | Contact: ${escapeHtml(r.employeeEmail)} / ${escapeHtml(r.employeeMobile)}
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <span class="status-badge ${statusClass}">${escapeHtml(r.status)}</span>
+              ${isOfficerView ? `
+                <button type="button" class="btn-success" title="Mark Done &amp; Move to History" onclick="markDoneToHistory('${escapeHtml(r.id)}')">
+                  Done
+                </button>
+                <button type="button" class="btn-danger" title="Delete" aria-label="Delete" style="display:inline-flex; align-items:center; justify-content:center; padding:6px 10px;" onclick="promptSoftDeleteRequest('${escapeHtml(r.id)}')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                    <path d="M10 11v6"></path>
+                    <path d="M14 11v6"></path>
+                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                  </svg>
+                </button>
+              ` : `
+                <button type="button" class="btn-danger" title="Remove from My View" aria-label="Remove from My View" style="display:inline-flex; align-items:center; justify-content:center; padding:6px 10px;" onclick="promptSenderDeleteRequest('${escapeHtml(r.id)}')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                    <path d="M10 11v6"></path>
+                    <path d="M14 11v6"></path>
+                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                  </svg>
+                </button>
+              `}
+            </div>
+          </div>
+
+          <div class="request-card-body">
+            <div class="details-grid">${detailsHtml}</div>
+
+            <div style="font-size:0.8rem; color:var(--text-muted); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+              <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
+                <strong>Monitoring CC:</strong>
+                ${monitoringBadges || '<span>Direct Only</span>'}
+              </div>
+              ${(r.notifiedEmails && r.notifiedEmails.length) ? `
+                <a href="${buildGmailComposeUrl(r)}" target="_blank" rel="noopener" style="font-size:0.76rem; font-weight:700; color:var(--navy-primary); text-decoration:underline;">
+                  Email to Admin in Gmail &rarr;
+                </a>
+              ` : ''}
+            </div>
+
+            ${commentsHtml}
+
+            ${isOfficerView ? `
+              <div style="margin-top:14px; padding-top:14px; border-top:1px dashed #bae6fd; display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap:12px;">
+                <div>
+                  <label style="font-size:0.78rem; font-weight:700; color:var(--navy-primary); display:block; margin-bottom:4px;">
+                    Officer Action &amp; Note
+                  </label>
+                  <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                    <select id="statusSel_${escapeHtml(r.id)}" class="input-control" style="padding:7px 10px; font-size:0.82rem; flex:1 1 150px; max-width:100%;">
+                      <option value="Submitted / Pending Officer Review" ${r.status === 'Submitted / Pending Officer Review' ? 'selected' : ''}>Pending Review</option>
+                      <option value="In Progress" ${r.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                      <option value="Approved / Completed" ${r.status === 'Approved / Completed' ? 'selected' : ''}>Approved / Completed</option>
+                      <option value="Returned for Clarification" ${r.status === 'Returned for Clarification' ? 'selected' : ''}>Returned</option>
+                    </select>
+                    <input type="text" id="noteInp_${escapeHtml(r.id)}" class="input-control" style="padding:7px 10px; font-size:0.82rem; flex:1 1 150px;" placeholder="Remarks..." />
+                    <button type="button" class="btn-gold" style="padding:7px 14px; font-size:0.8rem;" onclick="updateOfficerRequest('${escapeHtml(r.id)}')">
+                      Update
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label style="font-size:0.78rem; font-weight:700; color:var(--navy-primary); display:block; margin-bottom:4px;">
+                    Add Custom CC Email
+                  </label>
+                  <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                    <input type="email" id="monEmail_${escapeHtml(r.id)}" class="input-control" style="padding:7px 10px; font-size:0.82rem; flex:1 1 160px;" placeholder="e.g., audit@bsii.com.ph" />
+                    <button type="button" class="btn-secondary" style="padding:7px 12px; font-size:0.8rem;" onclick="addMonitoringEmail('${escapeHtml(r.id)}')">
+                      + Add CC
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    async function markDoneToHistory(reqId) {
+      const res = await fetch(`/api/requests/${encodeURIComponent(reqId)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ markDoneToHistory: true })
+      });
+      if (res.ok) {
+        await refreshRequestsData();
+        renderHeaderAndNav();
+        renderCurrentRoute();
+      }
+    }
+
+    async function updateOfficerRequest(reqId) {
+      const status = document.getElementById(`statusSel_${reqId}`).value;
+      const comment = document.getElementById(`noteInp_${reqId}`).value;
+      const res = await fetch(`/api/requests/${encodeURIComponent(reqId)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status, comment })
+      });
+      if (res.ok) {
+        await refreshRequestsData();
+        renderCurrentRoute();
+      }
+    }
+
+    async function addMonitoringEmail(reqId) {
+      const inp = document.getElementById(`monEmail_${reqId}`);
+      if (!inp || !inp.value.trim()) return;
+      const res = await fetch(`/api/requests/${encodeURIComponent(reqId)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ addMonitoringEmail: inp.value.trim() })
+      });
+      if (res.ok) {
+        await refreshRequestsData();
+        renderCurrentRoute();
+      }
+    }
+
+    async function removeMonitoringEmail(reqId, email) {
+      const res = await fetch(`/api/requests/${encodeURIComponent(reqId)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ removeMonitoringEmail: email })
+      });
+      if (res.ok) {
+        await refreshRequestsData();
+        renderCurrentRoute();
+      }
+    }
+
+    /* ==========================================
+       ADMIN SETTINGS MODE (STEP OPTIONS, PROFILE, ROUTING, HR)
+       ========================================== */
+    function switchAdminSettingsTab(tab) {
+      state.adminSettingsTab = tab;
+      renderHrAdminView();
+    }
+
+    function selectStepEditorDept(dept) {
+      state.stepEditorDept = dept;
+      state.stepEditorDraft = null;
+      state.stepEditorDraftDept = null;
+      renderHrAdminView();
+    }
+
+    function ensureStepEditorDraft(dept) {
+      if (!state.stepEditorDraft || state.stepEditorDraftDept !== dept) {
+        const cfg = DEPARTMENT_CONFIG[dept] || { subtitle: '', categories: {} };
+        state.stepEditorDraftDept = dept;
+        state.stepEditorDraft = {
+          subtitle: cfg.subtitle || '',
+          categories: Object.entries(cfg.categories || {}).map(([name, fields]) => ({
+            name,
+            fields: JSON.parse(JSON.stringify(fields || []))
+          }))
+        };
+      }
+      return state.stepEditorDraft;
+    }
+
+    function gfUpdateSubtitle(val) {
+      if (state.stepEditorDraft) state.stepEditorDraft.subtitle = val;
+    }
+
+    function gfUpdateCatName(catIdx, val) {
+      if (state.stepEditorDraft && state.stepEditorDraft.categories[catIdx]) {
+        state.stepEditorDraft.categories[catIdx].name = val;
+      }
+    }
+
+    function gfMoveCat(catIdx, dir) {
+      const cats = state.stepEditorDraft?.categories;
+      if (!cats) return;
+      const target = catIdx + dir;
+      if (target < 0 || target >= cats.length) return;
+      [cats[catIdx], cats[target]] = [cats[target], cats[catIdx]];
+      renderHrAdminView();
+    }
+
+    function gfDeleteCat(catIdx) {
+      const cats = state.stepEditorDraft?.categories;
+      if (!cats) return;
+      if (cats.length <= 1) {
+        alert('A department must keep at least one category.');
+        return;
+      }
+      cats.splice(catIdx, 1);
+      renderHrAdminView();
+    }
+
+    function gfAddCategory() {
+      const cats = state.stepEditorDraft?.categories;
+      if (!cats) return;
+      cats.push({
+        name: `New Category ${cats.length + 1}`,
+        fields: [{ name: 'Untitled Question', type: 'text', placeholder: '', required: false }]
+      });
+      renderHrAdminView();
+    }
+
+    function gfUpdateField(catIdx, fIdx, key, val) {
+      const field = state.stepEditorDraft?.categories?.[catIdx]?.fields?.[fIdx];
+      if (field) field[key] = val;
+    }
+
+    function gfChangeFieldType(catIdx, fIdx, newType) {
+      const field = state.stepEditorDraft?.categories?.[catIdx]?.fields?.[fIdx];
+      if (!field) return;
+      field.type = newType;
+      if (['select', 'radio', 'checkbox'].includes(newType)) {
+        if (!Array.isArray(field.options) || field.options.length === 0) {
+          field.options = ['Option 1'];
+        }
+      }
+      renderHrAdminView();
+    }
+
+    function gfMoveField(catIdx, fIdx, dir) {
+      const fields = state.stepEditorDraft?.categories?.[catIdx]?.fields;
+      if (!fields) return;
+      const target = fIdx + dir;
+      if (target < 0 || target >= fields.length) return;
+      [fields[fIdx], fields[target]] = [fields[target], fields[fIdx]];
+      renderHrAdminView();
+    }
+
+    function gfDuplicateField(catIdx, fIdx) {
+      const fields = state.stepEditorDraft?.categories?.[catIdx]?.fields;
+      if (!fields || !fields[fIdx]) return;
+      const copy = JSON.parse(JSON.stringify(fields[fIdx]));
+      copy.name = `${copy.name} (Copy)`;
+      fields.splice(fIdx + 1, 0, copy);
+      renderHrAdminView();
+    }
+
+    function gfDeleteField(catIdx, fIdx) {
+      const fields = state.stepEditorDraft?.categories?.[catIdx]?.fields;
+      if (!fields) return;
+      if (fields.length <= 1) {
+        alert('Each category needs at least one question/field.');
+        return;
+      }
+      fields.splice(fIdx, 1);
+      renderHrAdminView();
+    }
+
+    function gfAddField(catIdx) {
+      const fields = state.stepEditorDraft?.categories?.[catIdx]?.fields;
+      if (!fields) return;
+      fields.push({ name: 'Untitled Question', type: 'text', placeholder: '', required: false });
+      renderHrAdminView();
+    }
+
+    function gfUpdateOption(catIdx, fIdx, optIdx, val) {
+      const opts = state.stepEditorDraft?.categories?.[catIdx]?.fields?.[fIdx]?.options;
+      if (opts && optIdx >= 0 && optIdx < opts.length) {
+        opts[optIdx] = val;
+      }
+    }
+
+    function gfAddOption(catIdx, fIdx) {
+      const field = state.stepEditorDraft?.categories?.[catIdx]?.fields?.[fIdx];
+      if (!field) return;
+      if (!Array.isArray(field.options)) field.options = [];
+      field.options.push(`Option ${field.options.length + 1}`);
+      renderHrAdminView();
+    }
+
+    function gfRemoveOption(catIdx, fIdx, optIdx) {
+      const opts = state.stepEditorDraft?.categories?.[catIdx]?.fields?.[fIdx]?.options;
+      if (!opts) return;
+      if (opts.length <= 1) {
+        alert('At least one option is required.');
+        return;
+      }
+      opts.splice(optIdx, 1);
+      renderHrAdminView();
+    }
+
+    function gfResetDraft() {
+      state.stepEditorDraft = null;
+      state.stepEditorDraftDept = null;
+      renderHrAdminView('Discarded unsaved form edits.');
+    }
+
+    function renderHrAdminView(statusBanner = '') {
+      const viewport = document.getElementById('appViewport');
+      const s = state.settings || {};
+      const deptEmails = s.departmentEmails || {};
+      const isHR = Boolean(state.user.isHR || state.user.isMasterAdmin || state.user.isModerator);
+      const tab = state.adminSettingsTab || (isHR ? 'employees' : 'steps');
+
+      // Determine which departments this officer can edit in Step Options
+      const allDepts = Object.keys(DEPARTMENT_CONFIG);
+      const editableDepts = isHR
+        ? allDepts
+        : allDepts.filter((d) => d === state.user.department || (state.user.secondaryDepartments && state.user.secondaryDepartments.includes(d)));
+
+      if (!state.stepEditorDept || !editableDepts.includes(state.stepEditorDept)) {
+        state.stepEditorDept = editableDepts[0] || allDepts[0];
+      }
+
+      let panelHtml = '';
+
+      if (tab === 'steps') {
+        const targetDept = state.stepEditorDept;
+        const draft = ensureStepEditorDraft(targetDept);
+        const deptButtons = editableDepts.map((d) => `
+          <button type="button" class="btn-secondary" style="${d === targetDept ? 'background:var(--navy-primary); color:#fff; border-color:var(--navy-primary);' : ''}" onclick="selectStepEditorDept('${escapeHtml(d)}')">
+            ${escapeHtml(d)}
+          </button>
+        `).join('');
+
+        const typeLabels = [
+          { value: 'text', label: 'Short answer' },
+          { value: 'textarea', label: 'Paragraph' },
+          { value: 'select', label: 'Dropdown' },
+          { value: 'radio', label: 'Multiple choice' },
+          { value: 'checkbox', label: 'Checkboxes' },
+          { value: 'date', label: 'Date' },
+          { value: 'number', label: 'Number' }
+        ];
+
+        const categoriesHtml = draft.categories.map((cat, catIdx) => {
+          const fieldsEditor = (cat.fields || []).map((f, fIdx) => {
+            const typeOptionsHtml = typeLabels.map((t) =>
+              `<option value="${t.value}" ${f.type === t.value ? 'selected' : ''}>${t.label}</option>`
+            ).join('');
+
+            let bodyHtml = '';
+            if (['select', 'radio', 'checkbox'].includes(f.type)) {
+              const marker = f.type === 'radio' ? '○' : (f.type === 'checkbox' ? '☐' : '▾');
+              const opts = f.options || ['Option 1'];
+              const rowsHtml = opts.map((opt, optIdx) => `
+                <div class="gf-option-row">
+                  <span class="gf-option-marker">${f.type === 'select' ? `${optIdx + 1}.` : marker}</span>
+                  <input type="text" class="gf-option-input" value="${escapeHtml(opt)}" placeholder="Option ${optIdx + 1}" oninput="gfUpdateOption(${catIdx}, ${fIdx}, ${optIdx}, this.value)" />
+                  <button type="button" class="gf-icon-btn danger" title="Remove option" onclick="gfRemoveOption(${catIdx}, ${fIdx}, ${optIdx})">&times;</button>
+                </div>
+              `).join('');
+              bodyHtml = `
+                <div class="gf-options-list">${rowsHtml}</div>
+                <button type="button" class="gf-icon-btn" style="color:var(--navy-primary); font-weight:700;" onclick="gfAddOption(${catIdx}, ${fIdx})">
+                  + Add option
+                </button>
+              `;
+            } else if (f.type === 'date') {
+              bodyHtml = `<div style="font-size:0.84rem; color:#64748b; padding:6px 10px; background:#f8fafc; border-radius:6px; border:1px dashed #cbd5e1;">Month, day, year (Date picker)</div>`;
+            } else {
+              bodyHtml = `
+                <input type="text" class="gf-option-input" style="width:100%;" value="${escapeHtml(f.placeholder || '')}" placeholder="Optional helper / placeholder text..." oninput="gfUpdateField(${catIdx}, ${fIdx}, 'placeholder', this.value)" />
+              `;
+            }
+
+            return `
+              <div class="gf-question-card">
+                <div class="gf-question-top">
+                  <input type="text" class="gf-question-title" value="${escapeHtml(f.name || '')}" placeholder="Question / Field Label" oninput="gfUpdateField(${catIdx}, ${fIdx}, 'name', this.value)" />
+                  <select class="gf-type-select" onchange="gfChangeFieldType(${catIdx}, ${fIdx}, this.value)">
+                    ${typeOptionsHtml}
+                  </select>
+                </div>
+                ${bodyHtml}
+                <div class="gf-question-footer">
+                  <button type="button" class="gf-icon-btn" title="Move up" onclick="gfMoveField(${catIdx}, ${fIdx}, -1)" ${fIdx === 0 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>&uarr;</button>
+                  <button type="button" class="gf-icon-btn" title="Move down" onclick="gfMoveField(${catIdx}, ${fIdx}, 1)" ${fIdx === cat.fields.length - 1 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>&darr;</button>
+                  <button type="button" class="gf-icon-btn" title="Duplicate question" onclick="gfDuplicateField(${catIdx}, ${fIdx})">Duplicate</button>
+                  <button type="button" class="gf-icon-btn danger" title="Delete question" onclick="gfDeleteField(${catIdx}, ${fIdx})">Delete</button>
+                  <label class="gf-required-label">
+                    <input type="checkbox" ${f.required ? 'checked' : ''} onchange="gfUpdateField(${catIdx}, ${fIdx}, 'required', this.checked)" />
+                    Required
+                  </label>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          return `
+            <div class="gf-section-card">
+              <div class="gf-section-header">
+                <span style="font-size:0.78rem; font-weight:800; color:var(--navy-primary); text-transform:uppercase; letter-spacing:0.04em;">Category ${catIdx + 1}</span>
+                <input type="text" class="gf-section-title-input" value="${escapeHtml(cat.name)}" placeholder="Category Name" oninput="gfUpdateCatName(${catIdx}, this.value)" />
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="gf-icon-btn" title="Move category up" onclick="gfMoveCat(${catIdx}, -1)" ${catIdx === 0 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>&uarr;</button>
+                  <button type="button" class="gf-icon-btn" title="Move category down" onclick="gfMoveCat(${catIdx}, 1)" ${catIdx === draft.categories.length - 1 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>&darr;</button>
+                  <button type="button" class="gf-icon-btn danger" title="Delete category" onclick="gfDeleteCat(${catIdx})">Delete Category</button>
+                </div>
+              </div>
+              <div class="gf-section-body">
+                ${fieldsEditor}
+                <div>
+                  <button type="button" class="gf-add-btn" onclick="gfAddField(${catIdx})">
+                    + Add Question
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        panelHtml = `
+          <div class="wizard-card" style="padding:24px; border-color:#bae6fd;">
+            <div class="sky-section-banner">
+              <strong style="color:var(--navy-primary);">Visual Form Builder:</strong>
+              Edit questions, types, options, and categories just like Google Forms.
+              ${isHR
+                ? 'HR Admin can edit all departments.'
+                : `Restricted to your department (${escapeHtml(state.user.department)}).`}
+            </div>
+
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;">
+              ${deptButtons}
+            </div>
+
+            <div class="form-group">
+              <label>Form Description for ${escapeHtml(targetDept)}</label>
+              <input type="text" id="stepDeptSubtitleInput" class="input-control" value="${escapeHtml(draft.subtitle || '')}" oninput="gfUpdateSubtitle(this.value)" />
+            </div>
+
+            ${categoriesHtml}
+
+            <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; margin-top:18px; padding-top:16px; border-top:1px solid var(--border-subtle);">
+              <button type="button" class="gf-add-btn" onclick="gfAddCategory()">
+                + Add Category
+              </button>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button type="button" class="btn-secondary" onclick="gfResetDraft()">
+                  Reset Changes
+                </button>
+                <button type="button" class="btn-gold" onclick="saveDepartmentStepOptions('${escapeHtml(targetDept)}')">
+                  Save ${escapeHtml(targetDept)} Form
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (tab === 'routing') {
+        const deptEmailInputs = Object.entries(deptEmails).map(([dept, email]) => `
+          <div class="form-group" style="margin-bottom:10px;">
+            <label style="font-size:0.8rem;">${escapeHtml(dept)} Mailbox</label>
+            <input type="email" class="input-control dept-email-setting" data-dept="${escapeHtml(dept)}" value="${escapeHtml(email)}" />
+          </div>
+        `).join('');
+
+        panelHtml = `
+          <div class="wizard-card" style="padding:24px; border-color:#bae6fd;">
+            <div class="sky-section-banner">
+              <strong style="color:var(--navy-primary);">Global CC &amp; Department Mailboxes</strong>
+            </div>
+            <div class="form-group">
+              <label>Master Executive Alert Gmail (Global CC)</label>
+              <input type="email" id="globalCcEmailInput" class="input-control" value="${escapeHtml(s.globalCcEmail || 'admin.brightstar@gmail.com')}" />
+            </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:8px;">
+              <input type="checkbox" id="globalCcEnabledInput" ${s.globalCcEnabled ? 'checked' : ''} />
+              <label for="globalCcEnabledInput" style="margin:0;">Auto-CC Master Gmail on all incoming requests</label>
+            </div>
+            <div class="form-group">
+              <label>Seasonal Role Note</label>
+              <input type="text" id="seasonalRoleNoteInput" class="input-control" value="${escapeHtml(s.seasonalRoleNote || '')}" />
+            </div>
+            <hr style="border:none; border-top:1px solid #bae6fd; margin:16px 0;" />
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap:12px;">
+              ${deptEmailInputs}
+            </div>
+            <button type="button" class="btn-gold" onclick="saveRoutingSettings()">Save Routing Settings</button>
+            <hr style="border:none; border-top:1px solid #bae6fd; margin:18px 0;" />
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <strong style="color:var(--navy-primary); font-size:0.9rem;">Recent Request Email Dispatches</strong>
+              <button type="button" class="btn-secondary" style="padding:4px 10px; font-size:0.74rem;" onclick="loadDispatchLog()">Refresh Log</button>
+            </div>
+            <div id="dispatchLogContainer" style="font-size:0.8rem; color:var(--text-muted);">Loading dispatch log...</div>
+          </div>
+        `;
+      } else if (tab === 'employees') {
+        const empRows = state.hrEmployees.map((emp) => {
+          const isAdminAcct = Boolean(emp.isProtectedAdmin || emp.isStaff || emp.isHR || emp.isMasterAdmin || emp.isModerator);
+          const loginCell = isAdminAcct
+            ? `<code>${escapeHtml(emp.maskedAdminUsername || '—')}</code><br/><small style="color:var(--text-muted);">Pass: <code>${escapeHtml(emp.maskedAdminPassword || '—')}</code></small>`
+            : `<code>${escapeHtml(emp.lastName)}</code><br/><small style="color:var(--text-muted);">ID + Last Name</small>`;
+          return `
+          <tr>
+            <td><strong>${escapeHtml(emp.id)}</strong></td>
+            <td>${escapeHtml(emp.fullName)}</td>
+            <td>${loginCell}</td>
+            <td>${escapeHtml(emp.company)}</td>
+            <td>${escapeHtml(emp.department)}<br/><small style="color:var(--text-muted);">${escapeHtml(emp.role)}</small></td>
+            <td>${escapeHtml(emp.email)}<br/><small>${escapeHtml(emp.mobile)}</small></td>
+            <td style="white-space:nowrap;">
+              ${isAdminAcct
+                ? '<span style="color:var(--text-muted); font-size:0.78rem; font-weight:600;">Self-Managed</span>'
+                : (isHR ? `
+                  <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="openHrEditModal('${escapeHtml(emp.id)}')">
+                    Edit
+                  </button>
+                  <button type="button" class="btn-danger" style="padding:4px 9px; font-size:0.75rem;" onclick="deleteEmployeeAccount('${escapeHtml(emp.id)}')">
+                    Delete
+                  </button>
+                ` : '<span style="color:var(--text-muted);font-size:0.78rem;">HR Only</span>')}
+            </td>
+          </tr>
+        `;
+        }).join('');
+
+        const classOptionsHtml = getClassifications().map((c) =>
+          `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`
+        ).join('');
+
+        const regType = state.registerAccountType; // null | 'employee' | 'officer' | 'hr'
+        const isRegAdmin = regType === 'officer' || regType === 'hr';
+        const regTitleMap = {
+          employee: 'Standard Employee Account',
+          officer: 'Other Admin (Department Officer)',
+          hr: 'HR Admin Account'
+        };
+
+        let registerBodyHtml = '';
+        if (!regType) {
+          registerBodyHtml = `
+            <div style="margin-top:14px; padding-top:14px; border-top:1px solid #bae6fd;">
+              <div style="font-size:0.86rem; font-weight:700; color:var(--navy-primary); margin-bottom:10px;">
+                Step 1: Choose Account Type
+              </div>
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap:12px;">
+                <button type="button" onclick="selectRegisterAccountType('employee')" style="text-align:left; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:14px 16px; cursor:pointer;">
+                  <div style="font-weight:800; color:var(--navy-primary); font-size:0.94rem; margin-bottom:4px;">Employee</div>
+                  <div style="font-size:0.78rem; color:var(--text-muted);">Logs in with ID Number + Last Name (no spaces, ALL CAPS).</div>
+                </button>
+                <button type="button" onclick="selectRegisterAccountType('officer')" style="text-align:left; background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:14px 16px; cursor:pointer;">
+                  <div style="font-weight:800; color:var(--navy-primary); font-size:0.94rem; margin-bottom:4px;">Other Admin (Officer)</div>
+                  <div style="font-size:0.78rem; color:var(--text-muted);">Department Officer. Logs in via Officer Portal with Username + Strong Password.</div>
+                </button>
+                <button type="button" onclick="selectRegisterAccountType('hr')" style="text-align:left; background:#fefce8; border:1px solid #fde68a; border-radius:10px; padding:14px 16px; cursor:pointer;">
+                  <div style="font-weight:800; color:var(--navy-primary); font-size:0.94rem; margin-bottom:4px;">HR Admin</div>
+                  <div style="font-size:0.78rem; color:var(--text-muted);">Full HR Administrator. Logs in via Officer Portal with Username + Strong Password.</div>
+                </button>
+              </div>
+              <div style="margin-top:10px; font-size:0.75rem; color:var(--text-muted);">
+                Note: Oncall personnel do not require an account — they use passive communication on login.
+              </div>
+            </div>
+          `;
+        } else {
+          registerBodyHtml = `
+            <form onsubmit="createHrEmployee(event)" style="margin-top:14px; padding-top:14px; border-top:1px solid #bae6fd;">
+              <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:14px;">
+                <span style="background:#e0f2fe; color:var(--navy-primary); font-weight:800; font-size:0.82rem; padding:4px 12px; border-radius:999px;">
+                  Creating: ${escapeHtml(regTitleMap[regType])}
+                </span>
+                <button type="button" class="btn-secondary" style="padding:4px 10px; font-size:0.76rem;" onclick="selectRegisterAccountType(null)">
+                  &larr; Change Account Type
+                </button>
+              </div>
+
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap:12px;">
+                <div class="form-group" style="margin-bottom:4px;">
+                  <label>ID Number</label>
+                  <input type="text" id="newEmpId" class="input-control" placeholder="e.g., 777123" required />
+                </div>
+                <div class="form-group" style="margin-bottom:4px;">
+                  <label>Full Name</label>
+                  <input type="text" id="newEmpFull" class="input-control" placeholder="e.g., Carlo Dela Cruz" oninput="updateAdminPwChecklist()" required />
+                </div>
+                ${!isRegAdmin ? `
+                  <div class="form-group" style="margin-bottom:4px;">
+                    <label>Password <span class="label-hint">(Last Name — no spaces, ALL CAPS)</span></label>
+                    <input type="text" id="newEmpLast" class="input-control" placeholder="e.g., DELACRUZ" oninput="this.value = this.value.replace(/\\s+/g, '').toUpperCase()" required />
+                  </div>
+                ` : ''}
+                <div class="form-group" style="margin-bottom:4px;">
+                  <label>Department / Role</label>
+                  <input type="text" id="newEmpDept" class="input-control" placeholder="${regType === 'hr' ? 'e.g., HR Admin' : (regType === 'officer' ? 'e.g., Purchasing Officer' : 'e.g., Operations')}" value="${regType === 'hr' ? 'HR Admin' : ''}" required />
+                </div>
+                <div class="form-group" style="margin-bottom:4px;">
+                  <label>Classification</label>
+                  <select id="newEmpComp" class="input-control">
+                    ${classOptionsHtml}
+                  </select>
+                  <div style="margin-top:4px; display:flex; align-items:center; gap:8px; font-size:0.74rem; color:var(--text-muted);">
+                    <button type="button" onclick="addClassificationOption()" style="background:none; border:none; padding:0; color:#475569; cursor:pointer; font-size:0.74rem; text-decoration:underline;">Add</button>
+                    <span>&middot;</span>
+                    <button type="button" onclick="editClassificationOption()" style="background:none; border:none; padding:0; color:#475569; cursor:pointer; font-size:0.74rem; text-decoration:underline;">Edit</button>
+                    <span>&middot;</span>
+                    <button type="button" onclick="deleteClassificationOption()" style="background:none; border:none; padding:0; color:#94a3b8; cursor:pointer; font-size:0.74rem; text-decoration:underline;">Delete</button>
+                  </div>
+                </div>
+                <div class="form-group" style="margin-bottom:4px;">
+                  <label>Email</label>
+                  <input type="email" id="newEmpEmail" class="input-control" placeholder="employee@bsii.com.ph" />
+                </div>
+                <div class="form-group" style="margin-bottom:4px;">
+                  <label>Mobile</label>
+                  <input type="text" id="newEmpMobile" class="input-control" placeholder="0917-XXX-XXXX" />
+                </div>
+              </div>
+
+              ${isRegAdmin ? `
+                <div style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:14px; margin-top:12px;">
+                  <div style="font-size:0.82rem; font-weight:800; color:var(--navy-primary); margin-bottom:4px;">
+                    Admin / Officer Portal Credentials (1 unique Username &amp; 1 Strong Password)
+                  </div>
+                  <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">
+                    Admins cannot use their Last Name as their password.
+                  </div>
+                  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap:12px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                      <label>Username</label>
+                      <input type="text" id="newEmpAdminUser" class="input-control" placeholder="e.g., bsii.purchasing" required />
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                      <label>Strong Password</label>
+                      <input type="text" id="newEmpAdminPass" class="input-control" placeholder="e.g., Bsii@2026!" oninput="updateAdminPwChecklist()" required />
+                    </div>
+                  </div>
+                  <div id="adminPwChecklist" style="display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:10px; font-size:0.74rem; color:#64748b;">
+                    <span id="pwRuleLen">&#9675; 8+ characters</span>
+                    <span id="pwRuleUpper">&#9675; Uppercase (A-Z)</span>
+                    <span id="pwRuleLower">&#9675; Lowercase (a-z)</span>
+                    <span id="pwRuleNum">&#9675; Number (0-9)</span>
+                    <span id="pwRuleSpec">&#9675; Special char (!@#$%^&amp;*)</span>
+                    <span id="pwRuleNoName">&#9675; No Last/Full Name</span>
+                  </div>
+                </div>
+              ` : ''}
+
+              ${isRegAdmin ? `
+                <div style="background:#fefce8; border:1px solid #fde68a; border-radius:8px; padding:14px; margin-top:12px;">
+                  <div style="font-size:0.82rem; font-weight:800; color:#854d0e; margin-bottom:4px;">
+                    HR Password Confirmation Required
+                  </div>
+                  <div style="font-size:0.76rem; color:#713f12; margin-bottom:8px;">
+                    Re-enter your current HR password to authorize creating an Admin / HR Admin account. (Once created, only the admin can modify their own account via Profile.)
+                  </div>
+                  <div class="form-group" style="margin-bottom:0; max-width:320px;">
+                    <label>Re-enter Your Current HR Password</label>
+                    <input type="password" id="newEmpHrConfirmPass" class="input-control" placeholder="Your current HR password" required />
+                  </div>
+                </div>
+              ` : ''}
+
+              <div style="display:flex; justify-content:flex-end; margin-top:14px;">
+                <button type="submit" class="btn-gold">Register ${escapeHtml(regTitleMap[regType])}</button>
+              </div>
+            </form>
+          `;
+        }
+
+        if (!isHR) {
+          panelHtml = `
+            <div class="wizard-card" style="padding:24px; border-color:#fecaca; background:#fef2f2;">
+              <strong style="color:#991b1b;">Restricted — HR Admin Only</strong>
+              <p style="font-size:0.86rem; color:#7f1d1d; margin:6px 0 0;">
+                Only HR Administrators can view employee accounts in the Employee Directory.
+              </p>
+            </div>
+          `;
+        } else if (state.hrDirectoryRequiresPassword) {
+          panelHtml = `
+            <div class="wizard-card" style="padding:24px; border-color:#bae6fd;">
+              <div class="sky-section-banner" style="margin-bottom:14px;">
+                <strong style="color:var(--navy-primary);">Employee Directory — Password Required</strong>
+              </div>
+              <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:14px;">
+                Account information is confidential. Enter your HR Admin password to unlock the Employee Directory.
+              </p>
+              <form onsubmit="unlockHrDirectory(event)" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <input type="password" id="hrDirPasswordInput" class="input-control" style="max-width:260px;" placeholder="Enter your HR password" required />
+                <button type="submit" class="btn-gold">
+                  Unlock Employee Directory
+                </button>
+              </form>
+              <div id="hrDirUnlockStatus" style="font-size:0.82rem; margin-top:10px; color:#b91c1c;"></div>
+            </div>
+          `;
+        } else {
+          panelHtml = `
+            ${isHR ? `
+              <details class="wizard-card" style="padding:16px 22px; border-color:#bae6fd; margin-bottom:18px;" ${regType ? 'open' : ''}>
+                <summary style="cursor:pointer; font-weight:800; color:var(--navy-primary); font-size:0.98rem; list-style:none; display:flex; align-items:center; justify-content:space-between;">
+                  <span>+ Register New Account (HR Only)</span>
+                  <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">Click to expand</span>
+                </summary>
+                ${registerBodyHtml}
+              </details>
+            ` : ''}
+
+            <div class="wizard-card" style="padding:20px 24px; border-color:#bae6fd; overflow-x:auto;">
+              <div class="sky-section-banner" style="margin-bottom:14px;">
+                <strong style="color:var(--navy-primary);">Employee Directory</strong>
+                <span style="font-size:0.78rem; color:var(--text-muted); margin-left:8px;">(Admin login credentials are masked as FirstLetter****** and can only be edited by the admin owner via Profile)</span>
+              </div>
+              <table class="corp-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Login Credentials</th>
+                    <th>Group</th>
+                    <th>Department / Role</th>
+                    <th>Contact</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>${empRows}</tbody>
+              </table>
+            </div>
+          `;
+        }
+      }
+
+      viewport.innerHTML = `
+        <h2 style="color:var(--navy-primary); font-size:1.45rem; margin-bottom:14px;">Manage Accounts &amp; Settings</h2>
+        ${statusBanner ? `<div class="alert-box alert-success">${escapeHtml(statusBanner)}</div>` : ''}
+
+        <div class="settings-nav-grid">
+          <button type="button" class="settings-nav-btn ${tab === 'employees' ? 'active' : ''}" onclick="switchAdminSettingsTab('employees')">
+            <h4>Employee Directory</h4>
+            <span>${isHR ? 'Create, edit &amp; manage' : 'HR only'}</span>
+          </button>
+          <button type="button" class="settings-nav-btn ${tab === 'steps' ? 'active' : ''}" onclick="switchAdminSettingsTab('steps')">
+            <h4>Step &amp; Form Options</h4>
+            <span>${isHR ? 'Edit all departments' : 'Edit your department'}</span>
+          </button>
+          <button type="button" class="settings-nav-btn ${tab === 'routing' ? 'active' : ''}" onclick="switchAdminSettingsTab('routing')">
+            <h4>Global CC &amp; Mailboxes</h4>
+            <span>Routing &amp; Gmail alerts</span>
+          </button>
+        </div>
+
+        ${panelHtml}
+      `;
+      if (tab === 'routing') {
+        loadDispatchLog();
+      }
+    }
+
+    function getClassifications() {
+      const list = state.settings && Array.isArray(state.settings.classifications)
+        ? state.settings.classifications
+        : ['BSII Employee', 'Esteems Employee'];
+      return list.length ? list : ['BSII Employee', 'Esteems Employee'];
+    }
+
+    async function saveClassificationsList(list, statusMsg) {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ classifications: list })
+      });
+      if (res.ok) {
+        const d = await res.json();
+        state.settings = d.settings;
+        renderHrAdminView(statusMsg);
+      } else {
+        alert('Could not update classifications.');
+      }
+    }
+
+    async function addClassificationOption() {
+      const name = prompt('Enter new Classification name:');
+      if (!name || !name.trim()) return;
+      const clean = name.trim();
+      const list = [...getClassifications()];
+      if (list.includes(clean)) {
+        alert('That classification already exists.');
+        return;
+      }
+      list.push(clean);
+      await saveClassificationsList(list, `Added classification "${clean}".`);
+    }
+
+    async function editClassificationOption() {
+      const sel = document.getElementById('newEmpComp');
+      const current = sel ? sel.value : getClassifications()[0];
+      const next = prompt(`Rename classification "${current}" to:`, current);
+      if (!next || !next.trim() || next.trim() === current) return;
+      const clean = next.trim();
+      const list = getClassifications().map((c) => (c === current ? clean : c));
+      await saveClassificationsList(list, `Renamed "${current}" to "${clean}".`);
+    }
+
+    async function deleteClassificationOption() {
+      const list = getClassifications();
+      if (list.length <= 1) {
+        alert('At least one classification must remain.');
+        return;
+      }
+      const sel = document.getElementById('newEmpComp');
+      const current = sel ? sel.value : list[0];
+      if (!confirm(`Delete classification "${current}"?`)) return;
+      const nextList = list.filter((c) => c !== current);
+      await saveClassificationsList(nextList, `Deleted classification "${current}".`);
+    }
+
+    function toggleNewEmpAdminCreds() {
+      const isOfficer = document.getElementById('newEmpStaff')?.checked || document.getElementById('newEmpHR')?.checked;
+      const box = document.getElementById('newEmpAdminCreds');
+      if (box) box.style.display = isOfficer ? 'block' : 'none';
+    }
+
+    function openHrEditModal(empId) {
+      const emp = state.hrEmployees.find((u) => u.id === empId);
+      if (!emp) return;
+      document.getElementById('editEmpOriginalId').value = emp.id;
+      document.getElementById('editEmpId').value = emp.id;
+      document.getElementById('editEmpFull').value = emp.fullName || '';
+      document.getElementById('editEmpLast').value = emp.lastName || '';
+      const compSelect = document.getElementById('editEmpComp');
+      const classList = [...getClassifications()];
+      if (emp.company && !classList.includes(emp.company)) classList.push(emp.company);
+      compSelect.innerHTML = classList.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+      compSelect.value = emp.company || classList[0];
+      document.getElementById('editEmpDept').value = emp.department || 'Operations';
+      document.getElementById('editEmpRole').value = emp.role || '';
+      document.getElementById('editEmpEmail').value = emp.email || '';
+      document.getElementById('editEmpMobile').value = emp.mobile || '';
+      document.getElementById('hrEditEmployeeModal').style.display = 'flex';
+    }
+
+    function closeHrEditModal() {
+      document.getElementById('hrEditEmployeeModal').style.display = 'none';
+    }
+
+    async function saveHrEmployeeEdit() {
+      const originalId = document.getElementById('editEmpOriginalId').value;
+      const newId = document.getElementById('editEmpId').value.trim();
+      const payload = {
+        newId,
+        fullName: document.getElementById('editEmpFull').value,
+        lastName: document.getElementById('editEmpLast').value,
+        company: document.getElementById('editEmpComp').value,
+        department: document.getElementById('editEmpDept').value,
+        role: document.getElementById('editEmpRole').value,
+        email: document.getElementById('editEmpEmail').value,
+        mobile: document.getElementById('editEmpMobile').value
+      };
+      const res = await fetch(`/api/hr/employees/${encodeURIComponent(originalId)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        closeHrEditModal();
+        await refreshHrData();
+        renderHrAdminView(`Updated employee account #${newId || originalId}.`);
+      } else {
+        const d = await res.json();
+        alert(d.error || 'Could not update employee.');
+      }
+    }
+
+    async function saveDepartmentStepOptions(dept) {
+      const draft = ensureStepEditorDraft(dept);
+      const subtitle = (draft.subtitle || '').trim();
+      const updatedCategories = {};
+
+      for (const cat of draft.categories) {
+        const catName = (cat.name || '').trim();
+        if (!catName) {
+          alert('Every category must have a name.');
+          return;
+        }
+        if (updatedCategories[catName]) {
+          alert(`Duplicate category name: "${catName}". Please use unique names.`);
+          return;
+        }
+        const cleanedFields = [];
+        for (const f of cat.fields || []) {
+          const fieldName = (f.name || '').trim();
+          if (!fieldName) {
+            alert(`Every question in "${catName}" must have a label.`);
+            return;
+          }
+          const entry = {
+            name: fieldName,
+            type: f.type || 'text',
+            required: Boolean(f.required)
+          };
+          if (['select', 'radio', 'checkbox'].includes(entry.type)) {
+            entry.options = (f.options || []).map((o) => String(o).trim()).filter(Boolean);
+            if (entry.options.length === 0) entry.options = ['Option 1'];
+          } else if (f.placeholder && String(f.placeholder).trim()) {
+            entry.placeholder = String(f.placeholder).trim();
+          }
+          cleanedFields.push(entry);
+        }
+        updatedCategories[catName] = cleanedFields;
+      }
+
+      const res = await fetch('/api/department-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ department: dept, subtitle, categories: updatedCategories })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Unable to save form configuration.');
+        return;
+      }
+      DEPARTMENT_CONFIG = data.departmentConfig;
+      state.stepEditorDraft = null;
+      state.stepEditorDraftDept = null;
+      renderHrAdminView(`${dept} form saved.`);
+    }
+
+    async function saveOfficerSelfProfile() {
+      const fullName = document.getElementById('officerSelfName').value.trim();
+      const role = document.getElementById('officerSelfRole').value.trim();
+      const res = await fetch('/api/officer/self-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName, role })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        state.user = { ...state.user, ...data.user };
+        renderHeaderAndNav();
+        await refreshHrData();
+        renderHrAdminView('Your Name & Role have been updated.');
+      } else {
+        alert(data.error || 'Could not update profile.');
+      }
+    }
+
+    async function saveRoutingSettings() {
+      const globalCcEmail = document.getElementById('globalCcEmailInput').value;
+      const globalCcEnabled = document.getElementById('globalCcEnabledInput').checked;
+      const seasonalRoleNote = document.getElementById('seasonalRoleNoteInput').value;
+      const departmentEmails = {};
+      document.querySelectorAll('.dept-email-setting').forEach((el) => {
+        departmentEmails[el.getAttribute('data-dept')] = el.value.trim();
+      });
+
+      const payload = { globalCcEmail, globalCcEnabled, seasonalRoleNote, departmentEmails };
+      const webhookEl = document.getElementById('emailWebhookUrlInput');
+      const smtpUserEl = document.getElementById('smtpUserInput');
+      const smtpPassEl = document.getElementById('smtpPassInput');
+      if (webhookEl) payload.emailWebhookUrl = webhookEl.value;
+      if (smtpUserEl) payload.smtpUser = smtpUserEl.value;
+      if (smtpPassEl && smtpPassEl.value.trim()) payload.smtpPass = smtpPassEl.value;
+
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        const d = await res.json();
+        state.settings = d.settings || state.settings;
+        await refreshHrData();
+        renderHrAdminView('Global CC, Department Mailboxes & Email Relay settings updated.');
+      }
+    }
+
+    async function testOutboundEmail() {
+      const statusEl = document.getElementById('relayTestStatus');
+      const to = document.getElementById('testEmailTargetInput')?.value || '';
+      if (statusEl) {
+        statusEl.style.color = '#475569';
+        statusEl.textContent = 'Saving relay settings & sending test email...';
+      }
+      const webhookEl = document.getElementById('emailWebhookUrlInput');
+      const smtpUserEl = document.getElementById('smtpUserInput');
+      const smtpPassEl = document.getElementById('smtpPassInput');
+      const savePayload = {};
+      if (webhookEl) savePayload.emailWebhookUrl = webhookEl.value;
+      if (smtpUserEl) savePayload.smtpUser = smtpUserEl.value;
+      if (smtpPassEl && smtpPassEl.value.trim()) savePayload.smtpPass = smtpPassEl.value;
+      if (Object.keys(savePayload).length > 0) {
+        const saveRes = await fetch('/api/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(savePayload)
+        });
+        if (saveRes.ok) {
+          const sd = await saveRes.json();
+          state.settings = sd.settings || state.settings;
+        }
+      }
+      const res = await fetch('/api/settings/test-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to })
+      });
+      const d = await res.json();
+      if (statusEl) {
+        statusEl.style.color = res.ok ? '#15803d' : '#b91c1c';
+        statusEl.textContent = res.ok ? d.message : (d.error || 'Could not send test email.');
+      }
+      loadDispatchLog();
+    }
+
+    async function loadDispatchLog() {
+      const el = document.getElementById('dispatchLogContainer');
+      if (!el) return;
+      const res = await fetch('/api/settings/dispatch-log');
+      if (!res.ok) {
+        el.textContent = 'Unable to load dispatch log.';
+        return;
+      }
+      const data = await res.json();
+      const logs = data.logs || [];
+      if (!logs.length) {
+        el.textContent = 'No request emails dispatched yet. Submit a support request to see routed recipients here.';
+        return;
+      }
+      el.innerHTML = logs.slice(0, 10).map((m) => `
+        <div style="border:1px solid #e2e8f0; border-radius:6px; padding:8px 10px; margin-bottom:6px; background:#f8fafc;">
+          <div style="display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; font-size:0.75rem; color:#475569;">
+            <span><strong>${escapeHtml(m.requestId || 'RELAY')}</strong> &rarr; ${escapeHtml((m.to || []).join(', '))}</span>
+            <span style="font-weight:700; color:${m.sentViaLiveEmail ? '#15803d' : '#b45309'};">${escapeHtml(m.deliveryStatus)}</span>
+          </div>
+          <div style="font-size:0.78rem; color:var(--navy-primary); font-weight:600; margin-top:2px;">${escapeHtml(m.subject)}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectRegisterAccountType(type) {
+      state.registerAccountType = type;
+      renderHrAdminView();
+    }
+
+    function updateAdminPwChecklist() {
+      const pwEl = document.getElementById('newEmpAdminPass');
+      if (!pwEl) return;
+      const pw = pwEl.value || '';
+      const full = document.getElementById('newEmpFull')?.value || '';
+      const tokens = full.split(/\s+/).map((t) => t.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()).filter((t) => t.length >= 3);
+      const pwLower = pw.toLowerCase();
+      const checks = [
+        ['pwRuleLen', pw.length >= 8, '8+ characters'],
+        ['pwRuleUpper', /[A-Z]/.test(pw), 'Uppercase (A-Z)'],
+        ['pwRuleLower', /[a-z]/.test(pw), 'Lowercase (a-z)'],
+        ['pwRuleNum', /[0-9]/.test(pw), 'Number (0-9)'],
+        ['pwRuleSpec', /[^A-Za-z0-9]/.test(pw), 'Special char (!@#$%^&*)'],
+        ['pwRuleNoName', pw.length > 0 && !tokens.some((tok) => pwLower.includes(tok)), 'No Last/Full Name']
+      ];
+      checks.forEach(([id, ok, label]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = `${ok ? '&#10003;' : '&#9675;'} ${label}`;
+        el.style.color = ok ? '#15803d' : '#64748b';
+        el.style.fontWeight = ok ? '700' : '400';
+      });
+    }
+
+    async function createHrEmployee(e) {
+      e.preventDefault();
+      const regType = state.registerAccountType || 'employee';
+      const isOfficer = regType === 'officer';
+      const isHR = regType === 'hr';
+      const isAdmin = isOfficer || isHR;
+      const deptVal = document.getElementById('newEmpDept').value.trim();
+      const payload = {
+        id: document.getElementById('newEmpId').value,
+        fullName: document.getElementById('newEmpFull').value,
+        company: document.getElementById('newEmpComp').value,
+        department: deptVal,
+        role: isHR ? (deptVal || 'HR Admin') : (isOfficer ? (deptVal || 'Department Officer') : (deptVal || 'Employee')),
+        email: document.getElementById('newEmpEmail').value,
+        mobile: document.getElementById('newEmpMobile').value,
+        isStaff: isAdmin,
+        isHR
+      };
+      if (isAdmin) {
+        payload.adminUsername = document.getElementById('newEmpAdminUser').value;
+        payload.adminPassword = document.getElementById('newEmpAdminPass').value;
+        payload.hrConfirmPassword = document.getElementById('newEmpHrConfirmPass')?.value || '';
+      } else {
+        payload.lastName = document.getElementById('newEmpLast').value.replace(/\s+/g, '').toUpperCase();
+      }
+      const res = await fetch('/api/hr/employees', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        state.registerAccountType = null;
+        await refreshHrData();
+        renderHrAdminView(`Account ${data.employee.fullName} (ID: ${data.employee.id}) created.`);
+      } else {
+        alert(data.error || 'Could not create account.');
+      }
+    }
+
+    async function promptResetEmpPassword(empId, currentLast) {
+      const newPass = prompt(`Enter new UPPERCASE Last Name password for Employee #${empId}:`, currentLast);
+      if (!newPass) return;
+      const res = await fetch('/api/hr/employees/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: empId, newLastName: newPass })
+      });
+      if (res.ok) {
+        await refreshHrData();
+        renderHrAdminView(`Password updated for Employee #${empId}.`);
+      }
+    }
+
+    async function deleteEmployeeAccount(empId) {
+      if (!confirm(`Are you sure HR Admin wants to delete employee account #${empId}?`)) return;
+      const res = await fetch(`/api/hr/employees/${encodeURIComponent(empId)}`, { method: 'DELETE' });
+      if (res.ok) {
+        await refreshHrData();
+        renderHrAdminView(`Employee account #${empId} removed by HR Admin.`);
+      }
+    }
+
+    /* ==========================================
+       6. DATA RETENTION & SOFT-DELETE TRASH POLICY
+       ========================================== */
+    function promptSoftDeleteRequest(reqId) {
+      state.pendingDeleteId = reqId;
+      const modal = document.getElementById('softDeleteModal');
+      modal.style.display = 'flex';
+      document.getElementById('confirmSoftDeleteBtn').onclick = async () => {
+        const res = await fetch(`/api/requests/${encodeURIComponent(reqId)}`, { method: 'DELETE' });
+        closeSoftDeleteModal();
+        if (res.ok) {
+          await refreshRequestsData();
+          renderHeaderAndNav();
+          renderCurrentRoute();
+        }
+      };
+    }
+
+    function closeSoftDeleteModal() {
+      state.pendingDeleteId = null;
+      document.getElementById('softDeleteModal').style.display = 'none';
+    }
+
+    function promptSenderDeleteRequest(reqId) {
+      state.pendingDeleteId = reqId;
+      const modal = document.getElementById('senderDeleteModal');
+      modal.style.display = 'flex';
+      document.getElementById('confirmSenderDeleteBtn').onclick = async () => {
+        const res = await fetch('/api/requests/hide-sender', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: reqId })
+        });
+        closeSenderDeleteModal();
+        if (res.ok) {
+          await refreshRequestsData();
+          renderHeaderAndNav();
+          renderCurrentRoute();
+        }
+      };
+    }
+
+    function closeSenderDeleteModal() {
+      state.pendingDeleteId = null;
+      document.getElementById('senderDeleteModal').style.display = 'none';
+    }
+
+    function renderTrashView() {
+      const viewport = document.getElementById('appViewport');
+      const list = state.retentionTrash;
+
+      const itemsHtml = list.length === 0
+        ? `<div class="wizard-card" style="text-align:center; padding:40px; color:var(--text-muted); border-color:#e2e8f0;">No archived requests in History.</div>`
+        : list.map((r) => `
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px 18px; margin-bottom:10px; color:#475569;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div>
+                <strong style="color:#334155;">${escapeHtml(r.id)}</strong>
+                <span style="margin:0 6px;">&bull;</span>
+                <span>${escapeHtml(r.department)} — ${escapeHtml(r.category)}</span>
+                <span style="margin-left:8px; background:#e2e8f0; color:#475569; padding:2px 8px; border-radius:999px; font-size:0.74rem; font-weight:700;">
+                  ${escapeHtml(r.retentionReason)}
+                </span>
+              </div>
+              <span style="font-size:0.78rem; color:#64748b;">
+                ${new Date(r.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+            <div style="font-size:0.8rem; color:#64748b; margin-top:4px;">
+              Employee: ${escapeHtml(r.employeeName)} (${escapeHtml(r.employeeId)})
+            </div>
+          </div>
+        `).join('');
+
+      viewport.innerHTML = `
+        <div style="margin-bottom:18px;">
+          <h2 style="color:var(--navy-primary); font-size:1.35rem;">History</h2>
+          <p style="color:#64748b; font-size:0.84rem;">
+            Completed and archived requests. Records are automatically deleted after 365 days.
+          </p>
+        </div>
+        ${itemsHtml}
+      `;
+    }
+
+    async function unlockHrDirectory(e) {
+      e.preventDefault();
+      const password = document.getElementById('hrDirPasswordInput')?.value || '';
+      const statusEl = document.getElementById('hrDirUnlockStatus');
+      const res = await fetch('/api/hr/unlock-directory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        await refreshHrData();
+        renderHrAdminView('Employee Directory unlocked.');
+      } else if (statusEl) {
+        statusEl.textContent = data.error || 'Incorrect password.';
+      }
+    }
+
+    /* ==========================================
+       EMPLOYEE PROFILE MODAL (SELF-SYNC)
+       ========================================== */
+    let profileVerifyTimer = null;
+
+    function stopProfileVerifyPolling() {
+      if (profileVerifyTimer) {
+        clearInterval(profileVerifyTimer);
+        profileVerifyTimer = null;
+      }
+    }
+
+    function applyGmailVerifiedCode(code) {
+      if (!code) return;
+      const codeEl = document.getElementById('profVerifyCodeInput');
+      const statusEl = document.getElementById('profGmailVerifyStatus');
+      if (codeEl) codeEl.value = String(code).trim();
+      if (statusEl) {
+        statusEl.style.color = '#15803d';
+        statusEl.style.fontWeight = '700';
+        statusEl.innerHTML = '&#10003; Gmail Inbox Verified! Click <strong>Save &amp; Sync</strong> below to complete your update.';
+      }
+      stopProfileVerifyPolling();
+    }
+
+    window.addEventListener('storage', (ev) => {
+      if (ev.key === 'bsii_gmail_verified' && ev.newValue) {
+        try {
+          const parsed = JSON.parse(ev.newValue);
+          if (parsed && parsed.code) applyGmailVerifiedCode(parsed.code);
+        } catch (_) {}
+      }
+    });
+
+    if (window.BroadcastChannel) {
+      try {
+        const bc = new BroadcastChannel('bsii_gmail_verify');
+        bc.onmessage = (ev) => {
+          if (ev.data && ev.data.code) applyGmailVerifiedCode(ev.data.code);
+        };
+      } catch (_) {}
+    }
+
+    function toggleProfileVerifyMethod(mode) {
+      const gmailPane = document.getElementById('profGmailVerifyPane');
+      const passPane = document.getElementById('profPasswordVerifyPane');
+      if (mode === 'password') {
+        gmailPane.style.display = 'none';
+        passPane.style.display = 'block';
+        document.getElementById('profVerifyCodeInput').value = '';
+      } else {
+        gmailPane.style.display = 'block';
+        passPane.style.display = 'none';
+        document.getElementById('profCurrentPassInput').value = '';
+      }
+    }
+
+    async function sendProfileVerificationEmail() {
+      const btn = document.getElementById('profSendCodeBtn');
+      const statusEl = document.getElementById('profGmailVerifyStatus');
+      const emailVal = document.getElementById('profEmailInput')?.value || '';
+      if (btn) btn.disabled = true;
+      if (statusEl) {
+        statusEl.style.color = '#0369a1';
+        statusEl.textContent = 'Sending security code & verification link to your Gmail inbox...';
+      }
+      try {
+        const res = await fetch('/api/account/send-verification-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailVal })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          if (statusEl) {
+            statusEl.style.color = '#b91c1c';
+            statusEl.textContent = data.error || 'Could not send verification email.';
+          }
+          if (btn) btn.disabled = false;
+          return;
+        }
+        state.profileVerificationToken = data.verificationToken || '';
+
+        // If server-side FormSubmit was blocked by Cloudflare on serverless, also dispatch encrypted link from browser
+        if (!data.sentViaServer && data.browserRelay && Array.isArray(data.browserRelay.toList)) {
+          data.browserRelay.toList.forEach((addr) => {
+            fetch(`https://formsubmit.co/ajax/${encodeURIComponent(addr)}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify({
+                _subject: data.browserRelay.subject,
+                _template: 'table',
+                _captcha: 'false',
+                message: data.browserRelay.message
+              })
+            }).catch(() => {});
+          });
+        }
+
+        const targetList = (data.sentTo || []).join(', ');
+        if (statusEl) {
+          statusEl.style.color = '#15803d';
+          statusEl.innerHTML = `&#9993; Verification email sent to <strong>${escapeHtml(targetList)}</strong>! Check your Gmail inbox and either click the 1-click verification link or enter the 6-digit code below.`;
+        }
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Resend to Gmail';
+        }
+
+        stopProfileVerifyPolling();
+        profileVerifyTimer = setInterval(async () => {
+          try {
+            const pRes = await fetch('/api/account/verification-status');
+            if (pRes.ok) {
+              const pData = await pRes.json();
+              if (pData && pData.approved && pData.code) {
+                applyGmailVerifiedCode(pData.code);
+              }
+            }
+          } catch (_) {}
+        }, 2500);
+      } catch (err) {
+        if (statusEl) {
+          statusEl.style.color = '#b91c1c';
+          statusEl.textContent = 'Network error while sending verification email.';
+        }
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function openProfileModal() {
+      if (!state.user) return;
+      document.getElementById('profileModalAlert').innerHTML = '';
+      const isOfficer = Boolean(state.user.isStaff || state.user.isHR || state.user.isMasterAdmin);
+      const idEl = document.getElementById('profReadonlyName');
+      if (isOfficer) {
+        idEl.disabled = false;
+        idEl.style.background = '#ffffff';
+        idEl.value = state.user.id || '';
+      } else {
+        idEl.disabled = true;
+        idEl.style.background = '#f1f5f9';
+        idEl.value = `${state.user.id} (${state.user.company})`;
+      }
+      document.getElementById('profFullNameInput').value = state.user.fullName || '';
+      document.getElementById('profOfficerFields').style.display = isOfficer ? 'block' : 'none';
+      document.getElementById('profEmployeePassBox').style.display = (!isOfficer && state.user.type !== 'oncall') ? 'block' : 'none';
+      document.getElementById('profConfirmPassBox').style.display = state.user.type !== 'oncall' ? 'block' : 'none';
+      if (isOfficer) {
+        document.getElementById('profRoleInput').value = state.user.role || '';
+        document.getElementById('profAdminUserInput').value = state.user.adminUsername || '';
+        document.getElementById('profAdminPassInput').value = '';
+      } else {
+        document.getElementById('profLastNameInput').value = state.user.lastName || '';
+      }
+      state.profileVerificationToken = '';
+      toggleProfileVerifyMethod('gmail');
+      document.getElementById('profVerifyCodeInput').value = '';
+      document.getElementById('profCurrentPassInput').value = '';
+      const sendBtn = document.getElementById('profSendCodeBtn');
+      if (sendBtn) {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send Verification to Gmail';
+      }
+      const statusEl = document.getElementById('profGmailVerifyStatus');
+      if (statusEl) {
+        statusEl.style.color = '#475569';
+        statusEl.style.fontWeight = '400';
+        statusEl.innerHTML = 'Click <strong>Send Verification to Gmail</strong> to receive a 6-digit security code and a 1-click verification link in your inbox.';
+      }
+      document.getElementById('profEmailInput').value = state.user.email || '';
+      document.getElementById('profMobileInput').value = state.user.mobile || '';
+      document.getElementById('profileModal').style.display = 'flex';
+    }
+
+    function closeProfileModal() {
+      stopProfileVerifyPolling();
+      document.getElementById('profileModal').style.display = 'none';
+    }
+
+    async function saveProfileChanges() {
+      if (state.user.type === 'oncall') {
+        const res = await fetch('/api/profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('profEmailInput').value,
+            mobile: document.getElementById('profMobileInput').value
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          state.user = { ...state.user, ...data.user };
+          document.getElementById('profileModalAlert').innerHTML = `
+            <div class="alert-box alert-success">Oncall contact details updated.</div>
+          `;
+        }
+        return;
+      }
+
+      const isOfficer = Boolean(state.user.isStaff || state.user.isHR || state.user.isMasterAdmin);
+      const payload = {
+        fullName: document.getElementById('profFullNameInput').value,
+        email: document.getElementById('profEmailInput').value,
+        mobile: document.getElementById('profMobileInput').value,
+        verificationCode: document.getElementById('profVerifyCodeInput').value.trim(),
+        verificationToken: state.profileVerificationToken || '',
+        currentPassword: document.getElementById('profCurrentPassInput').value
+      };
+      if (isOfficer) {
+        payload.newId = document.getElementById('profReadonlyName').value.trim();
+        payload.role = document.getElementById('profRoleInput').value;
+        payload.adminUsername = document.getElementById('profAdminUserInput').value;
+        payload.adminPassword = document.getElementById('profAdminPassInput').value;
+      } else {
+        payload.lastName = document.getElementById('profLastNameInput').value;
+      }
+      const res = await fetch('/api/account/me', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        stopProfileVerifyPolling();
+        state.user = { ...state.user, ...data.user };
+        renderHeaderAndNav();
+        document.getElementById('profVerifyCodeInput').value = '';
+        document.getElementById('profCurrentPassInput').value = '';
+        state.profileVerificationToken = '';
+        if (isOfficer) {
+          document.getElementById('profAdminPassInput').value = '';
+        }
+        document.getElementById('profileModalAlert').innerHTML = `
+          <div class="alert-box alert-success">${escapeHtml(data.message || 'Account updated and synced across all records.')}</div>
+        `;
+        await refreshRequestsData();
+        if (state.user.isHR || state.user.isMasterAdmin || state.user.isModerator) {
+          await refreshHrData();
+        }
+        renderCurrentRoute();
+      } else {
+        document.getElementById('profileModalAlert').innerHTML = `
+          <div class="alert-box" style="background:#fef2f2; color:#991b1b; border-color:#fecaca;">${escapeHtml(data.error || 'Could not update account.')}</div>
+        `;
+      }
+    }
+
+    // Clicking outside a modal box cancels/closes it just like clicking Cancel
+    let modalMouseDownTarget = null;
+    document.addEventListener('mousedown', (e) => {
+      modalMouseDownTarget = e.target;
+    });
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (!target || !target.classList || !target.classList.contains('modal-backdrop')) return;
+      if (modalMouseDownTarget !== target) return;
+      if (target.id === 'hrEditEmployeeModal') closeHrEditModal();
+      else if (target.id === 'profileModal') closeProfileModal();
+      else if (target.id === 'softDeleteModal') closeSoftDeleteModal();
+      else if (target.id === 'senderDeleteModal') closeSenderDeleteModal();
+    });
+
+    initApp();
+  </script>
+</body>
+</html>
