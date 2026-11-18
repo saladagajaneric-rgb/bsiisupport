@@ -1,19 +1,7 @@
 {
-  "version": 2,
   "functions": {
-    "api/index.js": {
+    "server.js": {
       "includeFiles": "{data.json,public/**}"
     }
-  },
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
-    { "source": "/login", "destination": "/api/index.js" },
-    { "source": "/logout", "destination": "/api/index.js" },
-    { "source": "/open", "destination": "/api/index.js" },
-    { "source": "/requests", "destination": "/api/index.js" },
-    { "source": "/department", "destination": "/api/index.js" },
-    { "source": "/hr", "destination": "/api/index.js" },
-    { "source": "/trash", "destination": "/api/index.js" },
-    { "source": "/", "destination": "/api/index.js" }
-  ]
+  }
 }

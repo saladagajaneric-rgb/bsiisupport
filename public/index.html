@@ -1244,7 +1244,7 @@
     <div class="modal-panel" style="max-width:540px; max-height:88vh; overflow-y:auto;">
       <h3 style="color: var(--navy-primary); font-size: 1.25rem; margin-bottom: 6px;">My Account &amp; Profile</h3>
       <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 14px;">
-        Updates synchronize across the header bar, directory, and all support requests. Re-enter your current password to verify changes.
+        Updates synchronize across the header bar, directory, and all support requests. Verify via your Gmail inbox to save changes.
       </p>
       <div id="profileModalAlert"></div>
       <div class="form-group">
@@ -1276,17 +1276,35 @@
         </div>
       </div>
       <div class="form-group">
-        <label>Corporate / Personal Email <span class="label-hint">(Admins receive related requests at this email)</span></label>
+        <label>Corporate / Personal Email <span class="label-hint">(Admins receive related requests &amp; security codes at this email)</span></label>
         <input type="email" id="profEmailInput" class="input-control" placeholder="yourname@gmail.com" />
       </div>
       <div class="form-group">
         <label>Mobile / Contact Number</label>
         <input type="text" id="profMobileInput" class="input-control" placeholder="0917-XXX-XXXX" />
       </div>
-      <div id="profConfirmPassBox" style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:12px; margin-top:12px;">
-        <div class="form-group" style="margin-bottom:0;">
-          <label style="color:var(--navy-primary);">Re-enter Current Password to Verify</label>
-          <input type="password" id="profCurrentPassInput" class="input-control" placeholder="Enter your current password to save changes" />
+      <div id="profConfirmPassBox" style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:14px; margin-top:12px;">
+        <div id="profGmailVerifyPane">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+            <label style="color:var(--navy-primary); font-weight:800; font-size:0.88rem; margin:0;">Verify via Gmail Inbox</label>
+            <button type="button" id="profSendCodeBtn" class="btn-gold" style="padding:7px 14px; font-size:0.8rem;" onclick="sendProfileVerificationEmail()">Send Verification to Gmail</button>
+          </div>
+          <p id="profGmailVerifyStatus" style="font-size:0.79rem; color:#475569; margin-bottom:8px;">
+            Click <strong>Send Verification to Gmail</strong> to receive a 6-digit security code and a 1-click verification link in your inbox.
+          </p>
+          <input type="text" id="profVerifyCodeInput" class="input-control" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="Enter 6-digit code from Gmail (or click link in email)" style="letter-spacing:0.15em; font-weight:800;" />
+          <div style="margin-top:8px; text-align:right;">
+            <a href="javascript:void(0)" onclick="toggleProfileVerifyMethod('password')" style="font-size:0.76rem; color:#0369a1; font-weight:700; text-decoration:underline;">Or verify with current password instead</a>
+          </div>
+        </div>
+        <div id="profPasswordVerifyPane" style="display:none;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label style="color:var(--navy-primary);">Re-enter Current Password to Verify</label>
+            <input type="password" id="profCurrentPassInput" class="input-control" autocomplete="new-password" placeholder="Enter your current password to save changes" />
+          </div>
+          <div style="margin-top:8px; text-align:right;">
+            <a href="javascript:void(0)" onclick="toggleProfileVerifyMethod('gmail')" style="font-size:0.76rem; color:#0369a1; font-weight:700; text-decoration:underline;">Back to Gmail Inbox Verification</a>
+          </div>
         </div>
       </div>
       <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
@@ -1603,7 +1621,7 @@
           <span class="role-tag">${escapeHtml(state.user.isStaff ? state.user.role : state.user.company)}</span>
         </div>
         <button type="button" class="top-btn" onclick="openProfileModal()">Profile</button>
-        <a href="/logout" class="top-btn signout-btn">Sign Out</a>
+        <a href="/api/logout" class="top-btn signout-btn">Sign Out</a>
       `;
 
       // Primary navigation bar: Distinct tabs for "+ New Support Request" and "My Requests (X)"
@@ -3627,6 +3645,133 @@
     /* ==========================================
        EMPLOYEE PROFILE MODAL (SELF-SYNC)
        ========================================== */
+    let profileVerifyTimer = null;
+
+    function stopProfileVerifyPolling() {
+      if (profileVerifyTimer) {
+        clearInterval(profileVerifyTimer);
+        profileVerifyTimer = null;
+      }
+    }
+
+    function applyGmailVerifiedCode(code) {
+      if (!code) return;
+      const codeEl = document.getElementById('profVerifyCodeInput');
+      const statusEl = document.getElementById('profGmailVerifyStatus');
+      if (codeEl) codeEl.value = String(code).trim();
+      if (statusEl) {
+        statusEl.style.color = '#15803d';
+        statusEl.style.fontWeight = '700';
+        statusEl.innerHTML = '&#10003; Gmail Inbox Verified! Click <strong>Save &amp; Sync</strong> below to complete your update.';
+      }
+      stopProfileVerifyPolling();
+    }
+
+    window.addEventListener('storage', (ev) => {
+      if (ev.key === 'bsii_gmail_verified' && ev.newValue) {
+        try {
+          const parsed = JSON.parse(ev.newValue);
+          if (parsed && parsed.code) applyGmailVerifiedCode(parsed.code);
+        } catch (_) {}
+      }
+    });
+
+    if (window.BroadcastChannel) {
+      try {
+        const bc = new BroadcastChannel('bsii_gmail_verify');
+        bc.onmessage = (ev) => {
+          if (ev.data && ev.data.code) applyGmailVerifiedCode(ev.data.code);
+        };
+      } catch (_) {}
+    }
+
+    function toggleProfileVerifyMethod(mode) {
+      const gmailPane = document.getElementById('profGmailVerifyPane');
+      const passPane = document.getElementById('profPasswordVerifyPane');
+      if (mode === 'password') {
+        gmailPane.style.display = 'none';
+        passPane.style.display = 'block';
+        document.getElementById('profVerifyCodeInput').value = '';
+      } else {
+        gmailPane.style.display = 'block';
+        passPane.style.display = 'none';
+        document.getElementById('profCurrentPassInput').value = '';
+      }
+    }
+
+    async function sendProfileVerificationEmail() {
+      const btn = document.getElementById('profSendCodeBtn');
+      const statusEl = document.getElementById('profGmailVerifyStatus');
+      const emailVal = document.getElementById('profEmailInput')?.value || '';
+      if (btn) btn.disabled = true;
+      if (statusEl) {
+        statusEl.style.color = '#0369a1';
+        statusEl.textContent = 'Sending security code & verification link to your Gmail inbox...';
+      }
+      try {
+        const res = await fetch('/api/account/send-verification-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailVal })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          if (statusEl) {
+            statusEl.style.color = '#b91c1c';
+            statusEl.textContent = data.error || 'Could not send verification email.';
+          }
+          if (btn) btn.disabled = false;
+          return;
+        }
+        state.profileVerificationToken = data.verificationToken || '';
+
+        // If server-side FormSubmit was blocked by Cloudflare on serverless, also dispatch encrypted link from browser
+        if (!data.sentViaServer && data.browserRelay && Array.isArray(data.browserRelay.toList)) {
+          data.browserRelay.toList.forEach((addr) => {
+            fetch(`https://formsubmit.co/ajax/${encodeURIComponent(addr)}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify({
+                _subject: data.browserRelay.subject,
+                _template: 'table',
+                _captcha: 'false',
+                message: data.browserRelay.message
+              })
+            }).catch(() => {});
+          });
+        }
+
+        const targetList = (data.sentTo || []).join(', ');
+        if (statusEl) {
+          statusEl.style.color = '#15803d';
+          statusEl.innerHTML = `&#9993; Verification email sent to <strong>${escapeHtml(targetList)}</strong>! Check your Gmail inbox and either click the 1-click verification link or enter the 6-digit code below.`;
+        }
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Resend to Gmail';
+        }
+
+        stopProfileVerifyPolling();
+        profileVerifyTimer = setInterval(async () => {
+          try {
+            const pRes = await fetch('/api/account/verification-status');
+            if (pRes.ok) {
+              const pData = await pRes.json();
+              if (pData && pData.approved && pData.code) {
+                applyGmailVerifiedCode(pData.code);
+              }
+            }
+          } catch (_) {}
+        }, 2500);
+      } catch (err) {
+        if (statusEl) {
+          statusEl.style.color = '#b91c1c';
+          statusEl.textContent = 'Network error while sending verification email.';
+        }
+        if (btn) btn.disabled = false;
+      }
+    }
+
     function openProfileModal() {
       if (!state.user) return;
       document.getElementById('profileModalAlert').innerHTML = '';
@@ -3652,13 +3797,28 @@
       } else {
         document.getElementById('profLastNameInput').value = state.user.lastName || '';
       }
+      state.profileVerificationToken = '';
+      toggleProfileVerifyMethod('gmail');
+      document.getElementById('profVerifyCodeInput').value = '';
       document.getElementById('profCurrentPassInput').value = '';
+      const sendBtn = document.getElementById('profSendCodeBtn');
+      if (sendBtn) {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send Verification to Gmail';
+      }
+      const statusEl = document.getElementById('profGmailVerifyStatus');
+      if (statusEl) {
+        statusEl.style.color = '#475569';
+        statusEl.style.fontWeight = '400';
+        statusEl.innerHTML = 'Click <strong>Send Verification to Gmail</strong> to receive a 6-digit security code and a 1-click verification link in your inbox.';
+      }
       document.getElementById('profEmailInput').value = state.user.email || '';
       document.getElementById('profMobileInput').value = state.user.mobile || '';
       document.getElementById('profileModal').style.display = 'flex';
     }
 
     function closeProfileModal() {
+      stopProfileVerifyPolling();
       document.getElementById('profileModal').style.display = 'none';
     }
 
@@ -3687,6 +3847,8 @@
         fullName: document.getElementById('profFullNameInput').value,
         email: document.getElementById('profEmailInput').value,
         mobile: document.getElementById('profMobileInput').value,
+        verificationCode: document.getElementById('profVerifyCodeInput').value.trim(),
+        verificationToken: state.profileVerificationToken || '',
         currentPassword: document.getElementById('profCurrentPassInput').value
       };
       if (isOfficer) {
@@ -3704,9 +3866,12 @@
       });
       const data = await res.json();
       if (res.ok) {
+        stopProfileVerifyPolling();
         state.user = { ...state.user, ...data.user };
         renderHeaderAndNav();
+        document.getElementById('profVerifyCodeInput').value = '';
         document.getElementById('profCurrentPassInput').value = '';
+        state.profileVerificationToken = '';
         if (isOfficer) {
           document.getElementById('profAdminPassInput').value = '';
         }

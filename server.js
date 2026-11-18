@@ -647,6 +647,101 @@ function verifySignedSid(sid) {
   }
 }
 
+const emailVerifications = new Map();
+
+function hashEmailVerificationCode(userId, code, expiresAt) {
+  return crypto
+    .createHmac('sha256', SESSION_SECRET)
+    .update(`verify|${userId}|${String(code).trim()}|${expiresAt}`)
+    .digest('hex');
+}
+
+function createEmailVerificationToken(userId, email, code, expiresAt) {
+  const codeHash = hashEmailVerificationCode(userId, code, expiresAt);
+  const payload = Buffer.from(
+    JSON.stringify({ uid: userId, em: String(email || '').toLowerCase(), ch: codeHash, exp: expiresAt }),
+    'utf8'
+  ).toString('base64url');
+  const sig = crypto.createHmac('sha256', SESSION_SECRET).update(payload).digest('base64url');
+  return `${payload}.${sig}`;
+}
+
+function checkEmailVerificationCode(userId, code, token, data) {
+  const cleanCode = String(code || '').replace(/\s+/g, '');
+  if (!/^\d{6}$/.test(cleanCode)) return false;
+
+  // 1. Check signed stateless verification token (works across serverless instances)
+  if (token && typeof token === 'string' && token.includes('.')) {
+    const dotIdx = token.lastIndexOf('.');
+    const payloadB64 = token.slice(0, dotIdx);
+    const sig = token.slice(dotIdx + 1);
+    const expectedSig = crypto.createHmac('sha256', SESSION_SECRET).update(payloadB64).digest('base64url');
+    if (sig === expectedSig) {
+      try {
+        const parsed = JSON.parse(Buffer.from(payloadB64, 'base64url').toString('utf8'));
+        if (parsed && parsed.uid === userId && Number(parsed.exp) >= Date.now()) {
+          const expectedHash = hashEmailVerificationCode(userId, cleanCode, parsed.exp);
+          if (expectedHash === parsed.ch) {
+            emailVerifications.delete(userId);
+            if (data && data.pendingEmailVerifications) {
+              delete data.pendingEmailVerifications[userId];
+            }
+            return true;
+          }
+        }
+      } catch (_) {}
+    }
+  }
+
+  // 2. Check in-memory or data-persisted pending verification
+  const mem = emailVerifications.get(userId);
+  if (mem && mem.expiresAt >= Date.now() && mem.code === cleanCode) {
+    emailVerifications.delete(userId);
+    if (data && data.pendingEmailVerifications) {
+      delete data.pendingEmailVerifications[userId];
+    }
+    return true;
+  }
+
+  const persisted = data && data.pendingEmailVerifications && data.pendingEmailVerifications[userId];
+  if (persisted && persisted.expiresAt >= Date.now()) {
+    const expectedHash = hashEmailVerificationCode(userId, cleanCode, persisted.expiresAt);
+    if (expectedHash === persisted.codeHash) {
+      delete data.pendingEmailVerifications[userId];
+      emailVerifications.delete(userId);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function encryptMagicVerifyToken(payloadObj) {
+  const key = crypto.createHash('sha256').update(SESSION_SECRET).digest();
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+  const enc = Buffer.concat([cipher.update(JSON.stringify(payloadObj), 'utf8'), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  return Buffer.concat([iv, tag, enc]).toString('base64url');
+}
+
+function decryptMagicVerifyToken(tokenStr) {
+  try {
+    const raw = Buffer.from(String(tokenStr || ''), 'base64url');
+    if (raw.length < 29) return null;
+    const iv = raw.subarray(0, 12);
+    const tag = raw.subarray(12, 28);
+    const enc = raw.subarray(28);
+    const key = crypto.createHash('sha256').update(SESSION_SECRET).digest();
+    const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+    decipher.setAuthTag(tag);
+    const dec = Buffer.concat([decipher.update(enc), decipher.final()]).toString('utf8');
+    return JSON.parse(dec);
+  } catch (_) {
+    return null;
+  }
+}
+
 function sanitizeSettingsForClient(settings, includeAdminRelayFields = false) {
   const s = { ...(settings || {}) };
   const hasSmtpPass = Boolean(s.smtpPass || process.env.GMAIL_APP_PASSWORD);
@@ -793,7 +888,7 @@ function postWebhookEmail(webhookUrl, payload) {
   });
 }
 
-function postFormSubmit(toEmail, subject, text, meta) {
+function postFormSubmitSingleOrigin(toEmail, subject, text, meta, originUrl) {
   return new Promise((resolve) => {
     const payload = JSON.stringify({
       _subject: subject,
@@ -811,8 +906,8 @@ function postFormSubmit(toEmail, subject, text, meta) {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Origin': 'http://localhost:3000',
-        'Referer': 'http://localhost:3000/',
+        'Origin': originUrl,
+        'Referer': originUrl + '/',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
         'Content-Length': Buffer.byteLength(payload)
       }
@@ -834,6 +929,13 @@ function postFormSubmit(toEmail, subject, text, meta) {
     r.write(payload);
     r.end();
   });
+}
+
+async function postFormSubmit(toEmail, subject, text, meta) {
+  const first = await postFormSubmitSingleOrigin(toEmail, subject, text, meta, 'http://localhost:3000');
+  if (first.ok || first.pendingActivation) return first;
+  const second = await postFormSubmitSingleOrigin(toEmail, subject, text, meta, 'https://bsiisupport.vercel.app');
+  return second.ok || second.pendingActivation ? second : first;
 }
 
 function sendGmailSmtp({ user, pass, toList, subject, text }) {
@@ -1048,9 +1150,21 @@ async function handleSelfAccountUpdate(res, data, currentUser, body) {
 
   const isAdminAcct = Boolean(user.isStaff || user.isHR || user.isMasterAdmin);
   const currentPass = String(body.currentPassword || '').trim();
+  const verificationCode = String(body.verificationCode || '').trim();
+  const verificationToken = String(body.verificationToken || '').trim();
   const expectedPass = isAdminAcct ? user.adminPassword : user.lastName;
-  if (!currentPass || currentPass !== expectedPass) {
-    return sendJson(res, 403, { error: 'Password verification failed. Please re-enter your current password to save changes.' });
+
+  const verifiedByEmail = verificationCode
+    ? checkEmailVerificationCode(user.id, verificationCode, verificationToken, data)
+    : false;
+  const verifiedByPassword = Boolean(currentPass && currentPass === expectedPass);
+
+  if (!verifiedByEmail && !verifiedByPassword) {
+    return sendJson(res, 403, {
+      error: verificationCode
+        ? 'Invalid or expired 6-digit Gmail verification code. Please click "Send Code to Gmail" to get a fresh code.'
+        : 'Verification required: Please enter the 6-digit code sent to your Gmail (or verify with your current password).'
+    });
   }
 
   if (body.fullName && String(body.fullName).trim()) user.fullName = String(body.fullName).trim();
@@ -1178,7 +1292,18 @@ function sendJson(res, status, payload, extraHeaders = {}) {
 
 const server = http.createServer(async (req, res) => {
   const urlObj = new URL(req.url, `http://localhost:${PORT}`);
-  const pathname = urlObj.pathname;
+  let pathname = urlObj.pathname;
+  if (pathname === '/api/index.js') {
+    const routeMatch = req.headers['x-now-route-matches'] || '';
+    const m = /(?:^|&)1=([^&]+)/.exec(routeMatch);
+    if (m) {
+      pathname = '/api/' + decodeURIComponent(m[1]);
+    } else if (urlObj.searchParams.get('1')) {
+      pathname = '/api/' + urlObj.searchParams.get('1');
+    } else if (req.headers['x-matched-path'] && req.headers['x-matched-path'] !== '/api/index.js') {
+      pathname = req.headers['x-matched-path'];
+    }
+  }
   const data = loadData();
   const currentUser = getSessionUser(req, data);
 
@@ -1199,7 +1324,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Logout route: immediately flush all session cookies and redirect cleanly to /login
-  if (pathname === '/logout') {
+  if (pathname === '/logout' || pathname === '/api/logout') {
     const cookies = parseCookies(req);
     if (cookies['bsii_sid']) {
       sessions.delete(cookies['bsii_sid']);
@@ -1694,6 +1819,197 @@ const server = http.createServer(async (req, res) => {
     const body = await readJsonBody(req);
     await handleSelfAccountUpdate(res, data, currentUser, body);
     return;
+  }
+
+  // Send 6-Digit Gmail Verification Code + 1-Click Magic Verify Link
+  if (pathname === '/api/account/send-verification-code' && req.method === 'POST') {
+    if (!currentUser || currentUser.type === 'oncall') {
+      return sendJson(res, 401, { error: 'Authentication required.' });
+    }
+    const user = data.users.find((u) => u.id === currentUser.id);
+    if (!user) return sendJson(res, 404, { error: 'Account not found.' });
+
+    const body = await readJsonBody(req);
+    const inputEmail = String(body.email || '').trim();
+    const registeredEmail = String(user.email || '').trim();
+
+    const recipients = [];
+    if (registeredEmail && !isPlaceholderEmail(registeredEmail)) {
+      recipients.push(registeredEmail);
+    }
+    if (inputEmail && !isPlaceholderEmail(inputEmail) && !recipients.some((r) => r.toLowerCase() === inputEmail.toLowerCase())) {
+      recipients.push(inputEmail);
+    }
+
+    if (recipients.length === 0) {
+      return sendJson(res, 400, {
+        error: 'Please enter a valid personal or corporate Gmail address in the Email box above so we can send your verification code.'
+      });
+    }
+
+    const primaryEmail = recipients[0];
+    const code = String(crypto.randomInt(100000, 1000000));
+    const expiresAt = Date.now() + 10 * 60 * 1000;
+    const verificationToken = createEmailVerificationToken(user.id, primaryEmail, code, expiresAt);
+    const magicToken = encryptMagicVerifyToken({
+      uid: user.id,
+      em: primaryEmail,
+      code,
+      exp: expiresAt
+    });
+
+    emailVerifications.set(user.id, {
+      code,
+      email: primaryEmail,
+      expiresAt,
+      approved: false
+    });
+    if (!data.pendingEmailVerifications) data.pendingEmailVerifications = {};
+    data.pendingEmailVerifications[user.id] = {
+      codeHash: hashEmailVerificationCode(user.id, code, expiresAt),
+      email: primaryEmail,
+      expiresAt,
+      approved: false,
+      approvedCode: null
+    };
+    saveData(data);
+
+    const hostHeader = req.headers['x-forwarded-host'] || req.headers.host || `localhost:${PORT}`;
+    const proto = String(req.headers['x-forwarded-proto'] || (hostHeader.includes('localhost') ? 'http' : 'https')).split(',')[0].trim();
+    const verifyUrl = `${proto}://${hostHeader}/api/account/verify-link?v=${encodeURIComponent(magicToken)}`;
+
+    const emailSubject = `[BSIISUPPORT] Security Verification Code: ${code}`;
+    const emailText = [
+      `Hello ${user.fullName},`,
+      '',
+      'You requested to verify changes to your BSIISUPPORT account or password.',
+      '',
+      `YOUR 6-DIGIT VERIFICATION CODE: ${code}`,
+      '',
+      'Or click the secure link below in your Gmail to verify with 1 click:',
+      verifyUrl,
+      '',
+      'This security code expires in 10 minutes. If you did not request this, please ignore this email.'
+    ].join('\n');
+
+    const dispatchResult = await deliverWebsiteEmail(data, {
+      toList: recipients,
+      subject: emailSubject,
+      text: emailText,
+      requestId: 'VERIFY-' + user.id,
+      meta: { employeeEmail: primaryEmail }
+    });
+
+    sendJson(res, 200, {
+      success: true,
+      sentTo: recipients,
+      verificationToken,
+      sentViaServer: Boolean(dispatchResult && dispatchResult.sentViaLiveEmail),
+      deliveryStatus: dispatchResult ? dispatchResult.deliveryStatus : '',
+      // Encrypted-only relay payload for browser fallback (never exposes plaintext code in client network traffic)
+      browserRelay: {
+        toList: recipients,
+        subject: `[BSIISUPPORT] Gmail Security Verification (${user.fullName})`,
+        message: [
+          `Hello ${user.fullName},`,
+          '',
+          'Click the secure verification link below to view your 6-digit verification code and approve your BSIISUPPORT account update:',
+          verifyUrl,
+          '',
+          'This verification link is valid for 10 minutes.'
+        ].join('\n')
+      }
+    });
+    return;
+  }
+
+  // 1-Click Gmail Verification Link Handler
+  if (pathname === '/api/account/verify-link' && req.method === 'GET') {
+    const vToken = urlObj.searchParams.get('v') || '';
+    const decoded = decryptMagicVerifyToken(vToken);
+    if (!decoded || !decoded.uid || !decoded.code || Number(decoded.exp) < Date.now()) {
+      res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Verification Expired</title></head><body style="font-family:sans-serif;background:#f8fafc;padding:32px;text-align:center;"><div style="max-width:460px;margin:40px auto;background:#fff;border:1px solid #fecaca;border-top:5px solid #ef4444;border-radius:12px;padding:28px;"><h2>Verification Link Expired</h2><p style="color:#475569;">This verification link has expired or is invalid. Please return to BSIISUPPORT and click <strong>Send Code to Gmail</strong> again.</p></div></body></html>`);
+      return;
+    }
+
+    if (!data.pendingEmailVerifications) data.pendingEmailVerifications = {};
+    data.pendingEmailVerifications[decoded.uid] = {
+      codeHash: hashEmailVerificationCode(decoded.uid, decoded.code, decoded.exp),
+      email: decoded.em,
+      expiresAt: decoded.exp,
+      approved: true,
+      approvedCode: String(decoded.code)
+    };
+    saveData(data);
+
+    const mem = emailVerifications.get(decoded.uid);
+    if (mem) {
+      mem.approved = true;
+    } else {
+      emailVerifications.set(decoded.uid, {
+        code: String(decoded.code),
+        email: decoded.em,
+        expiresAt: decoded.exp,
+        approved: true
+      });
+    }
+
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store, no-cache, must-revalidate'
+    });
+    res.end(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BSIISUPPORT — Gmail Verified</title>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8fafc;color:#0f172a;margin:0;padding:24px;display:flex;align-items:center;justify-content:center;min-height:90vh;">
+  <div style="max-width:480px;width:100%;background:#ffffff;border:1px solid #bae6fd;border-top:6px solid #002147;border-radius:14px;padding:32px 24px;text-align:center;box-shadow:0 12px 32px rgba(0,33,71,0.1);">
+    <div style="width:56px;height:56px;border-radius:999px;background:#dcfce7;color:#15803d;font-size:28px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">&#10003;</div>
+    <h2 style="color:#002147;margin:0 0 8px;font-size:1.4rem;">Gmail Inbox Verified!</h2>
+    <p style="color:#475569;font-size:0.92rem;margin:0 0 18px;">Your BSIISUPPORT profile &amp; password verification is approved. Your open portal tab will detect this automatically, or you can enter the 6-digit code below:</p>
+    <div style="background:#f0f9ff;border:2px dashed #0284c7;border-radius:10px;padding:16px;margin-bottom:18px;">
+      <div style="font-size:0.75rem;text-transform:uppercase;font-weight:800;color:#0369a1;letter-spacing:0.06em;margin-bottom:4px;">Your 6-Digit Verification Code</div>
+      <div id="codeBox" style="font-size:2rem;font-weight:900;letter-spacing:0.22em;color:#002147;">${String(decoded.code).replace(/[^0-9]/g, '')}</div>
+    </div>
+    <button onclick="navigator.clipboard.writeText('${String(decoded.code).replace(/[^0-9]/g, '')}');this.textContent='Copied ✓';" style="background:#e5a823;color:#002147;border:none;padding:11px 22px;border-radius:8px;font-weight:800;font-size:0.92rem;cursor:pointer;margin-right:8px;">Copy Code</button>
+    <a href="/open" style="display:inline-block;background:#002147;color:#ffffff;text-decoration:none;padding:11px 22px;border-radius:8px;font-weight:800;font-size:0.92rem;">Return to Portal</a>
+  </div>
+  <script>
+    try {
+      localStorage.setItem('bsii_gmail_verified', JSON.stringify({
+        uid: ${JSON.stringify(decoded.uid)},
+        code: ${JSON.stringify(String(decoded.code))},
+        ts: Date.now()
+      }));
+      if (window.BroadcastChannel) {
+        const bc = new BroadcastChannel('bsii_gmail_verify');
+        bc.postMessage({ uid: ${JSON.stringify(decoded.uid)}, code: ${JSON.stringify(String(decoded.code))} });
+      }
+    } catch (_) {}
+  </script>
+</body>
+</html>`);
+    return;
+  }
+
+  // Poll Endpoint for Automatic 1-Click Gmail Verification Detection
+  if (pathname === '/api/account/verification-status' && req.method === 'GET') {
+    if (!currentUser || currentUser.type === 'oncall') {
+      return sendJson(res, 401, { approved: false });
+    }
+    const persisted = data && data.pendingEmailVerifications && data.pendingEmailVerifications[currentUser.id];
+    const mem = emailVerifications.get(currentUser.id);
+    if (persisted && persisted.approved && persisted.expiresAt >= Date.now()) {
+      return sendJson(res, 200, { approved: true, code: persisted.approvedCode });
+    }
+    if (mem && mem.approved && mem.expiresAt >= Date.now()) {
+      return sendJson(res, 200, { approved: true, code: mem.code });
+    }
+    return sendJson(res, 200, { approved: false });
   }
 
   // HR Security & Employee Directory Management (Strictly HR only; admin credentials masked)
