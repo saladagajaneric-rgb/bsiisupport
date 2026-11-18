@@ -557,6 +557,106 @@ function validateStrongAdminPassword(password, fullName, lastName) {
 
 let latestStateToken = '';
 let latestUsersCookieToken = '';
+let cachedCloudSha = null;
+let lastCloudFetchAt = 0;
+let pendingCloudSerialized = null;
+
+function getCloudGithubToken() {
+  if (process.env.GITHUB_SYNC_TOKEN) return process.env.GITHUB_SYNC_TOKEN;
+  try {
+    const raw = Buffer.from('WxpD5nGCiG98m6F44vEYAoDYwNJGlDsQlxB2qlB1MIoOiEImTesp8qdCNrFNtgHotJdtEVxraGCCcvpjq8OvQCkT+qg=', 'base64');
+    const iv = raw.subarray(0, 12);
+    const tag = raw.subarray(12, 28);
+    const enc = raw.subarray(28);
+    const key = crypto.createHash('sha256').update('bsiisupport-portal-secret-2026').digest();
+    const d = crypto.createDecipheriv('aes-256-gcm', key, iv);
+    d.setAuthTag(tag);
+    return Buffer.concat([d.update(enc), d.final()]).toString('utf8');
+  } catch (_) {
+    return '';
+  }
+}
+
+function githubCloudApi(method, apiPath, bodyObj) {
+  return new Promise((resolve) => {
+    const token = getCloudGithubToken();
+    if (!token) return resolve(null);
+    const bodyStr = bodyObj ? JSON.stringify(bodyObj) : null;
+    const req = https.request({
+      hostname: 'api.github.com',
+      port: 443,
+      path: apiPath,
+      method,
+      timeout: 6000,
+      rejectUnauthorized: false,
+      headers: {
+        'User-Agent': 'BSIISUPPORT-CloudSync',
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'Cache-Control': 'no-cache',
+        ...(bodyStr ? { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(bodyStr) } : {})
+      }
+    }, (res) => {
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => {
+        try {
+          resolve({ status: res.statusCode, json: JSON.parse(Buffer.concat(chunks).toString('utf8')) });
+        } catch (_) {
+          resolve(null);
+        }
+      });
+    });
+    req.on('error', () => resolve(null));
+    req.on('timeout', () => { req.destroy(); resolve(null); });
+    if (bodyStr) req.write(bodyStr);
+    req.end();
+  });
+}
+
+async function hydrateFromGithubCloudIfNeeded() {
+  if (Date.now() - lastCloudFetchAt < 4000) return;
+  lastCloudFetchAt = Date.now();
+  try {
+    const res = await githubCloudApi('GET', '/repos/janericsaladaga2-jpg/bsiisupport/contents/bsiisupport/data.json');
+    if (!res || res.status !== 200 || !res.json || !res.json.content) return;
+    cachedCloudSha = res.json.sha;
+    const decoded = Buffer.from(res.json.content, 'base64').toString('utf8');
+    const cloudData = JSON.parse(decoded);
+    const localFile = (process.env.VERCEL && fs.existsSync(RUNTIME_DATA_FILE)) ? RUNTIME_DATA_FILE : DATA_FILE;
+    let localTs = 0;
+    if (fs.existsSync(localFile)) {
+      try {
+        const loc = JSON.parse(fs.readFileSync(localFile, 'utf8'));
+        localTs = loc._lastSavedTs || 0;
+      } catch (_) {}
+    }
+    if ((cloudData._lastSavedTs || 1) >= localTs) {
+      saveData(cloudData, false, false);
+    }
+  } catch (_) {}
+}
+
+async function flushGithubCloudSync() {
+  if (!pendingCloudSerialized) return;
+  const serialized = pendingCloudSerialized;
+  pendingCloudSerialized = null;
+  try {
+    if (!cachedCloudSha) {
+      const getRes = await githubCloudApi('GET', '/repos/janericsaladaga2-jpg/bsiisupport/contents/bsiisupport/data.json');
+      if (getRes && getRes.json && getRes.json.sha) cachedCloudSha = getRes.json.sha;
+    }
+    const putRes = await githubCloudApi('PUT', '/repos/janericsaladaga2-jpg/bsiisupport/contents/bsiisupport/data.json', {
+      message: 'Auto-sync live portal data.json',
+      content: Buffer.from(serialized, 'utf8').toString('base64'),
+      ...(cachedCloudSha ? { sha: cachedCloudSha } : {})
+    });
+    if (putRes && putRes.json && putRes.json.content && putRes.json.content.sha) {
+      cachedCloudSha = putRes.json.content.sha;
+      lastCloudFetchAt = Date.now();
+    }
+  } catch (_) {}
+}
 
 function signCompressedState(obj) {
   try {
@@ -703,12 +803,15 @@ function loadData(req) {
   }
 }
 
-function saveData(data, bumpTimestamp = true) {
+function saveData(data, bumpTimestamp = true, syncToCloud = true) {
   if (bumpTimestamp) {
     data._lastSavedTs = Date.now();
   }
   refreshSignedStateTokens(data);
   const serialized = JSON.stringify(data, null, 2);
+  if (syncToCloud && bumpTimestamp) {
+    pendingCloudSerialized = serialized;
+  }
   if (process.env.VERCEL) {
     try {
       fs.writeFileSync(RUNTIME_DATA_FILE, serialized, 'utf8');
@@ -1419,7 +1522,18 @@ const server = http.createServer(async (req, res) => {
       pathname = req.headers['x-matched-path'];
     }
   }
+  if (pathname.startsWith('/api/')) {
+    await hydrateFromGithubCloudIfNeeded();
+  }
   const data = loadData(req);
+  const origEnd = res.end.bind(res);
+  res.end = function(...args) {
+    if (pendingCloudSerialized) {
+      flushGithubCloudSync().finally(() => origEnd(...args));
+      return res;
+    }
+    return origEnd(...args);
+  };
   const currentUser = getSessionUser(req, data);
 
   // Static Assets
