@@ -1399,6 +1399,30 @@
   </footer>
 
   <script>
+    (function setupPersistentServerlessSync() {
+      const origFetch = window.fetch.bind(window);
+      window.fetch = async function(input, init) {
+        const urlStr = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+        if (urlStr.startsWith('/api/')) {
+          init = init || {};
+          const headers = new Headers(init.headers || {});
+          try {
+            const savedToken = localStorage.getItem('bsii_state_token');
+            if (savedToken) headers.set('X-BSII-State', savedToken);
+          } catch (_) {}
+          init.headers = headers;
+        }
+        const res = await origFetch(input, init);
+        try {
+          const nextToken = res.headers && res.headers.get && res.headers.get('X-BSII-State');
+          if (nextToken) {
+            localStorage.setItem('bsii_state_token', nextToken);
+          }
+        } catch (_) {}
+        return res;
+      };
+    })();
+
     let DEPARTMENT_CONFIG = {
       'HR Admin': {
         subtitle: 'Employee Leaves, Certificate of Employment (COE), and Office Facilities / Maintenance.',

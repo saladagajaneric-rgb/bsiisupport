@@ -5,6 +5,7 @@ const os = require('os');
 const path = require('path');
 const crypto = require('crypto');
 const tls = require('tls');
+const zlib = require('zlib');
 
 const PORT = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, 'data.json');
@@ -554,7 +555,103 @@ function validateStrongAdminPassword(password, fullName, lastName) {
   return null;
 }
 
-function loadData() {
+let latestStateToken = '';
+let latestUsersCookieToken = '';
+
+function signCompressedState(obj) {
+  try {
+    const compressed = zlib.deflateRawSync(Buffer.from(JSON.stringify(obj), 'utf8')).toString('base64url');
+    const sig = crypto.createHmac('sha256', SESSION_SECRET).update(compressed).digest('base64url');
+    return `${compressed}.${sig}`;
+  } catch (_) {
+    return '';
+  }
+}
+
+function verifyCompressedState(tokenStr) {
+  if (!tokenStr || typeof tokenStr !== 'string' || !tokenStr.includes('.')) return null;
+  const dotIdx = tokenStr.lastIndexOf('.');
+  const compressed = tokenStr.slice(0, dotIdx);
+  const sig = tokenStr.slice(dotIdx + 1);
+  const expectedSig = crypto.createHmac('sha256', SESSION_SECRET).update(compressed).digest('base64url');
+  if (sig !== expectedSig) return null;
+  try {
+    const jsonStr = zlib.inflateRawSync(Buffer.from(compressed, 'base64url')).toString('utf8');
+    return JSON.parse(jsonStr);
+  } catch (_) {
+    return null;
+  }
+}
+
+function refreshSignedStateTokens(data) {
+  const ts = data._lastSavedTs || Date.now();
+  latestUsersCookieToken = signCompressedState({
+    ts,
+    users: data.users,
+    settings: data.settings
+  });
+  latestStateToken = signCompressedState({
+    ts,
+    users: data.users,
+    settings: data.settings,
+    requests: (data.requests || []).slice(0, 60)
+  });
+}
+
+function applyIncomingSyncedState(parsed, req) {
+  if (!req || !req.headers) return parsed;
+  const headerToken = req.headers['x-bsii-state'] || '';
+  const cookieHeader = req.headers.cookie || '';
+  let cookieToken = '';
+  cookieHeader.split(';').forEach((c) => {
+    const [k, ...r] = c.split('=');
+    if (k && k.trim() === 'bsii_users_sync') {
+      cookieToken = decodeURIComponent(r.join('=').trim());
+    }
+  });
+
+  const candidates = [
+    verifyCompressedState(headerToken),
+    verifyCompressedState(cookieToken)
+  ].filter(Boolean);
+
+  if (candidates.length === 0) return parsed;
+  candidates.sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  const best = candidates[0];
+
+  if ((best.ts || 0) > (parsed._lastSavedTs || 0)) {
+    if (Array.isArray(best.users) && best.users.length > 0) {
+      parsed.users = best.users;
+    }
+    if (best.settings && typeof best.settings === 'object') {
+      parsed.settings = { ...parsed.settings, ...best.settings };
+    }
+    if (Array.isArray(best.requests) && best.requests.length > 0) {
+      parsed.requests = best.requests;
+    }
+    parsed._lastSavedTs = best.ts;
+    parsed.users.forEach((u) => syncUserAcrossRequests(parsed, u));
+    saveData(parsed, false);
+  } else if (Array.isArray(best.users)) {
+    let anyUpdated = false;
+    best.users.forEach((incomingU) => {
+      const idx = (parsed.users || []).findIndex((u) => u.id === incomingU.id || (u.adminUsername && u.adminUsername === incomingU.adminUsername) || (u.isModerator && incomingU.isModerator));
+      if (idx !== -1) {
+        const curTs = new Date(parsed.users[idx].updatedAt || 0).getTime();
+        const incTs = new Date(incomingU.updatedAt || 0).getTime();
+        if (incTs > curTs) {
+          parsed.users[idx] = incomingU;
+          syncUserAcrossRequests(parsed, incomingU);
+          anyUpdated = true;
+        }
+      }
+    });
+    if (anyUpdated) saveData(parsed, false);
+  }
+  return parsed;
+}
+
+function loadData(req) {
   const sourceFile = (process.env.VERCEL && fs.existsSync(RUNTIME_DATA_FILE))
     ? RUNTIME_DATA_FILE
     : (fs.existsSync(DATA_FILE) ? DATA_FILE : (fs.existsSync(RUNTIME_DATA_FILE) ? RUNTIME_DATA_FILE : null));
@@ -592,19 +689,25 @@ function loadData() {
           isModerator: true,
           email: 'saladagajaneric@gmail.com',
           mobile: '0917-000-0001',
-          updatedAt: new Date().toISOString()
+          updatedAt: '2026-11-01T08:00:00.000Z'
         });
         changed = true;
       }
     }
     if (changed) saveData(parsed);
+    applyIncomingSyncedState(parsed, req);
+    if (!latestStateToken) refreshSignedStateTokens(parsed);
     return parsed;
   } catch (e) {
     return JSON.parse(JSON.stringify(DEFAULT_DATA));
   }
 }
 
-function saveData(data) {
+function saveData(data, bumpTimestamp = true) {
+  if (bumpTimestamp) {
+    data._lastSavedTs = Date.now();
+  }
+  refreshSignedStateTokens(data);
   const serialized = JSON.stringify(data, null, 2);
   if (process.env.VERCEL) {
     try {
@@ -1282,11 +1385,23 @@ function readJsonBody(req) {
 }
 
 function sendJson(res, status, payload, extraHeaders = {}) {
-  res.writeHead(status, {
+  const headers = {
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'no-store, no-cache, must-revalidate',
+    ...(latestStateToken ? { 'X-BSII-State': latestStateToken } : {}),
     ...extraHeaders
-  });
+  };
+  if (latestUsersCookieToken) {
+    const syncCookie = `bsii_users_sync=${latestUsersCookieToken}; Path=/; Max-Age=31536000; SameSite=Lax`;
+    if (headers['Set-Cookie']) {
+      headers['Set-Cookie'] = Array.isArray(headers['Set-Cookie'])
+        ? [...headers['Set-Cookie'], syncCookie]
+        : [headers['Set-Cookie'], syncCookie];
+    } else {
+      headers['Set-Cookie'] = syncCookie;
+    }
+  }
+  res.writeHead(status, headers);
   res.end(JSON.stringify(payload));
 }
 
@@ -1304,7 +1419,7 @@ const server = http.createServer(async (req, res) => {
       pathname = req.headers['x-matched-path'];
     }
   }
-  const data = loadData();
+  const data = loadData(req);
   const currentUser = getSessionUser(req, data);
 
   // Static Assets
