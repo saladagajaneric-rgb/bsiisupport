@@ -1,0 +1,1413 @@
+{
+  "settings": {
+    "globalCcEmail": "admin.brightstar@gmail.com",
+    "globalCcEnabled": false,
+    "seasonalRoleNote": "Team Leader currently acts as Accounting & Payroll Officer (editable per season).",
+    "departmentEmails": {
+      "HR Admin": "hr@bsii.com.ph",
+      "Purchasing Officer": "purchasing@bsii.com.ph",
+      "Office of the Vice President, BSII": "vp.bsii@bsii.com.ph",
+      "Office of the Vice President, Esteems": "vp.esteems@bsii.com.ph",
+      "Team Leader": "accounting@bsii.com.ph",
+      "Accounting & Payroll": "accounting@bsii.com.ph"
+    },
+    "classifications": [
+      "Esteems Employee",
+      "BSII Employee"
+    ]
+  },
+  "users": [
+    {
+      "id": "100001",
+      "lastName": "BRIGHTSTAR",
+      "adminUsername": "bsii.hradmin",
+      "adminPassword": "BsiiAdmin!2026",
+      "fullName": "Victoria Brightstar",
+      "company": "BSII Employee",
+      "role": "Master Administrator",
+      "department": "HR Admin",
+      "isStaff": true,
+      "isHR": true,
+      "isMasterAdmin": true,
+      "email": "hr.admin@bsii.com.ph",
+      "mobile": "0917-100-0001",
+      "updatedAt": "2026-11-01T08:00:00.000Z",
+      "needsProfileSync": true,
+      "hasCompletedFirstSelfUpdate": false
+    },
+    {
+      "id": "200002",
+      "lastName": "SANTOS",
+      "adminUsername": "bsii.teamlead",
+      "adminPassword": "TeamLead!2026",
+      "fullName": "Elena Santos",
+      "company": "BSII Employee",
+      "role": "Team Leader & Accounting Officer",
+      "department": "Team Leader",
+      "secondaryDepartments": [
+        "Accounting & Payroll"
+      ],
+      "isStaff": true,
+      "isHR": false,
+      "isMasterAdmin": false,
+      "email": "accounting@bsii.com.ph",
+      "mobile": "0917-200-0002",
+      "updatedAt": "2026-11-01T08:00:00.000Z",
+      "needsProfileSync": true,
+      "hasCompletedFirstSelfUpdate": false
+    },
+    {
+      "id": "300003",
+      "lastName": "REYES",
+      "adminUsername": "bsii.purchasing",
+      "adminPassword": "Purchaser!2026",
+      "fullName": "Marco Reyes",
+      "company": "BSII Employee",
+      "role": "Purchasing Officer",
+      "department": "Purchasing Officer",
+      "isStaff": true,
+      "isHR": false,
+      "isMasterAdmin": false,
+      "email": "purchasing@bsii.com.ph",
+      "mobile": "0917-300-0003",
+      "updatedAt": "2026-11-01T08:00:00.000Z",
+      "needsProfileSync": true,
+      "hasCompletedFirstSelfUpdate": false
+    },
+    {
+      "id": "400004",
+      "lastName": "LIM",
+      "adminUsername": "bsii.vpbsii",
+      "adminPassword": "VpBsii!2026",
+      "fullName": "Alexander Lim",
+      "company": "BSII Employee",
+      "role": "Vice President, BSII",
+      "department": "Office of the Vice President, BSII",
+      "isStaff": true,
+      "isHR": false,
+      "isMasterAdmin": false,
+      "email": "vp.bsii@bsii.com.ph",
+      "mobile": "0917-400-0004",
+      "updatedAt": "2026-11-01T08:00:00.000Z",
+      "needsProfileSync": true,
+      "hasCompletedFirstSelfUpdate": false
+    },
+    {
+      "id": "500005",
+      "lastName": "TAN",
+      "adminUsername": "bsii.vpesteems",
+      "adminPassword": "VpEsteems!2026",
+      "fullName": "Sophia Tan",
+      "company": "Esteems Employee",
+      "role": "Vice President, Esteems",
+      "department": "Office of the Vice President, Esteems",
+      "isStaff": true,
+      "isHR": false,
+      "isMasterAdmin": false,
+      "email": "vp.esteems@bsii.com.ph",
+      "mobile": "0917-500-0005",
+      "updatedAt": "2026-11-01T08:00:00.000Z",
+      "needsProfileSync": true,
+      "hasCompletedFirstSelfUpdate": false
+    },
+    {
+      "id": "676767",
+      "lastName": "BRIGHTSTAR",
+      "fullName": "Juan Dela Cruz",
+      "company": "BSII Employee",
+      "role": "Operations Specialist",
+      "department": "Operations",
+      "isStaff": false,
+      "isHR": false,
+      "isMasterAdmin": false,
+      "email": "juan.delacruz@bsii.com.ph",
+      "mobile": "0917-676-7676",
+      "updatedAt": "2026-11-10T09:30:00.000Z",
+      "needsProfileSync": true,
+      "hasCompletedFirstSelfUpdate": false
+    },
+    {
+      "id": "888888",
+      "lastName": "CRUZ",
+      "fullName": "Maria Clara Cruz",
+      "company": "Esteems Employee",
+      "role": "Brand Coordinator",
+      "department": "Marketing",
+      "isStaff": false,
+      "isHR": false,
+      "isMasterAdmin": false,
+      "email": "maria.cruz@esteems.com.ph",
+      "mobile": "0918-888-8888",
+      "updatedAt": "2026-11-12T10:15:00.000Z",
+      "needsProfileSync": true,
+      "hasCompletedFirstSelfUpdate": false
+    },
+    {
+      "id": "000001",
+      "lastName": "SALADAGA",
+      "adminUsername": "bsii.moderator",
+      "adminPassword": "Moderator!2026",
+      "fullName": "Jan Eric Saladaga",
+      "company": "BSII Employee",
+      "role": "HR Admin",
+      "department": "HR Admin",
+      "isStaff": true,
+      "isHR": true,
+      "isMasterAdmin": true,
+      "isModerator": true,
+      "needsProfileSync": false,
+      "hasCompletedFirstSelfUpdate": true,
+      "email": "saladagajaneric@gmail.com",
+      "mobile": "0917-000-0001",
+      "updatedAt": "2026-11-17T03:37:37.588Z"
+    }
+  ],
+  "requests": [
+    {
+      "id": "REQ-2026-4280",
+      "employeeId": "676767",
+      "employeeName": "Juan Dela Cruz",
+      "employeeCompany": "BSII Employee",
+      "employeeEmail": "juan.delacruz@bsii.com.ph",
+      "employeeMobile": "0917-676-7676",
+      "department": "HR Admin",
+      "category": "Leave Request",
+      "details": {
+        "Leave Type": "Vacation Leave",
+        "Start Date": "",
+        "End Date": "",
+        "Number of Days": "",
+        "Reason": ""
+      },
+      "ccDepartments": [],
+      "ccEmails": [],
+      "customMonitoringEmails": [],
+      "status": "Submitted / Pending Officer Review",
+      "priority": "Standard",
+      "createdAt": "2026-11-17T05:41:38.507Z",
+      "updatedAt": "2026-11-17T06:59:04.351Z",
+      "deletedAt": "2026-11-17T06:59:04.351Z",
+      "deletedBy": "Jan Eric Saladaga",
+      "comments": [],
+      "notifiedEmails": [
+        "saladagajaneric@gmail.com"
+      ]
+    },
+    {
+      "id": "REQ-2026-9517",
+      "employeeId": "676767",
+      "employeeName": "Juan Dela Cruz",
+      "employeeCompany": "BSII Employee",
+      "employeeEmail": "juan.delacruz@bsii.com.ph",
+      "employeeMobile": "0917-676-7676",
+      "department": "HR Admin",
+      "category": "Leave Request",
+      "details": {
+        "Leave Type": "Vacation Leave",
+        "Start Date": "",
+        "End Date": "",
+        "Number of Days": "",
+        "Reason": ""
+      },
+      "ccDepartments": [],
+      "ccEmails": [],
+      "customMonitoringEmails": [],
+      "status": "Submitted / Pending Officer Review",
+      "priority": "Standard",
+      "createdAt": "2026-11-17T05:41:35.987Z",
+      "updatedAt": "2026-11-17T06:59:06.055Z",
+      "deletedAt": "2026-11-17T06:59:06.055Z",
+      "deletedBy": "Jan Eric Saladaga",
+      "comments": [],
+      "notifiedEmails": [
+        "saladagajaneric@gmail.com"
+      ]
+    },
+    {
+      "id": "REQ-2026-9434",
+      "employeeId": "676767",
+      "employeeName": "Juan Dela Cruz",
+      "employeeCompany": "BSII Employee",
+      "employeeEmail": "juan.delacruz@bsii.com.ph",
+      "employeeMobile": "0917-676-7676",
+      "department": "HR Admin",
+      "category": "Leave Request",
+      "details": {
+        "Leave Type": "Vacation Leave",
+        "Start Date": "",
+        "End Date": "",
+        "Number of Days": "",
+        "Reason": ""
+      },
+      "ccDepartments": [],
+      "ccEmails": [],
+      "customMonitoringEmails": [],
+      "status": "Submitted / Pending Officer Review",
+      "priority": "Standard",
+      "createdAt": "2026-11-17T05:26:57.293Z",
+      "updatedAt": "2026-11-17T06:59:08.478Z",
+      "deletedAt": "2026-11-17T06:59:08.478Z",
+      "deletedBy": "Jan Eric Saladaga",
+      "comments": [],
+      "notifiedEmails": [
+        "saladagajaneric@gmail.com"
+      ]
+    },
+    {
+      "id": "REQ-2026-1001",
+      "employeeId": "676767",
+      "employeeName": "Juan Dela Cruz",
+      "employeeCompany": "BSII Employee",
+      "employeeEmail": "juan.delacruz@bsii.com.ph",
+      "employeeMobile": "0917-676-7676",
+      "department": "Team Leader",
+      "category": "Expense Reimbursement",
+      "details": {
+        "Amount (PHP / ₱)": "₱4,250.00",
+        "Invoice / Receipt Reference": "OR-994812 (Client Logistics Meals)",
+        "Disbursement Bank / Details": "BDO Payroll Account - ****4512"
+      },
+      "ccDepartments": [
+        "HR Admin"
+      ],
+      "ccEmails": [
+        "hr@bsii.com.ph",
+        "admin.brightstar@gmail.com"
+      ],
+      "customMonitoringEmails": [
+        "admin.brightstar@gmail.com"
+      ],
+      "status": "In Progress",
+      "priority": "Normal",
+      "createdAt": "2026-11-14T09:20:00.000Z",
+      "updatedAt": "2026-11-16T08:52:35.521Z",
+      "deletedAt": "2026-11-16T08:52:35.521Z",
+      "deletedBy": "Victoria Brightstar",
+      "comments": [
+        {
+          "id": "CMT-1",
+          "authorName": "Elena Santos",
+          "authorRole": "Team Leader & Accounting Officer",
+          "message": "Receipt verified against Q4 operational budget. Queued for Friday disbursement batch.",
+          "createdAt": "2026-11-15T14:10:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "REQ-2026-1002",
+      "employeeId": "676767",
+      "employeeName": "Juan Dela Cruz",
+      "employeeCompany": "BSII Employee",
+      "employeeEmail": "juan.delacruz@bsii.com.ph",
+      "employeeMobile": "0917-676-7676",
+      "department": "HR Admin",
+      "category": "Certificate of Employment (COE)",
+      "details": {
+        "Purpose": "Visa Application",
+        "Compensation Breakdown": "With Compensation Breakdown"
+      },
+      "ccDepartments": [],
+      "ccEmails": [
+        "admin.brightstar@gmail.com"
+      ],
+      "customMonitoringEmails": [
+        "admin.brightstar@gmail.com"
+      ],
+      "status": "Approved / Completed",
+      "priority": "Normal",
+      "createdAt": "2026-11-10T11:00:00.000Z",
+      "updatedAt": "2026-11-17T04:37:29.050Z",
+      "deletedAt": "2026-11-17T04:37:29.050Z",
+      "deletedBy": "Jan Eric Saladaga",
+      "comments": [
+        {
+          "id": "CMT-2",
+          "authorName": "Victoria Brightstar",
+          "authorRole": "HR Admin (Department Officer)",
+          "message": "Signed COE is ready for pickup at HR Admin desk.",
+          "createdAt": "2026-11-11T16:30:00.000Z"
+        }
+      ]
+    }
+  ],
+  "departmentConfig": {
+    "HR Admin": {
+      "subtitle": "Leaves, COE, Employment Records, ID/Access, Facilities, Concerns, Conference Room, Government Benefits & Clearance.",
+      "isDefault": true,
+      "categories": {
+        "Leave Request": [
+          {
+            "name": "Leave Type",
+            "type": "select",
+            "options": [
+              "Vacation Leave",
+              "Sick Leave",
+              "Emergency Leave",
+              "Maternity Leave",
+              "Paternity Leave",
+              "Bereavement Leave",
+              "Solo Parent Leave",
+              "Special Leave for Women (Magna Carta)",
+              "Half-Day / Undertime Leave",
+              "Leave Without Pay (LWOP)"
+            ]
+          },
+          {
+            "name": "Start Date",
+            "type": "date"
+          },
+          {
+            "name": "End Date",
+            "type": "date"
+          },
+          {
+            "name": "Number of Days",
+            "type": "number",
+            "placeholder": "e.g., 3"
+          },
+          {
+            "name": "Reason",
+            "type": "textarea",
+            "placeholder": "Provide brief details for your leave request..."
+          }
+        ],
+        "Certificate of Employment (COE)": [
+          {
+            "name": "Purpose",
+            "type": "select",
+            "options": [
+              "Visa Application",
+              "Loan / Bank Requirement",
+              "Employment Verification",
+              "SSS / Pag-IBIG / PhilHealth",
+              "Credit Card / Financing",
+              "Government / Embassy Requirement",
+              "Travel / Immigration"
+            ]
+          },
+          {
+            "name": "COE Compensation Format",
+            "type": "select",
+            "options": [
+              "With Compensation Breakdown",
+              "Without Compensation Breakdown",
+              "With Annualized Gross & Allowances"
+            ]
+          }
+        ],
+        "Employment Records": [
+          {
+            "name": "Document Requested",
+            "type": "select",
+            "options": [
+              "BIR Form 2316",
+              "201 File Copy",
+              "Employment Verification Letter",
+              "Contract / Appointment Copy",
+              "Company Clearance / Certificate"
+            ]
+          },
+          {
+            "name": "Purpose",
+            "type": "text",
+            "placeholder": "e.g., Bank loan, tax filing, government requirement"
+          },
+          {
+            "name": "Additional Notes",
+            "type": "textarea",
+            "placeholder": "Specify year, copies needed, or pickup preference..."
+          }
+        ],
+        "ID & Building Access": [
+          {
+            "name": "Request Type",
+            "type": "select",
+            "options": [
+              "New Company ID",
+              "Replacement ID (Lost / Damaged)",
+              "Building / Door Access Card",
+              "Biometric Enrollment / Reset"
+            ]
+          },
+          {
+            "name": "Details / Reason",
+            "type": "textarea",
+            "placeholder": "Provide details (e.g., lost ID, new hire, access area needed)..."
+          }
+        ],
+        "Facilities / Maintenance": [
+          {
+            "name": "Office Location",
+            "type": "text",
+            "placeholder": "e.g., 3rd Floor Main Operations Area / Conference Room B"
+          },
+          {
+            "name": "Urgency",
+            "type": "select",
+            "options": [
+              "Low (Routine Maintenance)",
+              "Standard",
+              "High Priority",
+              "Critical / Immediate (Safety Hazard)"
+            ]
+          },
+          {
+            "name": "Issue Description",
+            "type": "textarea",
+            "placeholder": "Describe repairs, aircon, lighting, cleaning, or furniture issue..."
+          }
+        ],
+        "Employee Concerns & Incident Reports": [
+          {
+            "name": "Concern Type",
+            "type": "select",
+            "options": [
+              "Workplace Concern",
+              "Safety / Health Incident",
+              "Policy / Conduct Concern",
+              "General HR Inquiry"
+            ]
+          },
+          {
+            "name": "Date of Incident",
+            "type": "date"
+          },
+          {
+            "name": "Details",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe the concern or incident clearly..."
+          }
+        ],
+        "Conference Room Schedule": [
+          {
+            "name": "Room / Area",
+            "type": "select",
+            "options": [
+              "Main Conference Room",
+              "Executive Boardroom",
+              "Small Meeting Room",
+              "Training Room"
+            ]
+          },
+          {
+            "name": "Date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "Time Slot",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., 10:00 AM – 11:30 AM"
+          },
+          {
+            "name": "Meeting Purpose / Attendees",
+            "type": "textarea",
+            "placeholder": "Topic and number of attendees..."
+          }
+        ],
+        "Government Benefits Assistance": [
+          {
+            "name": "Agency",
+            "type": "select",
+            "options": [
+              "SSS",
+              "PhilHealth",
+              "Pag-IBIG (HDMF)",
+              "BIR / TIN"
+            ]
+          },
+          {
+            "name": "Assistance Needed",
+            "type": "text",
+            "placeholder": "e.g., Contribution check, loan certification, maternity/sickness benefit"
+          },
+          {
+            "name": "Notes",
+            "type": "textarea",
+            "placeholder": "Additional details or reference numbers..."
+          }
+        ],
+        "Resignation & Clearance Processing": [
+          {
+            "name": "Notice Type",
+            "type": "select",
+            "options": [
+              "Resignation Filing",
+              "Clearance Routing",
+              "Exit Interview Schedule",
+              "Final Pay / COE Inquiry"
+            ]
+          },
+          {
+            "name": "Effective / Last Working Date",
+            "type": "date"
+          },
+          {
+            "name": "Remarks",
+            "type": "textarea",
+            "placeholder": "Provide turnover or clearance notes..."
+          }
+        ],
+        "Other / Not Listed": [
+          {
+            "name": "Confirm Category",
+            "type": "checkbox",
+            "required": true,
+            "options": [
+              "My request is not listed above (Specify below)"
+            ]
+          },
+          {
+            "name": "Requested Category Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Name of the category you were looking for"
+          },
+          {
+            "name": "Request Details",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe your HR Admin request..."
+          }
+        ]
+      }
+    },
+    "Purchasing Officer": {
+      "subtitle": "Office Supplies, Pantry/Cleaning, Equipment Notices, Furniture, Borrowing & Uniforms (Office use only, not trade).",
+      "categories": {
+        "Item / Supply Request": [
+          {
+            "name": "Item Description (Office Supplies Only — Not For Trade)",
+            "type": "text",
+            "placeholder": "e.g., A4 Bond Paper, Pens, Folders, Printer Ink"
+          },
+          {
+            "name": "Quantity",
+            "type": "text",
+            "placeholder": "e.g., 10 Reams / 4 Units"
+          },
+          {
+            "name": "Estimated Budget (PHP / ₱)",
+            "type": "text",
+            "placeholder": "e.g., ₱2,500.00"
+          },
+          {
+            "name": "Urgency",
+            "type": "select",
+            "options": [
+              "Low (Next Monthly Cycle)",
+              "Standard (Within 7 Days)",
+              "Urgent (Within 48 Hours)",
+              "Critical (Same Day)"
+            ]
+          },
+          {
+            "name": "Business Justification",
+            "type": "textarea",
+            "placeholder": "Explain how these office supplies support departmental operations..."
+          }
+        ],
+        "Purchase Reimbursements": [
+          {
+            "name": "Item(s) Purchased (Office Use Only)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Emergency bond paper, HDMI cable"
+          },
+          {
+            "name": "Amount (PHP / ₱)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., ₱1,200.00"
+          },
+          {
+            "name": "Receipt / OR Reference",
+            "type": "text",
+            "placeholder": "e.g., OR-55412"
+          },
+          {
+            "name": "Justification",
+            "type": "textarea",
+            "placeholder": "Reason for direct office purchase..."
+          }
+        ],
+        "Pantry & Cleaning Supplies": [
+          {
+            "name": "Supply Category",
+            "type": "select",
+            "options": [
+              "Pantry Consumables (Coffee, Water, Cups)",
+              "Cleaning & Sanitation Supplies",
+              "Restroom Supplies"
+            ]
+          },
+          {
+            "name": "Items & Quantity",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "List items and quantities needed..."
+          },
+          {
+            "name": "Urgency",
+            "type": "select",
+            "options": [
+              "Low",
+              "Standard",
+              "Urgent"
+            ]
+          }
+        ],
+        "Office Equipment Notice": [
+          {
+            "name": "Equipment / Asset",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., 2nd Floor Printer, Scanner, Shredder"
+          },
+          {
+            "name": "Location",
+            "type": "text",
+            "placeholder": "e.g., Accounting Area / Reception"
+          },
+          {
+            "name": "Issue / Notice",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe the issue (e.g., broken printer, paper jam, offline)..."
+          }
+        ],
+        "Furniture Purchases": [
+          {
+            "name": "Furniture Type",
+            "type": "select",
+            "options": [
+              "Office Chair",
+              "Desk / Workstation",
+              "Filing Cabinet / Storage",
+              "Meeting Table",
+              "Other Office Furniture"
+            ]
+          },
+          {
+            "name": "Quantity & Specifications",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Specify quantity, dimensions, or model..."
+          },
+          {
+            "name": "Business Justification",
+            "type": "textarea",
+            "placeholder": "Explain operational need..."
+          }
+        ],
+        "Equipment Borrowing": [
+          {
+            "name": "Equipment Needed",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Laptop, Projector, Extension Cord"
+          },
+          {
+            "name": "Borrow Date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "Return Date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "Purpose",
+            "type": "textarea",
+            "placeholder": "Meeting, event, or field task..."
+          }
+        ],
+        "Uniform Requests": [
+          {
+            "name": "Request Type",
+            "type": "select",
+            "options": [
+              "New Hire Uniform",
+              "Replacement Uniform",
+              "Additional Set"
+            ]
+          },
+          {
+            "name": "Size & Quantity",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Medium - 2 pcs"
+          },
+          {
+            "name": "Notes",
+            "type": "textarea",
+            "placeholder": "Department or color/cut notes..."
+          }
+        ],
+        "Other / Not Listed": [
+          {
+            "name": "Confirm Category",
+            "type": "checkbox",
+            "required": true,
+            "options": [
+              "My request is not listed above (Specify below)"
+            ]
+          },
+          {
+            "name": "Requested Category Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Name of the category you were looking for"
+          },
+          {
+            "name": "Request Details",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe your Purchasing request..."
+          }
+        ]
+      }
+    },
+    "Office of the Vice President, BSII": {
+      "subtitle": "Executive Approvals, Corporate Directives, Endorsements, VP Schedule, Travel, Signing & Escalations.",
+      "categories": {
+        "Executive Memo / Approval Request": [
+          {
+            "name": "Subject / Directive Title",
+            "type": "text",
+            "placeholder": "Enter executive request subject..."
+          },
+          {
+            "name": "Urgency",
+            "type": "select",
+            "options": [
+              "Informational / FYI",
+              "Routine Review",
+              "Priority Endorsement",
+              "Immediate Executive Action"
+            ]
+          },
+          {
+            "name": "Executive Summary & Justification",
+            "type": "textarea",
+            "placeholder": "Provide comprehensive background for the Vice President, BSII..."
+          }
+        ],
+        "Executive Approvals (Budget & Policy)": [
+          {
+            "name": "Approval Type",
+            "type": "select",
+            "options": [
+              "Budget Approval",
+              "Policy Exception",
+              "Capital Expenditure",
+              "Special Authorization"
+            ]
+          },
+          {
+            "name": "Subject / Reference",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Q4 Department Budget Adjustment"
+          },
+          {
+            "name": "Amount / Impact",
+            "type": "text",
+            "placeholder": "e.g., ₱50,000.00"
+          },
+          {
+            "name": "Justification",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Provide clear justification..."
+          }
+        ],
+        "Corporate Directives & Memo Release": [
+          {
+            "name": "Memo Title",
+            "type": "text",
+            "required": true,
+            "placeholder": "Enter memo or directive title..."
+          },
+          {
+            "name": "Target Audience",
+            "type": "text",
+            "placeholder": "e.g., All BSII Employees / Operations"
+          },
+          {
+            "name": "Summary / Draft Notes",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Key points for release..."
+          }
+        ],
+        "Inter-Departmental Endorsements": [
+          {
+            "name": "Departments Involved",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., HR Admin & Operations"
+          },
+          {
+            "name": "Endorsement Summary",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe what needs VP endorsement..."
+          }
+        ],
+        "VP Meeting / Schedule Request": [
+          {
+            "name": "Preferred Date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "Preferred Time",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., 2:00 PM – 2:30 PM"
+          },
+          {
+            "name": "Agenda / Attendees",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Meeting agenda and attendees..."
+          }
+        ],
+        "Event & Activity Approvals": [
+          {
+            "name": "Event / Activity Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Year-End Townhall / Team Building"
+          },
+          {
+            "name": "Target Date",
+            "type": "date"
+          },
+          {
+            "name": "Estimated Budget & Details",
+            "type": "textarea",
+            "placeholder": "Venue, participants, and budget..."
+          }
+        ],
+        "Travel Authorizations": [
+          {
+            "name": "Destination & Dates",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Cebu — Dec 2–4, 2026"
+          },
+          {
+            "name": "Estimated Cost",
+            "type": "text",
+            "placeholder": "e.g., ₱15,000.00"
+          },
+          {
+            "name": "Purpose of Travel",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Business purpose and itinerary..."
+          }
+        ],
+        "Document Signing (Contracts, Letters, MOAs)": [
+          {
+            "name": "Document Type",
+            "type": "select",
+            "options": [
+              "Contract",
+              "MOA / MOU",
+              "Official Letter",
+              "Executive Resolution"
+            ]
+          },
+          {
+            "name": "Document Title & Counterparty",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Service Agreement with ABC Corp"
+          },
+          {
+            "name": "Notes / Deadline",
+            "type": "textarea",
+            "placeholder": "Signing deadline and delivery notes..."
+          }
+        ],
+        "Escalated Concerns": [
+          {
+            "name": "Concern Subject",
+            "type": "text",
+            "required": true,
+            "placeholder": "Brief title of escalated issue..."
+          },
+          {
+            "name": "Urgency",
+            "type": "select",
+            "options": [
+              "Priority",
+              "Immediate Executive Action"
+            ]
+          },
+          {
+            "name": "Background & Prior Steps Taken",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Explain what happened and prior actions taken..."
+          }
+        ],
+        "Other / Not Listed": [
+          {
+            "name": "Confirm Category",
+            "type": "checkbox",
+            "required": true,
+            "options": [
+              "My request is not listed above (Specify below)"
+            ]
+          },
+          {
+            "name": "Requested Category Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Name of the category you were looking for"
+          },
+          {
+            "name": "Request Details",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe your request for the VP, BSII..."
+          }
+        ]
+      }
+    },
+    "Office of the Vice President, Esteems": {
+      "subtitle": "Executive Approvals, Brand Directives, Marketing/Promos, Partnerships, Events, VP Schedule & Signing.",
+      "categories": {
+        "Esteems Executive Endorsement": [
+          {
+            "name": "Proposal / Operation Title",
+            "type": "text",
+            "placeholder": "Enter Esteems proposal title..."
+          },
+          {
+            "name": "Urgency",
+            "type": "select",
+            "options": [
+              "Informational / FYI",
+              "Routine Review",
+              "Priority Endorsement",
+              "Immediate Executive Action"
+            ]
+          },
+          {
+            "name": "Operational Summary & Notes",
+            "type": "textarea",
+            "placeholder": "Provide background for the Vice President, Esteems..."
+          }
+        ],
+        "Executive Approvals (Esteems)": [
+          {
+            "name": "Approval Subject",
+            "type": "text",
+            "required": true,
+            "placeholder": "Enter approval subject..."
+          },
+          {
+            "name": "Urgency",
+            "type": "select",
+            "options": [
+              "Routine Review",
+              "Priority Endorsement",
+              "Immediate Executive Action"
+            ]
+          },
+          {
+            "name": "Summary & Justification",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Provide supporting details..."
+          }
+        ],
+        "Brand Directives": [
+          {
+            "name": "Directive Scope",
+            "type": "select",
+            "options": [
+              "Logo Usage",
+              "Brand Guidelines",
+              "Visual Identity / Packaging",
+              "Brand Compliance"
+            ]
+          },
+          {
+            "name": "Details",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe the brand asset or guideline request..."
+          }
+        ],
+        "Marketing & Promo Approvals": [
+          {
+            "name": "Campaign / Promo Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Holiday Promo Campaign"
+          },
+          {
+            "name": "Duration / Launch Date",
+            "type": "text",
+            "placeholder": "e.g., Dec 1 – Dec 31, 2026"
+          },
+          {
+            "name": "Details & Budget",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Mechanics, channels, and budget..."
+          }
+        ],
+        "Partnership & Collaboration Endorsements": [
+          {
+            "name": "Partner / Organization",
+            "type": "text",
+            "required": true,
+            "placeholder": "Name of partner or collaborator"
+          },
+          {
+            "name": "Collaboration Summary",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Scope, deliverables, and terms..."
+          }
+        ],
+        "Event & Activity Approvals": [
+          {
+            "name": "Event / Activity Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Brand Launch / Pop-Up Event"
+          },
+          {
+            "name": "Target Date",
+            "type": "date"
+          },
+          {
+            "name": "Details & Budget",
+            "type": "textarea",
+            "placeholder": "Location, attendees, and budget..."
+          }
+        ],
+        "VP Meeting / Schedule Request": [
+          {
+            "name": "Preferred Date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "Preferred Time",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., 3:00 PM – 3:30 PM"
+          },
+          {
+            "name": "Agenda / Attendees",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Meeting agenda and attendees..."
+          }
+        ],
+        "Document Signing": [
+          {
+            "name": "Document Type",
+            "type": "select",
+            "options": [
+              "Contract",
+              "MOA / Agreement",
+              "Official Letter",
+              "Promo / Agency Brief"
+            ]
+          },
+          {
+            "name": "Document Title & Counterparty",
+            "type": "text",
+            "required": true,
+            "placeholder": "Enter document title..."
+          },
+          {
+            "name": "Notes / Deadline",
+            "type": "textarea",
+            "placeholder": "Signing deadline and notes..."
+          }
+        ],
+        "Other / Not Listed": [
+          {
+            "name": "Confirm Category",
+            "type": "checkbox",
+            "required": true,
+            "options": [
+              "My request is not listed above (Specify below)"
+            ]
+          },
+          {
+            "name": "Requested Category Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Name of the category you were looking for"
+          },
+          {
+            "name": "Request Details",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe your request for the VP, Esteems..."
+          }
+        ]
+      }
+    },
+    "Team Leader": {
+      "subtitle": "Payroll/Payslips, Overtime, Attendance Adjustments, Reimbursements, Cash Advance, Salary Loans & Schedules.",
+      "categories": {
+        "Overtime Approval": [
+          {
+            "name": "Date Rendered",
+            "type": "date"
+          },
+          {
+            "name": "Hours Rendered",
+            "type": "number",
+            "placeholder": "e.g., 4"
+          },
+          {
+            "name": "Tasks Completed",
+            "type": "textarea",
+            "placeholder": "List specific deliverables completed during overtime..."
+          }
+        ],
+        "Attendance Adjustment / Discrepancy": [
+          {
+            "name": "Date of Discrepancy",
+            "type": "date"
+          },
+          {
+            "name": "Biometric / Timekeeping Issue",
+            "type": "select",
+            "options": [
+              "Missed Time-In",
+              "Missed Time-Out",
+              "Missed Both Time-In & Time-Out",
+              "Late / Undertime Correction",
+              "Biometric Scanner Offline",
+              "Official Field Assignment",
+              "Work From Home / Remote Log",
+              "Schedule / Shift Change"
+            ]
+          },
+          {
+            "name": "Supervisor Remarks",
+            "type": "textarea",
+            "placeholder": "Provide verification details or supervisor endorsement..."
+          }
+        ],
+        "Reimbursement Pre-endorsement": [
+          {
+            "name": "Expense Details",
+            "type": "textarea",
+            "placeholder": "Itemize planned or incurred operational expenses..."
+          },
+          {
+            "name": "Receipt Attachments Reference",
+            "type": "text",
+            "placeholder": "e.g., Official Receipt #10492 / Attached Scan filename"
+          }
+        ],
+        "Expense Reimbursement": [
+          {
+            "name": "Expense Category",
+            "type": "select",
+            "options": [
+              "Transportation",
+              "Meals",
+              "Client Expenses",
+              "Operational Supplies",
+              "Other Work Expense"
+            ]
+          },
+          {
+            "name": "Amount (PHP / ₱)",
+            "type": "text",
+            "placeholder": "e.g., ₱3,450.00"
+          },
+          {
+            "name": "Invoice / Receipt Attachments",
+            "type": "text",
+            "placeholder": "e.g., OR-88231 / Digital Receipt Link or Filename"
+          },
+          {
+            "name": "Disbursement Bank / Details",
+            "type": "text",
+            "placeholder": "e.g., BDO Payroll Account / GCash Corporate Disbursement"
+          }
+        ],
+        "Payroll / Payslip Inquiry": [
+          {
+            "name": "Inquiry Type",
+            "type": "select",
+            "options": [
+              "Payslip Request",
+              "Payroll Discrepancy",
+              "Tax / Deduction Inquiry",
+              "13th Month / Bonus Inquiry"
+            ]
+          },
+          {
+            "name": "Pay Period",
+            "type": "text",
+            "placeholder": "e.g., November 1–15, 2026"
+          },
+          {
+            "name": "Inquiry Issues",
+            "type": "textarea",
+            "placeholder": "Describe your payroll or payslip question for Accounting & Payroll..."
+          }
+        ],
+        "Cash Advance Requests": [
+          {
+            "name": "Amount Requested (PHP / ₱)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., ₱5,000.00"
+          },
+          {
+            "name": "Purpose",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Explain purpose of cash advance..."
+          },
+          {
+            "name": "Repayment / Liquidation Schedule",
+            "type": "text",
+            "placeholder": "e.g., Next payroll / upon receipt liquidation"
+          }
+        ],
+        "Salary Loan Requests": [
+          {
+            "name": "Loan Amount (PHP / ₱)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., ₱10,000.00"
+          },
+          {
+            "name": "Preferred Term",
+            "type": "select",
+            "options": [
+              "3 Months",
+              "6 Months",
+              "12 Months"
+            ]
+          },
+          {
+            "name": "Reason / Notes",
+            "type": "textarea",
+            "placeholder": "Brief reason for salary loan request..."
+          }
+        ],
+        "Schedule Changes & Shift Swaps": [
+          {
+            "name": "Change Type",
+            "type": "select",
+            "options": [
+              "Shift Swap",
+              "Schedule Adjustment",
+              "Rest Day Offset"
+            ]
+          },
+          {
+            "name": "Affected Date(s)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Nov 20–21, 2026"
+          },
+          {
+            "name": "Details / Swap Partner",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Specify new hours or coworker agreeing to swap..."
+          }
+        ],
+        "Work-From-Home / Off-Site Requests": [
+          {
+            "name": "Setup Type",
+            "type": "select",
+            "options": [
+              "Work From Home (WFH)",
+              "Off-Site / Field Work"
+            ]
+          },
+          {
+            "name": "Date(s)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Nov 22, 2026"
+          },
+          {
+            "name": "Deliverables / Reason",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Planned deliverables and reason..."
+          }
+        ],
+        "Other / Not Listed": [
+          {
+            "name": "Confirm Category",
+            "type": "checkbox",
+            "required": true,
+            "options": [
+              "My request is not listed above (Specify below)"
+            ]
+          },
+          {
+            "name": "Requested Category Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Name of the category you were looking for"
+          },
+          {
+            "name": "Request Details",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe your request for Team Leader / Accounting..."
+          }
+        ]
+      }
+    }
+  },
+  "emailDispatchLog": [
+    {
+      "id": "DISP-1794894098507-762",
+      "requestId": "REQ-2026-4280",
+      "to": [
+        "saladagajaneric@gmail.com"
+      ],
+      "subject": "[BSIISUPPORT REQ-2026-4280] HR Admin — Leave Request (Juan Dela Cruz)",
+      "body": "A new support request related to your department/role was submitted.\n\nRequest ID: REQ-2026-4280\nDepartment: HR Admin\nCategory: Leave Request\nStatus: Submitted / Pending Officer Review\nPriority: Standard\n\nSubmitted By: Juan Dela Cruz (ID: 676767, BSII Employee)\nSubmitter Email: juan.delacruz@bsii.com.ph\nSubmitter Mobile: 0917-676-7676\n\nRequest Details:\n- Leave Type: Vacation Leave\n- Start Date: \n- End Date: \n- Number of Days: \n- Reason: ",
+      "deliveryStatus": "1 recipient(s) must click the one-time FormSubmit activation email",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-17T05:41:38.507Z"
+    },
+    {
+      "id": "DISP-1794893217294-931",
+      "requestId": "REQ-2026-9434",
+      "to": [
+        "hr@bsii.com.ph",
+        "admin.brightstar@gmail.com",
+        "hr.admin@bsii.com.ph",
+        "saladagajaneric@gmail.com"
+      ],
+      "subject": "[BSIISUPPORT REQ-2026-9434] HR Admin — Leave Request (Juan Dela Cruz)",
+      "body": "A new support request related to your department/role was submitted.\n\nRequest ID: REQ-2026-9434\nDepartment: HR Admin\nCategory: Leave Request\nStatus: Submitted / Pending Officer Review\nPriority: Standard\n\nSubmitted By: Juan Dela Cruz (ID: 676767, BSII Employee)\nSubmitter Email: juan.delacruz@bsii.com.ph\nSubmitter Mobile: 0917-676-7676\n\nRequest Details:\n- Leave Type: Vacation Leave\n- Start Date: \n- End Date: \n- Number of Days: \n- Reason: ",
+      "deliveryStatus": "Failed: hr@bsii.com.ph: unable to verify the first certificate; admin.brightstar@gmail.com: unable to verify the first certificate; hr.admin@bsii.com.ph: unable to verify the first certificate; saladagajaneric@gmail.com: unable to verify the first certificate",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-17T05:26:57.294Z"
+    }
+  ]
+}
