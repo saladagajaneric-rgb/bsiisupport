@@ -1,5 +1,5 @@
 {
-  "_lastSavedTs": 1795054537719,
+  "_lastSavedTs": 1795054541800,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
@@ -164,6 +164,31 @@
     }
   ],
   "requests": [
+    {
+      "id": "REQ-2026-6907",
+      "isOncall": false,
+      "employeeId": "676767",
+      "employeeName": "Juan Dela Cruz",
+      "employeeCompany": "BSII Employee",
+      "employeeEmail": "juan.delacruz@bsii.com.ph",
+      "employeeMobile": "0917-676-7676",
+      "department": "HR Admin",
+      "category": "Leave Request",
+      "details": {},
+      "ccDepartments": [],
+      "ccEmails": [],
+      "customMonitoringEmails": [],
+      "status": "Submitted / Pending Officer Review",
+      "priority": "Standard",
+      "createdAt": "2026-11-19T02:15:41.548Z",
+      "updatedAt": "2026-11-19T02:15:41.548Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "comments": [],
+      "notifiedEmails": [
+        "saladagajaneric@gmail.com"
+      ]
+    },
     {
       "id": "REQ-2026-3537",
       "isOncall": false,
@@ -1419,6 +1444,18 @@
     }
   },
   "emailDispatchLog": [
+    {
+      "id": "DISP-1795054541549-180",
+      "requestId": "REQ-2026-6907",
+      "to": [
+        "saladagajaneric@gmail.com"
+      ],
+      "subject": "[BSIISUPPORT REQ-2026-6907] HR Admin — Leave Request (Juan Dela Cruz)",
+      "body": "A new support request related to your department/role was submitted.\n\nRequest ID: REQ-2026-6907\nDepartment: HR Admin\nCategory: Leave Request\nStatus: Submitted / Pending Officer Review\nPriority: Standard\n\nSubmitted By: Juan Dela Cruz (ID: 676767, BSII Employee)\nSubmitter Email: juan.delacruz@bsii.com.ph\nSubmitter Mobile: 0917-676-7676\n\nRequest Details:\n- (No extra form fields)",
+      "deliveryStatus": "Failed: saladagajaneric@gmail.com: <!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-19T02:15:41.549Z"
+    },
     {
       "id": "DISP-1795054537356-139",
       "requestId": "REQ-2026-3537",
