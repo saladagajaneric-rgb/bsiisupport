@@ -1,11 +1,11 @@
 {
-  "_lastSavedTs": 1795051400000,
+  "_lastSavedTs": 1795051572465,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
     "seasonalRoleNote": "Team Leader currently acts as Accounting & Payroll Officer (editable per season).",
     "departmentEmails": {
-      "HR Admin": "hr@bsii.com.ph",
+      "HR Admin": "saladagajaneric@gmail.com",
       "Purchasing Officer": "purchasing@bsii.com.ph",
       "Office of the Vice President, BSII": "vp.bsii@bsii.com.ph",
       "Office of the Vice President, Esteems": "vp.esteems@bsii.com.ph",
@@ -156,11 +156,11 @@
       "isHR": true,
       "isMasterAdmin": true,
       "isModerator": true,
-      "needsProfileSync": true,
-      "hasCompletedFirstSelfUpdate": false,
+      "needsProfileSync": false,
+      "hasCompletedFirstSelfUpdate": true,
       "email": "saladagajaneric@gmail.com",
       "mobile": "0917-000-0001",
-      "updatedAt": "2026-11-19T01:23:20.000Z"
+      "updatedAt": "2026-11-19T01:26:12.465Z"
     }
   ],
   "requests": [
@@ -1384,6 +1384,18 @@
   },
   "emailDispatchLog": [
     {
+      "id": "DISP-1795051510357-512",
+      "requestId": "VERIFY-000001",
+      "to": [
+        "saladagajaneric@gmail.com"
+      ],
+      "subject": "[BSIISUPPORT] Security Verification Code: 611403",
+      "body": "Hello Jan Eric Saladaga,\n\nYou requested to verify changes to your BSIISUPPORT account or password.\n\nYOUR 6-DIGIT VERIFICATION CODE: 611403\n\nOr click the secure link below in your Gmail to verify with 1 click:\nhttps://bsiisupport.vercel.app/api/account/verify-link?v=rB4fWjaac_XJJHyRK_Ju3_tYW_SJ_8WS9KI6QLQYiT0IYy9HfN4kNrprZ-qMrWU5heoJcvZTipds_k1pyAnk1Yr04gwQePAzPJYocYnm4MoegMPbgnqeJJfLgx-pRqgss5CyRF6Ncb9sk13ucqfHBVs\n\nThis security code expires in 10 minutes. If you did not request this, please ignore this email.",
+      "deliveryStatus": "Failed: saladagajaneric@gmail.com: <!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-19T01:25:10.357Z"
+    },
+    {
       "id": "DISP-1794894098507-762",
       "requestId": "REQ-2026-4280",
       "to": [
@@ -1410,5 +1422,6 @@
       "sentViaLiveEmail": false,
       "sentAt": "2026-11-17T05:26:57.294Z"
     }
-  ]
+  ],
+  "pendingEmailVerifications": {}
 }

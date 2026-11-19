@@ -1240,76 +1240,158 @@
   <main id="appViewport"></main>
 
   <!-- PROFILE MODAL -->
+  <style>
+    #profVerifyCodeInput {
+      letter-spacing: 0.24em;
+      font-weight: 800;
+      font-size: 1.05rem;
+      text-align: center;
+      color: var(--navy-primary);
+      background: #ffffff;
+    }
+    #profVerifyCodeInput::placeholder {
+      letter-spacing: normal;
+      font-weight: 500;
+      font-size: 0.86rem;
+      color: #94a3b8;
+    }
+    .prof-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 14px;
+    }
+    @media (max-width: 540px) {
+      .prof-grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .prof-otp-row {
+        flex-direction: column !important;
+      }
+    }
+  </style>
   <div id="profileModal" class="modal-backdrop" style="display: none;">
-    <div class="modal-panel" style="max-width:540px; max-height:88vh; overflow-y:auto;">
-      <h3 style="color: var(--navy-primary); font-size: 1.25rem; margin-bottom: 6px;">My Account &amp; Profile</h3>
-      <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 14px;">
-        Updates synchronize across the header bar, directory, and all support requests. Verify via your Gmail inbox to save changes.
-      </p>
-      <div id="profileModalAlert"></div>
-      <div class="form-group">
-        <label>Employee ID</label>
-        <input type="text" id="profReadonlyName" class="input-control" disabled style="background:#f1f5f9;" />
-      </div>
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" id="profFullNameInput" class="input-control" />
-      </div>
-      <div id="profOfficerFields" style="display:none;">
-        <div class="form-group">
-          <label>Role Title</label>
-          <input type="text" id="profRoleInput" class="input-control" />
-        </div>
-        <div class="form-group">
-          <label>Admin / Officer Username</label>
-          <input type="text" id="profAdminUserInput" class="input-control" />
-        </div>
-        <div class="form-group">
-          <label>New Admin / Officer Password <span class="label-hint">(leave blank to keep current)</span></label>
-          <input type="text" id="profAdminPassInput" class="input-control" placeholder="Strong password (8+ chars, upper, lower, num, symbol)" />
-        </div>
-      </div>
-      <div id="profEmployeePassBox" style="display:none;">
-        <div class="form-group">
-          <label>Login Password <span class="label-hint">(Last Name — ALL CAPS, no spaces)</span></label>
-          <input type="text" id="profLastNameInput" class="input-control" oninput="this.value = this.value.replace(/\s+/g, '').toUpperCase()" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Corporate / Personal Email <span class="label-hint">(Admins receive related requests &amp; security codes at this email)</span></label>
-        <input type="email" id="profEmailInput" class="input-control" placeholder="yourname@gmail.com" />
-      </div>
-      <div class="form-group">
-        <label>Mobile / Contact Number</label>
-        <input type="text" id="profMobileInput" class="input-control" placeholder="0917-XXX-XXXX" />
-      </div>
-      <div id="profConfirmPassBox" style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:14px; margin-top:12px;">
-        <div id="profGmailVerifyPane">
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
-            <label style="color:var(--navy-primary); font-weight:800; font-size:0.88rem; margin:0;">Verify via Gmail Inbox</label>
-            <button type="button" id="profSendCodeBtn" class="btn-gold" style="padding:7px 14px; font-size:0.8rem;" onclick="sendProfileVerificationEmail()">Send Verification to Gmail</button>
+    <div class="modal-panel" style="max-width: 600px; width: 95%; max-height: 92vh; padding: 0; overflow: hidden; display: flex; flex-direction: column; border-radius: 14px; border-top: none; box-shadow: 0 22px 48px rgba(0, 21, 48, 0.28);">
+      <!-- Modal Header -->
+      <div style="background: linear-gradient(135deg, #002147 0%, #003366 100%); color: #ffffff; padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 3px solid var(--gold-accent);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(229, 168, 35, 0.18); border: 1px solid rgba(229, 168, 35, 0.45); color: var(--gold-accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.05rem; flex-shrink: 0;">
+            &#9881;
           </div>
-          <p id="profGmailVerifyStatus" style="font-size:0.79rem; color:#475569; margin-bottom:8px;">
-            Click <strong>Send Verification to Gmail</strong> to receive a 6-digit security code and a 1-click verification link in your inbox.
-          </p>
-          <input type="text" id="profVerifyCodeInput" class="input-control" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="Enter 6-digit code from Gmail (or click link in email)" style="letter-spacing:0.15em; font-weight:800;" />
-          <div style="margin-top:8px; text-align:right;">
-            <a href="javascript:void(0)" onclick="toggleProfileVerifyMethod('password')" style="font-size:0.76rem; color:#0369a1; font-weight:700; text-decoration:underline;">Or verify with current password instead</a>
+          <div>
+            <h3 style="color: #ffffff; font-size: 1.12rem; font-weight: 800; margin: 0; letter-spacing: 0.01em;">My Account &amp; Profile</h3>
+            <p style="font-size: 0.77rem; color: #cbd5e1; margin: 2px 0 0 0;">
+              Changes sync live across the header, employee directory, and support requests.
+            </p>
           </div>
         </div>
-        <div id="profPasswordVerifyPane" style="display:none;">
-          <div class="form-group" style="margin-bottom:0;">
-            <label style="color:var(--navy-primary);">Re-enter Current Password to Verify</label>
-            <input type="password" id="profCurrentPassInput" class="input-control" autocomplete="new-password" placeholder="Enter your current password to save changes" />
+        <button type="button" onclick="closeProfileModal()" aria-label="Close" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); color: #ffffff; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 1.15rem; line-height: 1; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div style="padding: 18px 22px; overflow-y: auto; flex: 1;">
+        <div id="profileModalAlert"></div>
+
+        <!-- Identity Section -->
+        <div class="prof-grid-2" style="margin-bottom: 12px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; color: #475569;">Employee ID</label>
+            <input type="text" id="profReadonlyName" class="input-control" disabled style="background:#f1f5f9; padding: 9px 12px;" />
           </div>
-          <div style="margin-top:8px; text-align:right;">
-            <a href="javascript:void(0)" onclick="toggleProfileVerifyMethod('gmail')" style="font-size:0.76rem; color:#0369a1; font-weight:700; text-decoration:underline;">Back to Gmail Inbox Verification</a>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; color: #475569;">Full Name</label>
+            <input type="text" id="profFullNameInput" class="input-control" style="padding: 9px 12px;" />
+          </div>
+        </div>
+
+        <!-- Officer / Admin Credentials Section -->
+        <div id="profOfficerFields" style="display:none; margin-bottom: 12px;">
+          <div class="prof-grid-2" style="margin-bottom: 12px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; color: #475569;">Role Title</label>
+              <input type="text" id="profRoleInput" class="input-control" style="padding: 9px 12px;" />
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; color: #475569;">Admin / Officer Username</label>
+              <input type="text" id="profAdminUserInput" class="input-control" style="padding: 9px 12px;" />
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap;">
+              <label style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; color: #475569; margin-bottom: 4px;">New Admin / Officer Password</label>
+              <span style="font-size: 0.74rem; color: #64748b;">Leave blank to keep current password</span>
+            </div>
+            <input type="text" id="profAdminPassInput" class="input-control" placeholder="8+ chars, uppercase, lowercase, number &amp; symbol" style="padding: 9px 12px;" />
+          </div>
+        </div>
+
+        <!-- Standard Employee Password Section -->
+        <div id="profEmployeePassBox" style="display:none; margin-bottom: 12px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+              <label style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; color: #475569; margin-bottom: 4px;">Login Password</label>
+              <span style="font-size: 0.74rem; color: #64748b;">Last Name — ALL CAPS, no spaces</span>
+            </div>
+            <input type="text" id="profLastNameInput" class="input-control" style="padding: 9px 12px;" oninput="this.value = this.value.replace(/\s+/g, '').toUpperCase()" />
+          </div>
+        </div>
+
+        <!-- Contact Details Section -->
+        <div class="prof-grid-2" style="margin-bottom: 14px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; color: #475569;">Corporate / Personal Gmail</label>
+            <input type="email" id="profEmailInput" class="input-control" placeholder="yourname@gmail.com" style="padding: 9px 12px;" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; color: #475569;">Mobile / Contact Number</label>
+            <input type="text" id="profMobileInput" class="input-control" placeholder="0917-XXX-XXXX" style="padding: 9px 12px;" />
+          </div>
+        </div>
+
+        <!-- Security Verification Card -->
+        <div id="profConfirmPassBox" style="background: linear-gradient(180deg, #f0f9ff 0%, #f8fafc 100%); border: 1px solid #bae6fd; border-radius: 12px; padding: 14px 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+            <div style="display: flex; align-items: center; gap: 7px;">
+              <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; background: #e0f2fe; color: #0369a1; font-size: 0.85rem; font-weight: 800;">&#128274;</span>
+              <span style="color: var(--navy-primary); font-weight: 800; font-size: 0.88rem;">Security Verification</span>
+            </div>
+            <!-- Segmented Mode Switcher -->
+            <div style="display: inline-flex; background: #e2e8f0; padding: 3px; border-radius: 8px; gap: 2px;">
+              <button type="button" id="profTabGmailBtn" onclick="toggleProfileVerifyMethod('gmail')" style="border: none; background: #ffffff; color: var(--navy-primary); font-weight: 700; font-size: 0.75rem; padding: 5px 11px; border-radius: 6px; cursor: pointer; box-shadow: 0 1px 3px rgba(15,23,42,0.12); transition: all 0.15s;">
+                &#9993; Gmail Code
+              </button>
+              <button type="button" id="profTabPassBtn" onclick="toggleProfileVerifyMethod('password')" style="border: none; background: transparent; color: #475569; font-weight: 700; font-size: 0.75rem; padding: 5px 11px; border-radius: 6px; cursor: pointer; transition: all 0.15s;">
+                &#128273; Current Password
+              </button>
+            </div>
+          </div>
+
+          <!-- Gmail Verification Pane -->
+          <div id="profGmailVerifyPane">
+            <div id="profGmailVerifyStatus" style="font-size: 0.8rem; line-height: 1.45; color: #334155; background: rgba(255,255,255,0.75); border: 1px solid #e0f2fe; border-radius: 8px; padding: 8px 11px; margin-bottom: 10px;">
+              Click <strong>Send Code to Gmail</strong> to receive a 6-digit security code or 1-click verification link in your inbox.
+            </div>
+            <div class="prof-otp-row" style="display: flex; gap: 10px; align-items: stretch;">
+              <input type="text" id="profVerifyCodeInput" class="input-control" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="Enter 6-digit code" style="flex: 1; padding: 9px 12px;" />
+              <button type="button" id="profSendCodeBtn" class="btn-gold" style="padding: 9px 16px; font-size: 0.82rem; white-space: nowrap; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" onclick="sendProfileVerificationEmail()">
+                Send Code to Gmail
+              </button>
+            </div>
+          </div>
+
+          <!-- Password Verification Pane -->
+          <div id="profPasswordVerifyPane" style="display:none;">
+            <p style="font-size: 0.79rem; color: #475569; margin: 0 0 8px 0;">
+              Enter your current login password to confirm and save changes immediately:
+            </p>
+            <input type="password" id="profCurrentPassInput" class="input-control" autocomplete="new-password" placeholder="Enter your current password" style="padding: 9px 12px; background: #ffffff;" />
           </div>
         </div>
       </div>
-      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
-        <button type="button" class="btn-secondary" onclick="closeProfileModal()">Cancel</button>
-        <button type="button" id="profSaveBtn" class="btn-gold" onclick="saveProfileChanges()">Save &amp; Sync</button>
+
+      <!-- Modal Footer -->
+      <div style="padding: 13px 22px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+        <button type="button" class="btn-secondary" style="padding: 9px 18px; border-radius: 8px;" onclick="closeProfileModal()">Cancel</button>
+        <button type="button" id="profSaveBtn" class="btn-gold" style="padding: 9px 22px; border-radius: 8px;" onclick="saveProfileChanges()">Save &amp; Sync</button>
       </div>
     </div>
   </div>
@@ -3712,14 +3794,36 @@
     function toggleProfileVerifyMethod(mode) {
       const gmailPane = document.getElementById('profGmailVerifyPane');
       const passPane = document.getElementById('profPasswordVerifyPane');
+      const gmailTab = document.getElementById('profTabGmailBtn');
+      const passTab = document.getElementById('profTabPassBtn');
       if (mode === 'password') {
         gmailPane.style.display = 'none';
         passPane.style.display = 'block';
         document.getElementById('profVerifyCodeInput').value = '';
+        if (gmailTab) {
+          gmailTab.style.background = 'transparent';
+          gmailTab.style.color = '#475569';
+          gmailTab.style.boxShadow = 'none';
+        }
+        if (passTab) {
+          passTab.style.background = '#ffffff';
+          passTab.style.color = 'var(--navy-primary)';
+          passTab.style.boxShadow = '0 1px 3px rgba(15,23,42,0.12)';
+        }
       } else {
         gmailPane.style.display = 'block';
         passPane.style.display = 'none';
         document.getElementById('profCurrentPassInput').value = '';
+        if (gmailTab) {
+          gmailTab.style.background = '#ffffff';
+          gmailTab.style.color = 'var(--navy-primary)';
+          gmailTab.style.boxShadow = '0 1px 3px rgba(15,23,42,0.12)';
+        }
+        if (passTab) {
+          passTab.style.background = 'transparent';
+          passTab.style.color = '#475569';
+          passTab.style.boxShadow = 'none';
+        }
       }
     }
 
@@ -3828,13 +3932,13 @@
       const sendBtn = document.getElementById('profSendCodeBtn');
       if (sendBtn) {
         sendBtn.disabled = false;
-        sendBtn.textContent = 'Send Verification to Gmail';
+        sendBtn.textContent = 'Send Code to Gmail';
       }
       const statusEl = document.getElementById('profGmailVerifyStatus');
       if (statusEl) {
-        statusEl.style.color = '#475569';
+        statusEl.style.color = '#334155';
         statusEl.style.fontWeight = '400';
-        statusEl.innerHTML = 'Click <strong>Send Verification to Gmail</strong> to receive a 6-digit security code and a 1-click verification link in your inbox.';
+        statusEl.innerHTML = 'Click <strong>Send Code to Gmail</strong> to receive a 6-digit security code or 1-click verification link in your inbox.';
       }
       document.getElementById('profEmailInput').value = state.user.email || '';
       document.getElementById('profMobileInput').value = state.user.mobile || '';
