@@ -1,5 +1,5 @@
 {
-  "_lastSavedTs": 1795054541800,
+  "_lastSavedTs": 1795054623832,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
@@ -164,6 +164,42 @@
     }
   ],
   "requests": [
+    {
+      "id": "REQ-2026-8006",
+      "isOncall": false,
+      "employeeId": "676767",
+      "employeeName": "Juan Dela Cruz",
+      "employeeCompany": "BSII Employee",
+      "employeeEmail": "juan.delacruz@bsii.com.ph",
+      "employeeMobile": "0917-676-7676",
+      "department": "Purchasing Officer",
+      "category": "Item / Supply Request",
+      "details": {
+        "Item Description (Office Supplies Only — Not For Trade)": "",
+        "Quantity": "",
+        "Estimated Budget (PHP / ₱)": "",
+        "Urgency": "Low (Next Monthly Cycle)",
+        "Business Justification": ""
+      },
+      "ccDepartments": [
+        "HR Admin"
+      ],
+      "ccEmails": [
+        "saladagajaneric@gmail.com"
+      ],
+      "customMonitoringEmails": [],
+      "status": "Submitted / Pending Officer Review",
+      "priority": "Low (Next Monthly Cycle)",
+      "createdAt": "2026-11-19T02:17:03.347Z",
+      "updatedAt": "2026-11-19T02:17:03.347Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "comments": [],
+      "notifiedEmails": [
+        "purchasing@bsii.com.ph",
+        "saladagajaneric@gmail.com"
+      ]
+    },
     {
       "id": "REQ-2026-6907",
       "isOncall": false,
@@ -1444,6 +1480,19 @@
     }
   },
   "emailDispatchLog": [
+    {
+      "id": "DISP-1795054623349-758",
+      "requestId": "REQ-2026-8006",
+      "to": [
+        "purchasing@bsii.com.ph",
+        "saladagajaneric@gmail.com"
+      ],
+      "subject": "[BSIISUPPORT REQ-2026-8006] Purchasing Officer — Item / Supply Request (Juan Dela Cruz)",
+      "body": "A new support request related to your department/role was submitted.\n\nRequest ID: REQ-2026-8006\nDepartment: Purchasing Officer\nCategory: Item / Supply Request\nStatus: Submitted / Pending Officer Review\nPriority: Low (Next Monthly Cycle)\n\nSubmitted By: Juan Dela Cruz (ID: 676767, BSII Employee)\nSubmitter Email: juan.delacruz@bsii.com.ph\nSubmitter Mobile: 0917-676-7676\nCC Departments: HR Admin\n\nRequest Details:\n- Item Description (Office Supplies Only — Not For Trade): \n- Quantity: \n- Estimated Budget (PHP / ₱): \n- Urgency: Low (Next Monthly Cycle)\n- Business Justification: ",
+      "deliveryStatus": "Failed: purchasing@bsii.com.ph: <!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA; saladagajaneric@gmail.com: <!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-19T02:17:03.349Z"
+    },
     {
       "id": "DISP-1795054541549-180",
       "requestId": "REQ-2026-6907",
