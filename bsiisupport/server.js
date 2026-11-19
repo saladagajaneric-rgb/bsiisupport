@@ -1747,7 +1747,8 @@ const server = http.createServer(async (req, res) => {
 
       const isPrimaryDept = r.department === currentUser.department ||
         (currentUser.secondaryDepartments && currentUser.secondaryDepartments.includes(r.department));
-      const isCCDept = (r.ccDepartments || []).includes(currentUser.department);
+      const isCCDept = (r.ccDepartments || []).includes(currentUser.department) ||
+        (Array.isArray(currentUser.secondaryDepartments) && currentUser.secondaryDepartments.some((sd) => (r.ccDepartments || []).includes(sd)));
       const isFinancialAuditForTeamLead =
         currentUser.department === 'Team Leader' &&
         (r.department === 'Accounting & Payroll' ||
@@ -1755,7 +1756,7 @@ const server = http.createServer(async (req, res) => {
           /reimbursement|petty cash|financial|payroll|expense/i.test(r.category));
 
       if (isInTrash) {
-        if (currentUser.isStaff && (isPrimaryDept || isCCDept || isFinancialAuditForTeamLead || currentUser.isMasterAdmin)) {
+        if (currentUser.isStaff && (isPrimaryDept || isCCDept || isFinancialAuditForTeamLead)) {
           retentionTrash.push({
             ...r,
             retentionReason: r.completedToHistory ? 'Completed' : r.deletedAt ? 'Archived' : '365-Day Auto-Archive'
