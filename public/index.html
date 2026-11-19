@@ -2724,6 +2724,26 @@
       `;
     }
 
+    async function dispatchBrowserEmailRelayIfNeeded(payload) {
+      if (!payload || payload.sentViaLiveEmail || !payload.browserRelay || !Array.isArray(payload.browserRelay.toList)) {
+        return;
+      }
+      await Promise.all(payload.browserRelay.toList.map(async (addr) => {
+        try {
+          await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(addr)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+              _subject: payload.browserRelay.subject,
+              _template: 'table',
+              _captcha: 'false',
+              message: payload.browserRelay.message
+            })
+          });
+        } catch (_) {}
+      }));
+    }
+
     async function markDoneToHistory(reqId) {
       const res = await fetch(`/api/requests/${encodeURIComponent(reqId)}`, {
         method: 'PATCH',
@@ -2731,6 +2751,8 @@
         body: JSON.stringify({ markDoneToHistory: true })
       });
       if (res.ok) {
+        const d = await res.json().catch(() => ({}));
+        await dispatchBrowserEmailRelayIfNeeded(d);
         await refreshRequestsData();
         renderHeaderAndNav();
         renderCurrentRoute();
@@ -2746,6 +2768,8 @@
         body: JSON.stringify({ status, comment })
       });
       if (res.ok) {
+        const d = await res.json().catch(() => ({}));
+        await dispatchBrowserEmailRelayIfNeeded(d);
         await refreshRequestsData();
         renderCurrentRoute();
       }
@@ -2760,6 +2784,8 @@
         body: JSON.stringify({ addMonitoringEmail: inp.value.trim() })
       });
       if (res.ok) {
+        const d = await res.json().catch(() => ({}));
+        await dispatchBrowserEmailRelayIfNeeded(d);
         await refreshRequestsData();
         renderCurrentRoute();
       }

@@ -1410,8 +1410,15 @@ async function handleSelfAccountUpdate(res, data, currentUser, body) {
     }
     user.adminUsername = nextAdminUser;
     user.adminPassword = nextAdminPass;
-    if (user.email && user.department && data.settings && data.settings.departmentEmails) {
-      data.settings.departmentEmails[user.department] = user.email;
+    if (user.email && data.settings && data.settings.departmentEmails) {
+      if (user.department) {
+        data.settings.departmentEmails[user.department] = user.email;
+      }
+      if (Array.isArray(user.secondaryDepartments)) {
+        user.secondaryDepartments.forEach((secDept) => {
+          if (secDept) data.settings.departmentEmails[secDept] = user.email;
+        });
+      }
     }
   } else if (body.lastName && String(body.lastName).trim()) {
     user.lastName = String(body.lastName).replace(/\s+/g, '').toUpperCase();
@@ -1926,31 +1933,60 @@ const server = http.createServer(async (req, res) => {
     target.updatedAt = new Date().toISOString();
     saveData(data);
 
+    let dispatch = null;
+    let browserRelay = null;
+
     if (addedMonEmail) {
-      await deliverWebsiteEmail(data, {
+      const subject = `[BSIISUPPORT ${target.id}] Added as Monitoring Recipient — ${target.category}`;
+      const text = `You were added to monitor this support request by ${currentUser.fullName}.\n\n${formatRequestEmailText(target)}`;
+      dispatch = await deliverWebsiteEmail(data, {
         toList: [addedMonEmail],
-        subject: `[BSIISUPPORT ${target.id}] Added as Monitoring Recipient — ${target.category}`,
-        text: `You were added to monitor this support request by ${currentUser.fullName}.\n\n${formatRequestEmailText(target)}`,
+        subject,
+        text,
         requestId: target.id
       });
+      if (!isPlaceholderEmail(addedMonEmail)) {
+        browserRelay = { toList: [addedMonEmail], subject, message: text };
+      }
     } else if (!isOncallTarget && (body.status || body.markDoneToHistory || (body.comment && String(body.comment).trim()))) {
+      const latestEmp = (data.users || []).find((u) => u.id === target.employeeId);
+      if (latestEmp && latestEmp.email && latestEmp.email.includes('@')) {
+        target.employeeEmail = latestEmp.email;
+      }
       const updateRecipients = [];
-      if (target.employeeEmail && target.employeeEmail.includes('@')) updateRecipients.push(target.employeeEmail);
-      (target.customMonitoringEmails || []).forEach((e) => updateRecipients.push(e));
+      const addRcpt = (addr) => {
+        const clean = String(addr || '').trim();
+        if (clean && clean.includes('@') && !updateRecipients.some((e) => e.toLowerCase() === clean.toLowerCase())) {
+          updateRecipients.push(clean);
+        }
+      };
+      if (target.employeeEmail) addRcpt(target.employeeEmail);
+      (target.customMonitoringEmails || []).forEach(addRcpt);
       if (updateRecipients.length > 0) {
         const noteText = body.comment && String(body.comment).trim()
           ? `\nOfficer Note (${currentUser.fullName}): ${String(body.comment).trim()}`
           : '';
-        await deliverWebsiteEmail(data, {
+        const subject = `[BSIISUPPORT ${target.id}] Status Update: ${target.status}`;
+        const text = `Your support request was updated by ${currentUser.fullName}.${noteText}\n\n${formatRequestEmailText(target)}`;
+        dispatch = await deliverWebsiteEmail(data, {
           toList: updateRecipients,
-          subject: `[BSIISUPPORT ${target.id}] Status Update: ${target.status}`,
-          text: `Your support request was updated by ${currentUser.fullName}.${noteText}\n\n${formatRequestEmailText(target)}`,
+          subject,
+          text,
           requestId: target.id
         });
+        const realRecipients = updateRecipients.filter((e) => !isPlaceholderEmail(e));
+        if (realRecipients.length > 0) {
+          browserRelay = { toList: realRecipients, subject, message: text };
+        }
       }
     }
 
-    sendJson(res, 200, { success: true, request: target });
+    sendJson(res, 200, {
+      success: true,
+      request: target,
+      sentViaLiveEmail: Boolean(dispatch && dispatch.sentViaLiveEmail),
+      browserRelay
+    });
     return;
   }
 
