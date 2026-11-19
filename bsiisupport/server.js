@@ -1813,13 +1813,6 @@ const server = http.createServer(async (req, res) => {
       customMonitoringEmails.push(cleanCol);
     }
 
-    if (data.settings.globalCcEnabled && data.settings.globalCcEmail) {
-      if (!ccEmails.includes(data.settings.globalCcEmail)) {
-        ccEmails.push(data.settings.globalCcEmail);
-      }
-      customMonitoringEmails.push(data.settings.globalCcEmail);
-    }
-
     const newReq = {
       id: 'REQ-2026-' + Math.floor(1000 + Math.random() * 9000),
       employeeId: currentUser.id,
