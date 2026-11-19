@@ -166,11 +166,11 @@ const DEFAULT_DATA = {
       isHR: true,
       isMasterAdmin: true,
       isModerator: true,
-      needsProfileSync: false,
-      hasCompletedFirstSelfUpdate: true,
+      needsProfileSync: true,
+      hasCompletedFirstSelfUpdate: false,
       email: 'saladagajaneric@gmail.com',
       mobile: '0917-000-0001',
-      updatedAt: '2026-11-17T00:00:00.000Z'
+      updatedAt: '2026-11-19T01:23:20.000Z'
     }
   ],
   requests: [
@@ -642,12 +642,10 @@ async function flushGithubCloudSync() {
   const serialized = pendingCloudSerialized;
   pendingCloudSerialized = null;
   try {
-    if (!cachedCloudSha) {
-      const getRes = await githubCloudApi('GET', '/repos/saladagajaneric-rgb/bsiisupport/contents/bsiisupport/data.json');
-      if (getRes && getRes.json && getRes.json.sha) cachedCloudSha = getRes.json.sha;
-    }
+    const getRes = await githubCloudApi('GET', '/repos/saladagajaneric-rgb/bsiisupport/contents/bsiisupport/data.json');
+    if (getRes && getRes.json && getRes.json.sha) cachedCloudSha = getRes.json.sha;
     const putRes = await githubCloudApi('PUT', '/repos/saladagajaneric-rgb/bsiisupport/contents/bsiisupport/data.json', {
-      message: 'Auto-sync live portal data.json',
+      message: 'Auto-sync live portal data.json [skip ci]',
       content: Buffer.from(serialized, 'utf8').toString('base64'),
       ...(cachedCloudSha ? { sha: cachedCloudSha } : {})
     });
@@ -698,6 +696,8 @@ function refreshSignedStateTokens(data) {
   });
 }
 
+const MIN_STATE_EPOCH = 1795051400000;
+
 function applyIncomingSyncedState(parsed, req) {
   if (!req || !req.headers) return parsed;
   const headerToken = req.headers['x-bsii-state'] || '';
@@ -713,7 +713,7 @@ function applyIncomingSyncedState(parsed, req) {
   const candidates = [
     verifyCompressedState(headerToken),
     verifyCompressedState(cookieToken)
-  ].filter(Boolean);
+  ].filter((c) => c && (c.ts || 0) >= MIN_STATE_EPOCH);
 
   if (candidates.length === 0) return parsed;
   candidates.sort((a, b) => (b.ts || 0) - (a.ts || 0));
@@ -1417,6 +1417,8 @@ async function handleSelfAccountUpdate(res, data, currentUser, body) {
     user.lastName = String(body.lastName).replace(/\s+/g, '').toUpperCase();
   }
 
+  user.needsProfileSync = false;
+  user.hasCompletedFirstSelfUpdate = true;
   user.updatedAt = new Date().toISOString();
   syncUserAcrossRequests(data, user);
   saveData(data);
@@ -2135,18 +2137,10 @@ const server = http.createServer(async (req, res) => {
       verificationToken,
       sentViaServer: Boolean(dispatchResult && dispatchResult.sentViaLiveEmail),
       deliveryStatus: dispatchResult ? dispatchResult.deliveryStatus : '',
-      // Encrypted-only relay payload for browser fallback (never exposes plaintext code in client network traffic)
       browserRelay: {
         toList: recipients,
-        subject: `[BSIISUPPORT] Gmail Security Verification (${user.fullName})`,
-        message: [
-          `Hello ${user.fullName},`,
-          '',
-          'Click the secure verification link below to view your 6-digit verification code and approve your BSIISUPPORT account update:',
-          verifyUrl,
-          '',
-          'This verification link is valid for 10 minutes.'
-        ].join('\n')
+        subject: emailSubject,
+        message: emailText
       }
     });
     return;
