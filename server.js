@@ -2233,10 +2233,31 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, { approved: false });
   }
 
-  // HR Security & Employee Directory Management (Strictly HR only; admin credentials masked)
+  // HR Security & Employee Directory Management (HR full access; other admins view-only without credentials)
   if (pathname === '/api/hr/employees' && req.method === 'GET') {
-    if (!currentUser || (!currentUser.isHR && !currentUser.isMasterAdmin && !currentUser.isModerator)) {
-      return sendJson(res, 403, { error: 'Strictly for HR Admin only. Department Officers cannot view all accounts.' });
+    if (!currentUser || (!currentUser.isStaff && !currentUser.isHR && !currentUser.isMasterAdmin && !currentUser.isModerator)) {
+      return sendJson(res, 403, { error: 'Strictly for authorized Admins and HR only.' });
+    }
+    const isHR = Boolean(currentUser.isHR || currentUser.isMasterAdmin || currentUser.isModerator);
+    if (!isHR) {
+      const readOnlyEmployees = data.users.map((u) => ({
+        id: u.id,
+        fullName: u.fullName,
+        company: u.company,
+        department: u.department,
+        role: u.role,
+        email: u.email,
+        mobile: u.mobile,
+        isProtectedAdmin: Boolean(u.isStaff || u.isHR || u.isMasterAdmin || u.isModerator),
+        credentialsHidden: true
+      }));
+      sendJson(res, 200, {
+        requiresPassword: false,
+        readOnly: true,
+        employees: readOnlyEmployees,
+        settings: sanitizeSettingsForClient(data.settings, false)
+      });
+      return;
     }
     const rec = getSessionRecord(req);
     const isUnlocked = Boolean(rec && rec.sessionData && rec.sessionData.hrDirectoryUnlocked);
@@ -2249,6 +2270,7 @@ const server = http.createServer(async (req, res) => {
     }
     sendJson(res, 200, {
       requiresPassword: false,
+      readOnly: false,
       employees: data.users.map(formatDirectoryUser),
       settings: sanitizeSettingsForClient(data.settings, true)
     });
@@ -2407,8 +2429,8 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === '/api/settings' && req.method === 'POST') {
-    if (!currentUser || (!currentUser.isHR && !currentUser.isMasterAdmin && !currentUser.isStaff)) {
-      return sendJson(res, 403, { error: 'Unauthorized' });
+    if (!currentUser || (!currentUser.isHR && !currentUser.isMasterAdmin && !currentUser.isModerator)) {
+      return sendJson(res, 403, { error: 'Strictly for HR Admin only. Other admins have view-only access.' });
     }
     const body = await readJsonBody(req);
     if (typeof body.globalCcEmail === 'string') {
@@ -2476,23 +2498,15 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // Edit Step Options (HR Admin can edit ALL departments; other Department Admins can ONLY edit their own)
+  // Edit Step Options (Strictly HR Admin only; other admins have view-only access)
   if (pathname === '/api/department-config' && req.method === 'POST') {
-    if (!currentUser || !currentUser.isStaff) {
-      return sendJson(res, 403, { error: 'Strictly for authorized Department Officers and HR Admin.' });
+    if (!currentUser || (!currentUser.isHR && !currentUser.isMasterAdmin && !currentUser.isModerator)) {
+      return sendJson(res, 403, { error: 'Strictly for HR Admin only. Other admins have view-only access to Step & Form Options.' });
     }
     const body = await readJsonBody(req);
     const { department, subtitle, categories } = body;
     if (!department || !data.departmentConfig[department]) {
       return sendJson(res, 400, { error: 'Valid target department is required.' });
-    }
-    const canEditAll = Boolean(currentUser.isHR || currentUser.isMasterAdmin);
-    const isOwnDept = currentUser.department === department ||
-      (currentUser.secondaryDepartments && currentUser.secondaryDepartments.includes(department));
-    if (!canEditAll && !isOwnDept) {
-      return sendJson(res, 403, {
-        error: `Access denied: ${currentUser.department} cannot edit ${department} step options. Only HR Admin can edit all departments.`
-      });
     }
     if (typeof subtitle === 'string') {
       data.departmentConfig[department].subtitle = subtitle.trim();

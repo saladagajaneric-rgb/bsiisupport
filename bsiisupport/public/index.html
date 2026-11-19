@@ -1699,7 +1699,7 @@
       }
 
       await refreshRequestsData();
-      if (state.user.isHR || state.user.isMasterAdmin || state.user.isModerator) {
+      if (state.user.isStaff || state.user.isHR || state.user.isMasterAdmin || state.user.isModerator) {
         await refreshHrData();
       }
       renderHeaderAndNav();
@@ -2882,13 +2882,11 @@
       const s = state.settings || {};
       const deptEmails = s.departmentEmails || {};
       const isHR = Boolean(state.user.isHR || state.user.isMasterAdmin || state.user.isModerator);
-      const tab = state.adminSettingsTab || (isHR ? 'employees' : 'steps');
+      const tab = state.adminSettingsTab || 'employees';
 
-      // Determine which departments this officer can edit in Step Options
+      // All admins can view all departments in Step Options; only HR can edit
       const allDepts = Object.keys(DEPARTMENT_CONFIG);
-      const editableDepts = isHR
-        ? allDepts
-        : allDepts.filter((d) => d === state.user.department || (state.user.secondaryDepartments && state.user.secondaryDepartments.includes(d)));
+      const editableDepts = allDepts;
 
       if (!state.stepEditorDept || !editableDepts.includes(state.stepEditorDept)) {
         state.stepEditorDept = editableDepts[0] || allDepts[0];
@@ -2899,6 +2897,8 @@
       if (tab === 'steps') {
         const targetDept = state.stepEditorDept;
         const draft = ensureStepEditorDraft(targetDept);
+        const roAttr = isHR ? '' : 'disabled';
+        const roStyle = isHR ? '' : 'background:#f8fafc; color:#475569; cursor:default;';
         const deptButtons = editableDepts.map((d) => `
           <button type="button" class="btn-secondary" style="${d === targetDept ? 'background:var(--navy-primary); color:#fff; border-color:var(--navy-primary);' : ''}" onclick="selectStepEditorDept('${escapeHtml(d)}')">
             ${escapeHtml(d)}
@@ -2928,40 +2928,44 @@
               const rowsHtml = opts.map((opt, optIdx) => `
                 <div class="gf-option-row">
                   <span class="gf-option-marker">${f.type === 'select' ? `${optIdx + 1}.` : marker}</span>
-                  <input type="text" class="gf-option-input" value="${escapeHtml(opt)}" placeholder="Option ${optIdx + 1}" oninput="gfUpdateOption(${catIdx}, ${fIdx}, ${optIdx}, this.value)" />
-                  <button type="button" class="gf-icon-btn danger" title="Remove option" onclick="gfRemoveOption(${catIdx}, ${fIdx}, ${optIdx})">&times;</button>
+                  <input type="text" class="gf-option-input" ${roAttr} style="${roStyle}" value="${escapeHtml(opt)}" placeholder="Option ${optIdx + 1}" oninput="gfUpdateOption(${catIdx}, ${fIdx}, ${optIdx}, this.value)" />
+                  ${isHR ? `<button type="button" class="gf-icon-btn danger" title="Remove option" onclick="gfRemoveOption(${catIdx}, ${fIdx}, ${optIdx})">&times;</button>` : ''}
                 </div>
               `).join('');
               bodyHtml = `
                 <div class="gf-options-list">${rowsHtml}</div>
-                <button type="button" class="gf-icon-btn" style="color:var(--navy-primary); font-weight:700;" onclick="gfAddOption(${catIdx}, ${fIdx})">
-                  + Add option
-                </button>
+                ${isHR ? `
+                  <button type="button" class="gf-icon-btn" style="color:var(--navy-primary); font-weight:700;" onclick="gfAddOption(${catIdx}, ${fIdx})">
+                    + Add option
+                  </button>
+                ` : ''}
               `;
             } else if (f.type === 'date') {
               bodyHtml = `<div style="font-size:0.84rem; color:#64748b; padding:6px 10px; background:#f8fafc; border-radius:6px; border:1px dashed #cbd5e1;">Month, day, year (Date picker)</div>`;
             } else {
               bodyHtml = `
-                <input type="text" class="gf-option-input" style="width:100%;" value="${escapeHtml(f.placeholder || '')}" placeholder="Optional helper / placeholder text..." oninput="gfUpdateField(${catIdx}, ${fIdx}, 'placeholder', this.value)" />
+                <input type="text" class="gf-option-input" ${roAttr} style="width:100%; ${roStyle}" value="${escapeHtml(f.placeholder || '')}" placeholder="Optional helper / placeholder text..." oninput="gfUpdateField(${catIdx}, ${fIdx}, 'placeholder', this.value)" />
               `;
             }
 
             return `
               <div class="gf-question-card">
                 <div class="gf-question-top">
-                  <input type="text" class="gf-question-title" value="${escapeHtml(f.name || '')}" placeholder="Question / Field Label" oninput="gfUpdateField(${catIdx}, ${fIdx}, 'name', this.value)" />
-                  <select class="gf-type-select" onchange="gfChangeFieldType(${catIdx}, ${fIdx}, this.value)">
+                  <input type="text" class="gf-question-title" ${roAttr} style="${roStyle}" value="${escapeHtml(f.name || '')}" placeholder="Question / Field Label" oninput="gfUpdateField(${catIdx}, ${fIdx}, 'name', this.value)" />
+                  <select class="gf-type-select" ${roAttr} style="${roStyle}" onchange="gfChangeFieldType(${catIdx}, ${fIdx}, this.value)">
                     ${typeOptionsHtml}
                   </select>
                 </div>
                 ${bodyHtml}
                 <div class="gf-question-footer">
-                  <button type="button" class="gf-icon-btn" title="Move up" onclick="gfMoveField(${catIdx}, ${fIdx}, -1)" ${fIdx === 0 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>&uarr;</button>
-                  <button type="button" class="gf-icon-btn" title="Move down" onclick="gfMoveField(${catIdx}, ${fIdx}, 1)" ${fIdx === cat.fields.length - 1 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>&darr;</button>
-                  <button type="button" class="gf-icon-btn" title="Duplicate question" onclick="gfDuplicateField(${catIdx}, ${fIdx})">Duplicate</button>
-                  <button type="button" class="gf-icon-btn danger" title="Delete question" onclick="gfDeleteField(${catIdx}, ${fIdx})">Delete</button>
+                  ${isHR ? `
+                    <button type="button" class="gf-icon-btn" title="Move up" onclick="gfMoveField(${catIdx}, ${fIdx}, -1)" ${fIdx === 0 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>&uarr;</button>
+                    <button type="button" class="gf-icon-btn" title="Move down" onclick="gfMoveField(${catIdx}, ${fIdx}, 1)" ${fIdx === cat.fields.length - 1 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>&darr;</button>
+                    <button type="button" class="gf-icon-btn" title="Duplicate question" onclick="gfDuplicateField(${catIdx}, ${fIdx})">Duplicate</button>
+                    <button type="button" class="gf-icon-btn danger" title="Delete question" onclick="gfDeleteField(${catIdx}, ${fIdx})">Delete</button>
+                  ` : ''}
                   <label class="gf-required-label">
-                    <input type="checkbox" ${f.required ? 'checked' : ''} onchange="gfUpdateField(${catIdx}, ${fIdx}, 'required', this.checked)" />
+                    <input type="checkbox" ${roAttr} ${f.required ? 'checked' : ''} onchange="gfUpdateField(${catIdx}, ${fIdx}, 'required', this.checked)" />
                     Required
                   </label>
                 </div>
@@ -2973,20 +2977,24 @@
             <div class="gf-section-card">
               <div class="gf-section-header">
                 <span style="font-size:0.78rem; font-weight:800; color:var(--navy-primary); text-transform:uppercase; letter-spacing:0.04em;">Category ${catIdx + 1}</span>
-                <input type="text" class="gf-section-title-input" value="${escapeHtml(cat.name)}" placeholder="Category Name" oninput="gfUpdateCatName(${catIdx}, this.value)" />
-                <div style="display:flex; gap:6px;">
-                  <button type="button" class="gf-icon-btn" title="Move category up" onclick="gfMoveCat(${catIdx}, -1)" ${catIdx === 0 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>&uarr;</button>
-                  <button type="button" class="gf-icon-btn" title="Move category down" onclick="gfMoveCat(${catIdx}, 1)" ${catIdx === draft.categories.length - 1 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>&darr;</button>
-                  <button type="button" class="gf-icon-btn danger" title="Delete category" onclick="gfDeleteCat(${catIdx})">Delete Category</button>
-                </div>
+                <input type="text" class="gf-section-title-input" ${roAttr} style="${roStyle}" value="${escapeHtml(cat.name)}" placeholder="Category Name" oninput="gfUpdateCatName(${catIdx}, this.value)" />
+                ${isHR ? `
+                  <div style="display:flex; gap:6px;">
+                    <button type="button" class="gf-icon-btn" title="Move category up" onclick="gfMoveCat(${catIdx}, -1)" ${catIdx === 0 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>&uarr;</button>
+                    <button type="button" class="gf-icon-btn" title="Move category down" onclick="gfMoveCat(${catIdx}, 1)" ${catIdx === draft.categories.length - 1 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>&darr;</button>
+                    <button type="button" class="gf-icon-btn danger" title="Delete category" onclick="gfDeleteCat(${catIdx})">Delete Category</button>
+                  </div>
+                ` : ''}
               </div>
               <div class="gf-section-body">
                 ${fieldsEditor}
-                <div>
-                  <button type="button" class="gf-add-btn" onclick="gfAddField(${catIdx})">
-                    + Add Question
-                  </button>
-                </div>
+                ${isHR ? `
+                  <div>
+                    <button type="button" class="gf-add-btn" onclick="gfAddField(${catIdx})">
+                      + Add Question
+                    </button>
+                  </div>
+                ` : ''}
               </div>
             </div>
           `;
@@ -2996,10 +3004,9 @@
           <div class="wizard-card" style="padding:24px; border-color:#bae6fd;">
             <div class="sky-section-banner">
               <strong style="color:var(--navy-primary);">Visual Form Builder:</strong>
-              Edit questions, types, options, and categories just like Google Forms.
               ${isHR
-                ? 'HR Admin can edit all departments.'
-                : `Restricted to your department (${escapeHtml(state.user.department)}).`}
+                ? 'Edit questions, types, options, and categories for all departments.'
+                : '<strong>View Only</strong> — Only HR Admin can edit Step &amp; Form Options.'}
             </div>
 
             <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;">
@@ -3008,31 +3015,35 @@
 
             <div class="form-group">
               <label>Form Description for ${escapeHtml(targetDept)}</label>
-              <input type="text" id="stepDeptSubtitleInput" class="input-control" value="${escapeHtml(draft.subtitle || '')}" oninput="gfUpdateSubtitle(this.value)" />
+              <input type="text" id="stepDeptSubtitleInput" class="input-control" ${roAttr} style="${roStyle}" value="${escapeHtml(draft.subtitle || '')}" oninput="gfUpdateSubtitle(this.value)" />
             </div>
 
             ${categoriesHtml}
 
-            <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; margin-top:18px; padding-top:16px; border-top:1px solid var(--border-subtle);">
-              <button type="button" class="gf-add-btn" onclick="gfAddCategory()">
-                + Add Category
-              </button>
-              <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button type="button" class="btn-secondary" onclick="gfResetDraft()">
-                  Reset Changes
+            ${isHR ? `
+              <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; margin-top:18px; padding-top:16px; border-top:1px solid var(--border-subtle);">
+                <button type="button" class="gf-add-btn" onclick="gfAddCategory()">
+                  + Add Category
                 </button>
-                <button type="button" class="btn-gold" onclick="saveDepartmentStepOptions('${escapeHtml(targetDept)}')">
-                  Save ${escapeHtml(targetDept)} Form
-                </button>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                  <button type="button" class="btn-secondary" onclick="gfResetDraft()">
+                    Reset Changes
+                  </button>
+                  <button type="button" class="btn-gold" onclick="saveDepartmentStepOptions('${escapeHtml(targetDept)}')">
+                    Save ${escapeHtml(targetDept)} Form
+                  </button>
+                </div>
               </div>
-            </div>
+            ` : ''}
           </div>
         `;
       } else if (tab === 'routing') {
+        const roAttr = isHR ? '' : 'disabled';
+        const roStyle = isHR ? '' : 'background:#f8fafc; color:#475569; cursor:default;';
         const deptEmailInputs = Object.entries(deptEmails).map(([dept, email]) => `
           <div class="form-group" style="margin-bottom:10px;">
             <label style="font-size:0.8rem;">${escapeHtml(dept)} Mailbox</label>
-            <input type="email" class="input-control dept-email-setting" data-dept="${escapeHtml(dept)}" value="${escapeHtml(email)}" />
+            <input type="email" class="input-control dept-email-setting" ${roAttr} style="${roStyle}" data-dept="${escapeHtml(dept)}" value="${escapeHtml(email)}" />
           </div>
         `).join('');
 
@@ -3040,6 +3051,7 @@
           <div class="wizard-card" style="padding:24px; border-color:#bae6fd;">
             <div class="sky-section-banner">
               <strong style="color:var(--navy-primary);">Department Mailboxes &amp; Routing</strong>
+              ${isHR ? '' : '<span style="margin-left:8px; font-size:0.8rem; color:#0369a1; font-weight:700;">(View Only — Only HR Admin can edit)</span>'}
             </div>
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap:12px;">
               ${deptEmailInputs}
@@ -3047,17 +3059,19 @@
             <hr style="border:none; border-top:1px solid #bae6fd; margin:16px 0;" />
             <div class="form-group">
               <label>Seasonal Role Note</label>
-              <input type="text" id="seasonalRoleNoteInput" class="input-control" value="${escapeHtml(s.seasonalRoleNote || '')}" />
+              <input type="text" id="seasonalRoleNoteInput" class="input-control" ${roAttr} style="${roStyle}" value="${escapeHtml(s.seasonalRoleNote || '')}" />
             </div>
-            <button type="button" class="btn-gold" onclick="saveRoutingSettings()">Save Department Mailboxes</button>
+            ${isHR ? `<button type="button" class="btn-gold" onclick="saveRoutingSettings()">Save Department Mailboxes</button>` : ''}
           </div>
         `;
       } else if (tab === 'employees') {
         const empRows = state.hrEmployees.map((emp) => {
           const isAdminAcct = Boolean(emp.isProtectedAdmin || emp.isStaff || emp.isHR || emp.isMasterAdmin || emp.isModerator);
-          const loginCell = isAdminAcct
-            ? `<code>${escapeHtml(emp.maskedAdminUsername || '—')}</code><br/><small style="color:var(--text-muted);">Pass: <code>${escapeHtml(emp.maskedAdminPassword || '—')}</code></small>`
-            : `<code>${escapeHtml(emp.lastName)}</code><br/><small style="color:var(--text-muted);">ID + Last Name</small>`;
+          const loginCell = emp.credentialsHidden
+            ? `<span style="color:var(--text-muted); font-size:0.78rem;">HR Only</span>`
+            : (isAdminAcct
+              ? `<code>${escapeHtml(emp.maskedAdminUsername || '—')}</code><br/><small style="color:var(--text-muted);">Pass: <code>${escapeHtml(emp.maskedAdminPassword || '—')}</code></small>`
+              : `<code>${escapeHtml(emp.lastName)}</code><br/><small style="color:var(--text-muted);">ID + Last Name</small>`);
           return `
           <tr>
             <td><strong>${escapeHtml(emp.id)}</strong></td>
@@ -3067,16 +3081,18 @@
             <td>${escapeHtml(emp.department)}<br/><small style="color:var(--text-muted);">${escapeHtml(emp.role)}</small></td>
             <td>${escapeHtml(emp.email)}<br/><small>${escapeHtml(emp.mobile)}</small></td>
             <td style="white-space:nowrap;">
-              ${isAdminAcct
-                ? '<span style="color:var(--text-muted); font-size:0.78rem; font-weight:600;">Self-Managed</span>'
-                : (isHR ? `
-                  <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="openHrEditModal('${escapeHtml(emp.id)}')">
-                    Edit
-                  </button>
-                  <button type="button" class="btn-danger" style="padding:4px 9px; font-size:0.75rem;" onclick="deleteEmployeeAccount('${escapeHtml(emp.id)}')">
-                    Delete
-                  </button>
-                ` : '<span style="color:var(--text-muted);font-size:0.78rem;">HR Only</span>')}
+              ${!isHR
+                ? '<span style="color:var(--text-muted); font-size:0.78rem; font-weight:600;">View Only</span>'
+                : (isAdminAcct
+                  ? '<span style="color:var(--text-muted); font-size:0.78rem; font-weight:600;">Self-Managed</span>'
+                  : `
+                    <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="openHrEditModal('${escapeHtml(emp.id)}')">
+                      Edit
+                    </button>
+                    <button type="button" class="btn-danger" style="padding:4px 9px; font-size:0.75rem;" onclick="deleteEmployeeAccount('${escapeHtml(emp.id)}')">
+                      Delete
+                    </button>
+                  `)}
             </td>
           </tr>
         `;
@@ -3227,11 +3243,25 @@
 
         if (!isHR) {
           panelHtml = `
-            <div class="wizard-card" style="padding:24px; border-color:#fecaca; background:#fef2f2;">
-              <strong style="color:#991b1b;">Restricted — HR Admin Only</strong>
-              <p style="font-size:0.86rem; color:#7f1d1d; margin:6px 0 0;">
-                Only HR Administrators can view employee accounts in the Employee Directory.
-              </p>
+            <div class="wizard-card" style="padding:20px 24px; border-color:#bae6fd; overflow-x:auto;">
+              <div class="sky-section-banner" style="margin-bottom:14px;">
+                <strong style="color:var(--navy-primary);">Employee Directory (View Only)</strong>
+                <span style="font-size:0.78rem; color:var(--text-muted); margin-left:8px;">Only HR Admin can register, edit, or delete accounts. Login credentials are hidden.</span>
+              </div>
+              <table class="corp-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Login Credentials</th>
+                    <th>Group</th>
+                    <th>Department / Role</th>
+                    <th>Contact</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>${empRows}</tbody>
+              </table>
             </div>
           `;
         } else if (state.hrDirectoryRequiresPassword) {
@@ -3295,15 +3325,15 @@
         <div class="settings-nav-grid">
           <button type="button" class="settings-nav-btn ${tab === 'employees' ? 'active' : ''}" onclick="switchAdminSettingsTab('employees')">
             <h4>Employee Directory</h4>
-            <span>${isHR ? 'Create, edit &amp; manage' : 'HR only'}</span>
+            <span>${isHR ? 'Create, edit &amp; manage' : 'View only (HR edits)'}</span>
           </button>
           <button type="button" class="settings-nav-btn ${tab === 'steps' ? 'active' : ''}" onclick="switchAdminSettingsTab('steps')">
             <h4>Step &amp; Form Options</h4>
-            <span>${isHR ? 'Edit all departments' : 'Edit your department'}</span>
+            <span>${isHR ? 'Edit all departments' : 'View only (HR edits)'}</span>
           </button>
           <button type="button" class="settings-nav-btn ${tab === 'routing' ? 'active' : ''}" onclick="switchAdminSettingsTab('routing')">
             <h4>Department Mailboxes</h4>
-            <span>Department routing &amp; notes</span>
+            <span>${isHR ? 'Edit routing &amp; notes' : 'View only (HR edits)'}</span>
           </button>
         </div>
 
