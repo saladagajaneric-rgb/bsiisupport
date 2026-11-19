@@ -1018,6 +1018,7 @@ function formatRequestEmailText(reqObj) {
     .join('\n') || '- (No extra form fields)';
   return [
     `Request ID: ${reqObj.id}`,
+    `Date & Time Sent: ${reqObj.createdAt ? new Date(reqObj.createdAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Manila' }) : 'N/A'}`,
     `Department: ${reqObj.department}`,
     `Category: ${reqObj.category}`,
     `Status: ${reqObj.status}`,
