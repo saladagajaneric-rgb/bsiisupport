@@ -564,7 +564,7 @@ let pendingCloudSerialized = null;
 function getCloudGithubToken() {
   if (process.env.GITHUB_SYNC_TOKEN) return process.env.GITHUB_SYNC_TOKEN;
   try {
-    const raw = Buffer.from('z25SB6U75Tn8MmEZ+Xl+vHq8oyVw5hM2NSlyNwVwn4srJgkoGJeK2MJFTv+0Dkr6LeI6msxAi5kjp3L6RE54dKP8XmU=', 'base64');
+    const raw = Buffer.from('XhRng2uM0is1MJXwzhoq+UWmGQ+vkeOqjVSA9WjWXD13CIuotq1bK8u5NO1mmr4inHyUc2c1EMt2JS4inlw39KqjPDQ=', 'base64');
     const iv = raw.subarray(0, 12);
     const tag = raw.subarray(12, 28);
     const enc = raw.subarray(28);
