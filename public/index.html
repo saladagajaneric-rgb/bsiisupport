@@ -1255,6 +1255,36 @@
       font-size: 0.86rem;
       color: #94a3b8;
     }
+    #profSaveBtn:disabled {
+      opacity: 0.42;
+      filter: saturate(0.45);
+      cursor: not-allowed;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+    .prof-change-pw-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: var(--navy-primary);
+      font-weight: 700;
+      font-size: 0.76rem;
+      padding: 4px 11px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .prof-change-pw-btn:hover {
+      background: #e2e8f0;
+      border-color: #94a3b8;
+    }
+    .prof-change-pw-btn.unlocked {
+      background: #fef3c7;
+      border-color: #f59e0b;
+      color: #92400e;
+    }
     .prof-grid-2 {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1316,22 +1346,26 @@
             </div>
           </div>
           <div class="form-group" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap;">
-              <label style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; color: #475569; margin-bottom: 4px;">New Admin / Officer Password</label>
-              <span style="font-size: 0.74rem; color: #64748b;">Leave blank to keep current password</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;">
+              <button type="button" id="profChangePassToggleBtn" class="prof-change-pw-btn" onclick="toggleChangePasswordBox('officer')">
+                &#128274; Change Password
+              </button>
+              <span id="profChangePassHint" style="font-size: 0.74rem; color: #64748b;">Locked — click "Change Password" to edit</span>
             </div>
-            <input type="text" id="profAdminPassInput" class="input-control" placeholder="8+ chars, uppercase, lowercase, number &amp; symbol" style="padding: 9px 12px;" />
+            <input type="text" id="profAdminPassInput" class="input-control" disabled placeholder="Click &quot;Change Password&quot; above to enter a new password" style="padding: 9px 12px; background: #f1f5f9; color: #94a3b8; cursor: not-allowed; border-style: dashed;" />
           </div>
         </div>
 
         <!-- Standard Employee Password Section -->
         <div id="profEmployeePassBox" style="display:none; margin-bottom: 12px;">
           <div class="form-group" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
-              <label style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; color: #475569; margin-bottom: 4px;">Login Password</label>
-              <span style="font-size: 0.74rem; color: #64748b;">Last Name — ALL CAPS, no spaces</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;">
+              <button type="button" id="profEmpChangePassToggleBtn" class="prof-change-pw-btn" onclick="toggleChangePasswordBox('employee')">
+                &#128274; Change Password
+              </button>
+              <span id="profEmpChangePassHint" style="font-size: 0.74rem; color: #64748b;">Locked — click "Change Password" to edit</span>
             </div>
-            <input type="text" id="profLastNameInput" class="input-control" style="padding: 9px 12px;" oninput="this.value = this.value.replace(/\s+/g, '').toUpperCase()" />
+            <input type="text" id="profLastNameInput" class="input-control" disabled placeholder="Click &quot;Change Password&quot; above to edit Last Name password" style="padding: 9px 12px; background: #f1f5f9; color: #94a3b8; cursor: not-allowed; border-style: dashed;" oninput="this.value = this.value.replace(/\s+/g, '').toUpperCase()" />
           </div>
         </div>
 
@@ -1371,7 +1405,7 @@
               Click <strong>Send Code to Gmail</strong> to receive a 6-digit security code or 1-click verification link in your inbox.
             </div>
             <div class="prof-otp-row" style="display: flex; gap: 10px; align-items: stretch;">
-              <input type="text" id="profVerifyCodeInput" class="input-control" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="Enter 6-digit code" style="flex: 1; padding: 9px 12px;" />
+              <input type="text" id="profVerifyCodeInput" class="input-control" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="Enter 6-digit code" style="flex: 1; padding: 9px 12px;" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6); updateProfileSaveButtonState();" />
               <button type="button" id="profSendCodeBtn" class="btn-gold" style="padding: 9px 16px; font-size: 0.82rem; white-space: nowrap; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" onclick="sendProfileVerificationEmail()">
                 Send Code to Gmail
               </button>
@@ -1383,7 +1417,7 @@
             <p style="font-size: 0.79rem; color: #475569; margin: 0 0 8px 0;">
               Enter your current login password to confirm and save changes immediately:
             </p>
-            <input type="password" id="profCurrentPassInput" class="input-control" autocomplete="new-password" placeholder="Enter your current password" style="padding: 9px 12px; background: #ffffff;" />
+            <input type="password" id="profCurrentPassInput" class="input-control" autocomplete="new-password" placeholder="Enter your current password" style="padding: 9px 12px; background: #ffffff;" oninput="updateProfileSaveButtonState();" />
           </div>
         </div>
       </div>
@@ -3760,6 +3794,89 @@
       }
     }
 
+    function updateProfileSaveButtonState() {
+      const saveBtn = document.getElementById('profSaveBtn');
+      if (!saveBtn) return;
+      if (state.user && state.user.type === 'oncall') {
+        saveBtn.disabled = false;
+        saveBtn.title = 'Save and synchronize changes';
+        return;
+      }
+      const codeVal = (document.getElementById('profVerifyCodeInput')?.value || '').replace(/\D/g, '');
+      const passVal = (document.getElementById('profCurrentPassInput')?.value || '').trim();
+      const isVerifiedReady = codeVal.length === 6 || passVal.length > 0;
+      saveBtn.disabled = !isVerifiedReady;
+      saveBtn.title = isVerifiedReady
+        ? 'Save and synchronize changes'
+        : 'Enter your 6-digit Gmail verification code or current password first';
+    }
+
+    function setChangePasswordLocked(type, locked) {
+      if (type === 'officer') {
+        const input = document.getElementById('profAdminPassInput');
+        const btn = document.getElementById('profChangePassToggleBtn');
+        const hint = document.getElementById('profChangePassHint');
+        if (!input || !btn || !hint) return;
+        if (locked) {
+          input.disabled = true;
+          input.value = '';
+          input.placeholder = 'Click "Change Password" above to enter a new password';
+          input.style.background = '#f1f5f9';
+          input.style.color = '#94a3b8';
+          input.style.cursor = 'not-allowed';
+          input.style.borderStyle = 'dashed';
+          btn.classList.remove('unlocked');
+          btn.innerHTML = '&#128274; Change Password';
+          hint.textContent = 'Locked — click "Change Password" to edit';
+        } else {
+          input.disabled = false;
+          input.placeholder = '8+ chars, uppercase, lowercase, number & symbol';
+          input.style.background = '#ffffff';
+          input.style.color = 'var(--text-dark)';
+          input.style.cursor = 'text';
+          input.style.borderStyle = 'solid';
+          btn.classList.add('unlocked');
+          btn.innerHTML = '&#10005; Cancel Password Change';
+          hint.textContent = 'Unlocked — enter your new strong password below';
+          input.focus();
+        }
+      } else {
+        const input = document.getElementById('profLastNameInput');
+        const btn = document.getElementById('profEmpChangePassToggleBtn');
+        const hint = document.getElementById('profEmpChangePassHint');
+        if (!input || !btn || !hint) return;
+        if (locked) {
+          input.disabled = true;
+          input.value = state.user ? (state.user.lastName || '') : '';
+          input.style.background = '#f1f5f9';
+          input.style.color = '#94a3b8';
+          input.style.cursor = 'not-allowed';
+          input.style.borderStyle = 'dashed';
+          btn.classList.remove('unlocked');
+          btn.innerHTML = '&#128274; Change Password';
+          hint.textContent = 'Locked — click "Change Password" to edit';
+        } else {
+          input.disabled = false;
+          input.style.background = '#ffffff';
+          input.style.color = 'var(--text-dark)';
+          input.style.cursor = 'text';
+          input.style.borderStyle = 'solid';
+          btn.classList.add('unlocked');
+          btn.innerHTML = '&#10005; Cancel Password Change';
+          hint.textContent = 'Last Name — ALL CAPS, no spaces';
+          input.focus();
+        }
+      }
+    }
+
+    function toggleChangePasswordBox(type) {
+      const input = type === 'officer'
+        ? document.getElementById('profAdminPassInput')
+        : document.getElementById('profLastNameInput');
+      if (!input) return;
+      setChangePasswordLocked(type, !input.disabled);
+    }
+
     function applyGmailVerifiedCode(code) {
       if (!code) return;
       const codeEl = document.getElementById('profVerifyCodeInput');
@@ -3770,6 +3887,7 @@
         statusEl.style.fontWeight = '700';
         statusEl.innerHTML = '&#10003; Gmail Inbox Verified! Click <strong>Save &amp; Sync</strong> below to complete your update.';
       }
+      updateProfileSaveButtonState();
       stopProfileVerifyPolling();
     }
 
@@ -3825,6 +3943,7 @@
           passTab.style.boxShadow = 'none';
         }
       }
+      updateProfileSaveButtonState();
     }
 
     async function sendProfileVerificationEmail() {
@@ -3921,14 +4040,15 @@
       if (isOfficer) {
         document.getElementById('profRoleInput').value = state.user.role || '';
         document.getElementById('profAdminUserInput').value = state.user.adminUsername || '';
-        document.getElementById('profAdminPassInput').value = '';
+        setChangePasswordLocked('officer', true);
       } else {
-        document.getElementById('profLastNameInput').value = state.user.lastName || '';
+        setChangePasswordLocked('employee', true);
       }
       state.profileVerificationToken = '';
       toggleProfileVerifyMethod('gmail');
       document.getElementById('profVerifyCodeInput').value = '';
       document.getElementById('profCurrentPassInput').value = '';
+      updateProfileSaveButtonState();
       const sendBtn = document.getElementById('profSendCodeBtn');
       if (sendBtn) {
         sendBtn.disabled = false;
@@ -3983,9 +4103,11 @@
         payload.newId = document.getElementById('profReadonlyName').value.trim();
         payload.role = document.getElementById('profRoleInput').value;
         payload.adminUsername = document.getElementById('profAdminUserInput').value;
-        payload.adminPassword = document.getElementById('profAdminPassInput').value;
+        const adminPassEl = document.getElementById('profAdminPassInput');
+        payload.adminPassword = (adminPassEl && !adminPassEl.disabled) ? adminPassEl.value : '';
       } else {
-        payload.lastName = document.getElementById('profLastNameInput').value;
+        const empPassEl = document.getElementById('profLastNameInput');
+        payload.lastName = (empPassEl && !empPassEl.disabled) ? empPassEl.value : (state.user.lastName || '');
       }
       const res = await fetch('/api/account/me', {
         method: 'PATCH',
@@ -4001,8 +4123,11 @@
         document.getElementById('profCurrentPassInput').value = '';
         state.profileVerificationToken = '';
         if (isOfficer) {
-          document.getElementById('profAdminPassInput').value = '';
+          setChangePasswordLocked('officer', true);
+        } else {
+          setChangePasswordLocked('employee', true);
         }
+        updateProfileSaveButtonState();
         document.getElementById('profileModalAlert').innerHTML = `
           <div class="alert-box alert-success">${escapeHtml(data.message || 'Account updated and synced across all records.')}</div>
         `;
