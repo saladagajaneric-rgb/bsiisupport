@@ -1,5 +1,5 @@
 {
-  "_lastSavedTs": 1795054729471,
+  "_lastSavedTs": 1795054731775,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
@@ -252,9 +252,9 @@
       "status": "Submitted / Pending Officer Review",
       "priority": "Low (Next Monthly Cycle)",
       "createdAt": "2026-11-19T02:15:37.355Z",
-      "updatedAt": "2026-11-19T02:15:37.355Z",
-      "deletedAt": null,
-      "deletedBy": null,
+      "updatedAt": "2026-11-19T02:18:51.775Z",
+      "deletedAt": "2026-11-19T02:18:51.775Z",
+      "deletedBy": "Jan Eric Saladaga",
       "comments": [],
       "notifiedEmails": [
         "purchasing@bsii.com.ph",
