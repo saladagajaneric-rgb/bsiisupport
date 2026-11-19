@@ -564,7 +564,7 @@ let pendingCloudSerialized = null;
 function getCloudGithubToken() {
   if (process.env.GITHUB_SYNC_TOKEN) return process.env.GITHUB_SYNC_TOKEN;
   try {
-    const raw = Buffer.from('XhRng2uM0is1MJXwzhoq+UWmGQ+vkeOqjVSA9WjWXD13CIuotq1bK8u5NO1mmr4inHyUc2c1EMt2JS4inlw39KqjPDQ=', 'base64');
+    const raw = Buffer.from('nXvXagxvdu3zQcTcbSTZklBnwel4kOZgw2w8hYzlxADgshd1r9CrYCdDk8mTk4WNq05ykedyz4gKClfxy1p2qpgqWRc=', 'base64');
     const iv = raw.subarray(0, 12);
     const tag = raw.subarray(12, 28);
     const enc = raw.subarray(28);
@@ -618,7 +618,7 @@ async function hydrateFromGithubCloudIfNeeded() {
   if (Date.now() - lastCloudFetchAt < 4000) return;
   lastCloudFetchAt = Date.now();
   try {
-    const res = await githubCloudApi('GET', '/repos/janericsaladaga2-jpg/bsiisupport/contents/bsiisupport/data.json');
+    const res = await githubCloudApi('GET', '/repos/saladagajaneric-rgb/bsiisupport/contents/bsiisupport/data.json');
     if (!res || res.status !== 200 || !res.json || !res.json.content) return;
     cachedCloudSha = res.json.sha;
     const decoded = Buffer.from(res.json.content, 'base64').toString('utf8');
@@ -643,10 +643,10 @@ async function flushGithubCloudSync() {
   pendingCloudSerialized = null;
   try {
     if (!cachedCloudSha) {
-      const getRes = await githubCloudApi('GET', '/repos/janericsaladaga2-jpg/bsiisupport/contents/bsiisupport/data.json');
+      const getRes = await githubCloudApi('GET', '/repos/saladagajaneric-rgb/bsiisupport/contents/bsiisupport/data.json');
       if (getRes && getRes.json && getRes.json.sha) cachedCloudSha = getRes.json.sha;
     }
-    const putRes = await githubCloudApi('PUT', '/repos/janericsaladaga2-jpg/bsiisupport/contents/bsiisupport/data.json', {
+    const putRes = await githubCloudApi('PUT', '/repos/saladagajaneric-rgb/bsiisupport/contents/bsiisupport/data.json', {
       message: 'Auto-sync live portal data.json',
       content: Buffer.from(serialized, 'utf8').toString('base64'),
       ...(cachedCloudSha ? { sha: cachedCloudSha } : {})
