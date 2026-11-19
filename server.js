@@ -1787,8 +1787,13 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 400, { error: 'Department and Request Category are required.' });
     }
 
+    const isHrSubmitter = Boolean(currentUser.isHR || currentUser.department === 'HR Admin');
+    if (isHrSubmitter && department === 'HR Admin') {
+      return sendJson(res, 400, { error: 'HR Admin accounts cannot select HR Admin as the target department.' });
+    }
+
     const cleanCcDepts = Array.isArray(ccDepartments)
-      ? ccDepartments.filter((d) => d !== department)
+      ? ccDepartments.filter((d) => d !== department && !(isHrSubmitter && d === 'HR Admin'))
       : [];
 
     const ccEmails = [];

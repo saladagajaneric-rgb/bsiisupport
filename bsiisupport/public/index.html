@@ -2033,17 +2033,33 @@
     /* ==========================================
        4. 3-STEP EMPLOYEE REQUEST SUBMISSION WIZARD
        ========================================== */
+    function isOwnDepartmentHiddenForCurrentUser(deptName) {
+      if (!state.user) return false;
+      const isHrUser = Boolean(state.user.isHR || state.user.department === 'HR Admin');
+      return isHrUser && deptName === 'HR Admin';
+    }
+
+    function getVisibleWizardDepartments() {
+      return Object.keys(DEPARTMENT_CONFIG).filter((d) => !isOwnDepartmentHiddenForCurrentUser(d));
+    }
+
     function syncDepartmentHandInHandDefaults(dept) {
+      const visibleDepts = getVisibleWizardDepartments();
+      if (!dept || !visibleDepts.includes(dept)) {
+        dept = visibleDepts[0] || Object.keys(DEPARTMENT_CONFIG)[0];
+      }
       const firstCategory = Object.keys(DEPARTMENT_CONFIG[dept].categories)[0];
       state.wizard.department = dept;
       state.wizard.category = firstCategory;
       state.wizard.details = {};
 
       // Hand-in-Hand Logic:
-      // 1. Remove primary selected department from CC list so it's never duplicated
-      state.wizard.ccDepartments = state.wizard.ccDepartments.filter((d) => d !== dept);
-      // 2. If user selects Team Leader in Step 1, HR Admin CC chip must be pre-checked by default
-      if (dept === 'Team Leader' && !state.wizard.ccDepartments.includes('HR Admin')) {
+      // 1. Remove primary selected department and hidden self-department from CC list
+      state.wizard.ccDepartments = state.wizard.ccDepartments.filter(
+        (d) => d !== dept && !isOwnDepartmentHiddenForCurrentUser(d)
+      );
+      // 2. If non-HR user selects Team Leader in Step 1, HR Admin CC chip is pre-checked by default
+      if (dept === 'Team Leader' && !isOwnDepartmentHiddenForCurrentUser('HR Admin') && !state.wizard.ccDepartments.includes('HR Admin')) {
         state.wizard.ccDepartments.push('HR Admin');
       }
     }
@@ -2051,11 +2067,15 @@
     function renderWizardView() {
       const viewport = document.getElementById('appViewport');
       const w = state.wizard;
+      const visibleDepts = getVisibleWizardDepartments();
+      if (!visibleDepts.includes(w.department) && visibleDepts.length > 0) {
+        syncDepartmentHandInHandDefaults(visibleDepts[0]);
+      }
 
       let stepBodyHtml = '';
 
       if (w.step === 1) {
-        const cardsHtml = Object.keys(DEPARTMENT_CONFIG).map((deptName) => {
+        const cardsHtml = visibleDepts.map((deptName) => {
           const cfg = DEPARTMENT_CONFIG[deptName];
           const isSelected = w.department === deptName;
           return `
@@ -2190,9 +2210,9 @@
           </div>
         `;
       } else if (w.step === 3) {
-        // Ensure primary department chip is hidden and Team Leader -> HR Admin hand-in-hand rule holds
-        const visibleCcOptions = CC_OPTIONS.filter((d) => d !== w.department);
-        const activeCcList = w.ccDepartments.filter((d) => d !== w.department);
+        // Ensure primary department chip and hidden HR self-chip are excluded
+        const visibleCcOptions = CC_OPTIONS.filter((d) => d !== w.department && !isOwnDepartmentHiddenForCurrentUser(d));
+        const activeCcList = w.ccDepartments.filter((d) => d !== w.department && !isOwnDepartmentHiddenForCurrentUser(d));
         const selectedCount = activeCcList.length;
         const badgeLabel = selectedCount > 0 ? `${selectedCount} Selected` : 'None (Direct Only)';
 
@@ -2240,7 +2260,7 @@
               <h4 style="color:var(--navy-primary); font-size:1rem;">Keep in the Loop (CC Department Officers)</h4>
               <span class="cc-count-badge">${escapeHtml(badgeLabel)}</span>
             </div>
-            ${w.department === 'Team Leader' ? `
+            ${w.department === 'Team Leader' && !isOwnDepartmentHiddenForCurrentUser('HR Admin') ? `
               <p style="font-size:0.82rem; color:var(--navy-primary); margin-top:6px; background:#f0f6ff; padding:8px 12px; border-radius:6px;">
                 <strong>Hand-in-Hand Policy Active:</strong> Because Team Leader is selected as your primary department, <strong>HR Admin</strong> is pre-checked by default so HR and Team Leader co-manage your request together.
               </p>
@@ -2430,10 +2450,12 @@
           deliveryStatus: d.emailDeliveryStatus || ''
         };
         // Reset wizard to step 1 default
+        const defaultDept = getVisibleWizardDepartments()[0] || 'HR Admin';
+        const defaultCat = Object.keys((DEPARTMENT_CONFIG[defaultDept] && DEPARTMENT_CONFIG[defaultDept].categories) || {})[0] || '';
         state.wizard = {
           step: 1,
-          department: 'HR Admin',
-          category: 'Leave Request',
+          department: defaultDept,
+          category: defaultCat,
           details: {},
           ccDepartments: [],
           colleagueEmail: ''
