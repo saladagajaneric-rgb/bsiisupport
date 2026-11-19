@@ -1753,9 +1753,16 @@
         return;
       }
 
-      // Top action bar: Employee Name pill, Profile button, Sign Out button (NO duplicate My Requests here)
+      // Top action bar: Oncall has NO Profile/account; employees/admins see Profile + Sign Out
+      const isOncall = state.user.type === 'oncall';
       topUserArea.style.display = 'flex';
-      topUserArea.innerHTML = `
+      topUserArea.innerHTML = isOncall ? `
+        <div class="employee-pill">
+          <span>${escapeHtml(state.user.fullName)}</span>
+          <span class="role-tag">Oncall (One-Way)</span>
+        </div>
+        <a href="/api/logout" class="top-btn signout-btn">Exit</a>
+      ` : `
         <div class="employee-pill">
           <span>${escapeHtml(state.user.fullName)}</span>
           <span class="role-tag">${escapeHtml(state.user.isStaff ? state.user.role : state.user.company)}</span>
@@ -1764,15 +1771,17 @@
         <a href="/api/logout" class="top-btn signout-btn">Sign Out</a>
       `;
 
-      // Primary navigation bar: Distinct tabs for "+ New Support Request" and "My Requests (X)"
+      // Primary navigation bar: Oncall ONLY has "+ New Support Request" (one-way, no My Requests)
       primaryNav.style.display = 'block';
       let tabsHtml = `
         <button type="button" class="nav-tab ${state.currentRoute === '/open' ? 'active' : ''}" onclick="navigateTo('/open')">
           + New Support Request
         </button>
-        <button type="button" class="nav-tab ${state.currentRoute === '/requests' ? 'active' : ''}" onclick="navigateTo('/requests')">
-          My Requests (${state.myRequests.length})
-        </button>
+        ${!isOncall ? `
+          <button type="button" class="nav-tab ${state.currentRoute === '/requests' ? 'active' : ''}" onclick="navigateTo('/requests')">
+            My Requests (${state.myRequests.length})
+          </button>
+        ` : ''}
       `;
 
       if (state.user.isStaff) {
@@ -1806,6 +1815,10 @@
       if (!state.authenticated) {
         renderLoginScreen();
         return;
+      }
+      if (state.user && state.user.type === 'oncall' && state.currentRoute !== '/open') {
+        window.history.replaceState({}, '', '/open');
+        state.currentRoute = '/open';
       }
       switch (state.currentRoute) {
         case '/open':
@@ -2282,8 +2295,27 @@
         `;
       }
 
+      let oncallSentBanner = '';
+      if (state.user && state.user.type === 'oncall' && state.lastSubmittedNotice) {
+        const notice = state.lastSubmittedNotice;
+        oncallSentBanner = `
+          <div class="alert-box alert-success" style="margin-bottom: 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <strong>One-Way Request ${escapeHtml(notice.request.id)} Submitted!</strong>
+              Sent to <strong>${escapeHtml(notice.request.department)}</strong> (${escapeHtml(notice.request.category)}).
+              <div style="font-size:0.8rem; margin-top:4px; color:#166534;">
+                Oncall requests are one-way only (no portal account or inbox). The assigned department will contact you directly using your submitted contact details if needed.
+              </div>
+            </div>
+            <a href="/api/logout" class="btn-secondary" style="text-decoration:none; padding:6px 14px; font-size:0.8rem;">Exit to Login</a>
+          </div>
+        `;
+        state.lastSubmittedNotice = null;
+      }
+
       viewport.innerHTML = `
         <div class="wizard-card">
+          ${oncallSentBanner}
           <div class="wizard-stepper">
             <div class="step-indicator ${w.step === 1 ? 'active' : w.step > 1 ? 'completed' : ''}">
               <span class="step-num">1</span>
@@ -2460,8 +2492,12 @@
           ccDepartments: [],
           colleagueEmail: ''
         };
-        await refreshRequestsData();
-        navigateTo('/requests');
+        if (state.user && state.user.type === 'oncall') {
+          navigateTo('/open');
+        } else {
+          await refreshRequestsData();
+          navigateTo('/requests');
+        }
       }
     }
 
@@ -2566,6 +2602,7 @@
       ).join(' ');
 
       const statusClass = /approved|completed/i.test(r.status) ? 'completed' : /progress/i.test(r.status) ? 'progress' : '';
+      const isOncallReq = Boolean(r.isOncall || r.employeeCompany === 'Oncall Personnel' || String(r.employeeId || '').startsWith('ONCALL-'));
 
       return `
         <div class="request-card">
@@ -2579,6 +2616,7 @@
                 <span style="background:var(--gold-primary); color:var(--navy-primary); font-size:0.76rem; font-weight:800; padding:2px 10px; border-radius:4px;">
                   ${escapeHtml(r.category)}
                 </span>
+                ${isOncallReq ? `<span style="background:#fef3c7; border:1px solid #f59e0b; color:#92400e; font-size:0.74rem; font-weight:800; padding:2px 9px; border-radius:999px;">One-Way Oncall (No Reply)</span>` : ''}
                 ${ccBadges}
               </div>
               <div style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">
@@ -2631,7 +2669,24 @@
 
             ${commentsHtml}
 
-            ${isOfficerView ? `
+            ${isOfficerView ? (isOncallReq ? `
+              <div style="margin-top:14px; padding-top:12px; border-top:1px dashed #fde68a; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                <div style="background:#fffbeb; border:1px solid #fde68a; color:#92400e; border-radius:8px; padding:9px 12px; font-size:0.8rem; flex:1 1 320px;">
+                  <strong>One-Way Oncall Request:</strong> Oncall personnel do not have portal accounts, so in-portal replies are disabled. Contact them directly via their submitted mobile/email if needed, or click <strong>Done</strong> to archive.
+                </div>
+                <div style="flex:0 1 260px;">
+                  <label style="font-size:0.76rem; font-weight:700; color:var(--navy-primary); display:block; margin-bottom:4px;">
+                    Add Internal CC Email
+                  </label>
+                  <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                    <input type="email" id="monEmail_${escapeHtml(r.id)}" class="input-control" style="padding:7px 10px; font-size:0.82rem; flex:1 1 140px;" placeholder="e.g., audit@bsii.com.ph" />
+                    <button type="button" class="btn-secondary" style="padding:7px 12px; font-size:0.8rem;" onclick="addMonitoringEmail('${escapeHtml(r.id)}')">
+                      + Add CC
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ` : `
               <div style="margin-top:14px; padding-top:14px; border-top:1px dashed #bae6fd; display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap:12px;">
                 <div>
                   <label style="font-size:0.78rem; font-weight:700; color:var(--navy-primary); display:block; margin-bottom:4px;">
@@ -2663,7 +2718,7 @@
                   </div>
                 </div>
               </div>
-            ` : ''}
+            `) : ''}
           </div>
         </div>
       `;
@@ -4046,7 +4101,7 @@
     }
 
     function openProfileModal() {
-      if (!state.user) return;
+      if (!state.user || state.user.type === 'oncall') return;
       document.getElementById('profileModalAlert').innerHTML = '';
       const isOfficer = Boolean(state.user.isStaff || state.user.isHR || state.user.isMasterAdmin);
       const idEl = document.getElementById('profReadonlyName');

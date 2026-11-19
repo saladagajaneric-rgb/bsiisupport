@@ -1756,7 +1756,7 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
-      if (!r.hiddenBySender && (r.employeeId === currentUser.id || (currentUser.type === 'oncall' && r.employeeName === currentUser.fullName))) {
+      if (currentUser.type !== 'oncall' && !r.hiddenBySender && r.employeeId === currentUser.id) {
         myActiveRequests.push(r);
       }
 
@@ -1820,6 +1820,7 @@ const server = http.createServer(async (req, res) => {
 
     const newReq = {
       id: 'REQ-2026-' + Math.floor(1000 + Math.random() * 9000),
+      isOncall: currentUser.type === 'oncall',
       employeeId: currentUser.id,
       employeeName: currentUser.fullName,
       employeeCompany: currentUser.company,
@@ -1879,6 +1880,14 @@ const server = http.createServer(async (req, res) => {
     if (!target) return sendJson(res, 404, { error: 'Request not found.' });
 
     const body = await readJsonBody(req);
+    const isOncallTarget = Boolean(
+      target.isOncall ||
+      target.employeeCompany === 'Oncall Personnel' ||
+      String(target.employeeId || '').startsWith('ONCALL-')
+    );
+    if (isOncallTarget && body.comment && String(body.comment).trim()) {
+      return sendJson(res, 400, { error: 'Oncall requests are one-way only and cannot receive in-portal replies.' });
+    }
     let addedMonEmail = null;
     if (body.markDoneToHistory) {
       target.status = 'Approved / Completed';
@@ -1886,10 +1895,10 @@ const server = http.createServer(async (req, res) => {
       target.deletedAt = new Date().toISOString();
       target.deletedBy = currentUser.fullName;
     }
-    if (body.status) {
+    if (body.status && !isOncallTarget) {
       target.status = body.status;
     }
-    if (body.comment && String(body.comment).trim()) {
+    if (!isOncallTarget && body.comment && String(body.comment).trim()) {
       target.comments.push({
         id: 'CMT-' + Date.now(),
         authorName: currentUser.fullName,
@@ -1924,7 +1933,7 @@ const server = http.createServer(async (req, res) => {
         text: `You were added to monitor this support request by ${currentUser.fullName}.\n\n${formatRequestEmailText(target)}`,
         requestId: target.id
       });
-    } else if (body.status || body.markDoneToHistory || (body.comment && String(body.comment).trim())) {
+    } else if (!isOncallTarget && (body.status || body.markDoneToHistory || (body.comment && String(body.comment).trim()))) {
       const updateRecipients = [];
       if (target.employeeEmail && target.employeeEmail.includes('@')) updateRecipients.push(target.employeeEmail);
       (target.customMonitoringEmails || []).forEach((e) => updateRecipients.push(e));
