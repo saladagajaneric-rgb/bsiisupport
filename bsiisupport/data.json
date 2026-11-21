@@ -1,5 +1,5 @@
 {
-  "_lastSavedTs": 1795225822765,
+  "_lastSavedTs": 1795225827084,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
@@ -1642,8 +1642,8 @@
         "371"
       ],
       "replies": [],
-      "emailDeliveryStatus": "Delivered to Website Account (My Activities) (Server email sender not configured yet)",
-      "sentViaLiveEmail": false,
+      "emailDeliveryStatus": "Delivered to Website Account (My Activities) & 1 Email Inbox",
+      "sentViaLiveEmail": true,
       "createdAt": "2026-11-21T01:50:22.760Z",
       "updatedAt": "2026-11-21T01:50:22.760Z"
     },
