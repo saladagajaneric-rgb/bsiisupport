@@ -1038,6 +1038,401 @@
       border-style: solid;
     }
 
+    /* HR MESSAGING & MY ACTIVITIES STYLES */
+    .activity-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .activity-filter-btn {
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      color: var(--navy-primary);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .activity-filter-btn:hover {
+      background: #f0f9ff;
+      border-color: #38bdf8;
+    }
+    .activity-filter-btn.active {
+      background: var(--navy-primary);
+      color: #fff;
+      border-color: var(--navy-primary);
+    }
+    .unread-pill {
+      background: var(--gold-primary);
+      color: var(--navy-primary);
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+      line-height: 1.2;
+    }
+    .hr-msg-card {
+      background: #fff;
+      border: 1px solid #bae6fd;
+      border-left: 5px solid var(--navy-primary);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0, 33, 71, 0.05);
+    }
+    .hr-msg-card.unread {
+      border-left-color: var(--gold-primary);
+      background: #fffdf5;
+    }
+    .hr-msg-body {
+      white-space: pre-wrap;
+      font-size: 0.93rem;
+      color: var(--text-dark);
+      line-height: 1.65;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 12px 0;
+    }
+    .hr-msg-body ul,
+    .hr-msg-body ol,
+    .gmail-editor ul,
+    .gmail-editor ol {
+      padding-left: 28px;
+      margin: 8px 0;
+    }
+    .hr-msg-body li,
+    .gmail-editor li {
+      margin-bottom: 4px;
+    }
+    .hr-msg-body a,
+    .gmail-editor a {
+      color: #0b57d0;
+      text-decoration: underline;
+    }
+    .hr-msg-body img,
+    .gmail-editor img {
+      max-width: 100%;
+      max-height: 360px;
+      border-radius: 8px;
+      margin: 10px 0;
+      display: block;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+    }
+    .msg-attachments-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 4px;
+    }
+    .msg-att-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--navy-primary);
+      text-decoration: none;
+      transition: background 0.12s ease;
+    }
+    .msg-att-chip:hover {
+      background: #e0f2fe;
+      border-color: #7dd3fc;
+    }
+    .recipient-picker-scroll {
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid #dbe4f0;
+      border-radius: 10px;
+      background: #fff;
+    }
+    .recipient-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      transition: background 0.12s ease;
+    }
+    .recipient-row:last-child {
+      border-bottom: none;
+    }
+    .recipient-row:hover {
+      background: #f0f9ff;
+    }
+    .recipient-row.selected {
+      background: #eff6ff;
+    }
+    .channel-toggle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+      gap: 10px;
+      margin: 12px 0 16px;
+    }
+    .channel-toggle-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 9px;
+      border: 1.5px solid #cbd5e1;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .channel-toggle-card.active {
+      border-color: var(--navy-primary);
+      background: #f0f9ff;
+      box-shadow: 0 2px 6px rgba(0, 33, 71, 0.08);
+    }
+    .msg-reply-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 9px 12px;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+    }
+    .msg-reply-item.hr-reply {
+      background: #f0f9ff;
+      border-color: #bae6fd;
+    }
+
+    /* GMAIL-STYLE COMPOSE WINDOW */
+    .gmail-compose-card {
+      background: #fff;
+      border: 1px solid #d3e3fd;
+      border-radius: 12px;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+    .gmail-compose-header {
+      background: #f2f6fc;
+      padding: 13px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .gmail-compose-header h3 {
+      margin: 0;
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: #041e49;
+    }
+    .gmail-field-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 22px;
+      border-bottom: 1px solid #eceff1;
+      font-size: 0.9rem;
+    }
+    .gmail-field-label {
+      color: #5f6368;
+      font-weight: 600;
+      min-width: 44px;
+      flex-shrink: 0;
+    }
+    .gmail-inline-input {
+      flex: 1;
+      min-width: 150px;
+      border: none;
+      outline: none;
+      font-size: 0.92rem;
+      padding: 6px 2px;
+      color: #1f2937;
+      background: transparent;
+    }
+    .gmail-cc-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .gmail-link-btn {
+      background: none;
+      border: none;
+      color: #5f6368;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .gmail-link-btn:hover,
+    .gmail-link-btn.active {
+      color: #0b57d0;
+      background: #e1e9f8;
+    }
+    .gmail-editor {
+      min-height: 220px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding: 20px 24px;
+      font-size: 0.94rem;
+      line-height: 1.65;
+      color: #1f2937;
+      outline: none;
+    }
+    .gmail-editor:empty::before {
+      content: attr(data-placeholder);
+      color: #9aa0a6;
+      pointer-events: none;
+    }
+    .gmail-format-bar {
+      margin: 4px 22px 12px;
+      padding: 6px 12px;
+      background: #f2f6fc;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+    }
+    .gmail-fmt-select {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 4px 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #444746;
+      cursor: pointer;
+    }
+    .gmail-fmt-select:hover {
+      background: #e1e9f8;
+    }
+    .gmail-fmt-btn {
+      background: transparent;
+      border: none;
+      color: #444746;
+      border-radius: 6px;
+      padding: 5px 8px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gmail-fmt-btn:hover {
+      background: #e1e9f8;
+      color: #041e49;
+    }
+    .gmail-icon-tool {
+      background: transparent;
+      border: none;
+      color: #444746;
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 700;
+      transition: background 0.12s ease, color 0.12s ease;
+    }
+    .gmail-icon-tool:hover,
+    .gmail-icon-tool.active {
+      background: #e1e9f8;
+      color: #0b57d0;
+    }
+    .gmail-emoji-popover {
+      position: absolute;
+      bottom: 44px;
+      left: 0;
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 8px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+      display: grid;
+      grid-template-columns: repeat(7, 32px);
+      gap: 4px;
+      z-index: 50;
+    }
+    .gmail-emoji-btn {
+      background: none;
+      border: none;
+      font-size: 1.15rem;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .gmail-emoji-btn:hover {
+      background: #eef3fc;
+    }
+    .gmail-compose-footer {
+      padding: 12px 22px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-top: 1px solid #f1f5f9;
+    }
+    .gmail-send-btn {
+      background: #0b57d0;
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 28px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(11, 87, 208, 0.28);
+      transition: background 0.15s ease;
+    }
+    .gmail-send-btn:hover:not(:disabled) {
+      background: #0842a0;
+    }
+    .gmail-send-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .gmail-delivery-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #1f2937;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      padding: 5px 12px;
+      cursor: pointer;
+    }
+    .gmail-delivery-pill.active {
+      background: #eef3fc;
+      border-color: #0b57d0;
+      color: #0b57d0;
+    }
+    .dept-routing-card {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+
     /* RESPONSIVE & MOBILE-SAFE LAYOUT RULES */
     html, body {
       max-width: 100%;
@@ -1499,7 +1894,7 @@
     <div class="modal-panel" style="border-top-color: var(--alert-red);">
       <h3 style="color: var(--navy-primary); font-size: 1.2rem; margin-bottom: 10px;">Remove Request from Your View</h3>
       <p style="font-size: 0.92rem; color: var(--text-dark); background: #fefce8; border: 1px solid #fde68a; padding: 14px; border-radius: 8px; margin-bottom: 20px;">
-        Deleting this request will only remove it from your personal list (<strong>My Requests</strong>). It will <strong>remain active and visible</strong> to the assigned Department Officer and HR for processing.
+        Deleting this request will only remove it from your personal list (<strong>My Activities</strong>). It will <strong>remain active and visible</strong> to the assigned Department Officer and HR for processing.
       </p>
       <div style="display:flex; justify-content:flex-end; gap:10px;">
         <button type="button" class="btn-secondary" onclick="closeSenderDeleteModal()">Cancel</button>
@@ -1648,6 +2043,9 @@
         colleagueEmail: ''
       },
       myRequests: [],
+      myMessages: [],
+      hrSentMessages: [],
+      directoryRecipients: [],
       departmentQueue: [],
       retentionTrash: [],
       hrEmployees: [],
@@ -1658,7 +2056,24 @@
       stepEditorDept: null,
       stepEditorDraft: null,
       stepEditorDraftDept: null,
-      registerAccountType: null
+      registerAccountType: null,
+      activitiesFilter: 'all',
+      hrMsgSelectedIds: [],
+      hrMsgShowCc: false,
+      hrMsgShowBcc: false,
+      hrMsgCcText: '',
+      hrMsgBccText: '',
+      hrMsgShowFormatBar: true,
+      hrMsgShowEmojiPicker: false,
+      hrMsgAttachments: [],
+      hrMsgSearch: '',
+      hrMsgCategory: 'HR Message',
+      hrMsgSubject: '',
+      hrMsgBody: '',
+      hrMsgBodyHtml: '',
+      hrMsgSendToGmail: true,
+      hrMsgSendToWebsite: true,
+      hrMsgLastResult: null
     };
 
     function escapeHtml(str) {
@@ -1704,6 +2119,32 @@
       }
       renderHeaderAndNav();
       renderCurrentRoute();
+      startLiveActivityPolling();
+    }
+
+    let liveActivityPollTimer = null;
+    function startLiveActivityPolling() {
+      if (liveActivityPollTimer) clearInterval(liveActivityPollTimer);
+      liveActivityPollTimer = setInterval(async () => {
+        if (!state.authenticated || document.hidden) return;
+        try {
+          const prevMsgSig = (state.myMessages || []).map((m) => `${m.id}:${m.isRead}:${(m.replies || []).length}`).join('|');
+          const prevReqSig = (state.myRequests || []).map((r) => `${r.id}:${r.status}:${(r.comments || []).length}`).join('|');
+          const prevDeptCount = (state.departmentQueue || []).length;
+          await refreshRequestsData();
+          const nextMsgSig = (state.myMessages || []).map((m) => `${m.id}:${m.isRead}:${(m.replies || []).length}`).join('|');
+          const nextReqSig = (state.myRequests || []).map((r) => `${r.id}:${r.status}:${(r.comments || []).length}`).join('|');
+          const nextDeptCount = (state.departmentQueue || []).length;
+          if (prevMsgSig !== nextMsgSig || prevReqSig !== nextReqSig || prevDeptCount !== nextDeptCount) {
+            renderHeaderAndNav();
+            const activeTag = document.activeElement ? document.activeElement.tagName : '';
+            const isTyping = ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag) || (document.activeElement && document.activeElement.isContentEditable);
+            if (!isTyping && state.currentRoute === '/requests') {
+              renderMyRequestsView();
+            }
+          }
+        } catch (_) {}
+      }, 8000);
     }
 
     async function refreshRequestsData() {
@@ -1711,6 +2152,9 @@
       if (res.ok) {
         const payload = await res.json();
         state.myRequests = payload.myRequests || [];
+        state.myMessages = payload.myMessages || [];
+        state.hrSentMessages = payload.hrSentMessages || [];
+        state.directoryRecipients = payload.directoryRecipients || [];
         state.departmentQueue = payload.departmentQueue || [];
         state.retentionTrash = payload.retentionTrash || [];
       }
@@ -1771,23 +2215,33 @@
         <a href="/api/logout" class="top-btn signout-btn">Sign Out</a>
       `;
 
-      // Primary navigation bar: Oncall ONLY has "+ New Support Request" (one-way, no My Requests)
+      // Primary navigation bar: Oncall ONLY has "+ New Support Request" (one-way, no My Activities)
       primaryNav.style.display = 'block';
+      const isHRAdmin = Boolean(state.user.isHR || state.user.isMasterAdmin || state.user.isModerator);
+      const deptQueueIds = new Set((state.departmentQueue || []).map((r) => r.id));
+      const uniqueMyReqCount = state.user.isStaff
+        ? (state.myRequests || []).filter((r) => !deptQueueIds.has(r.id)).length
+        : (state.myRequests || []).length;
+      const totalActivitiesCount = uniqueMyReqCount + (state.myMessages || []).length + (state.user.isStaff ? (state.departmentQueue || []).length : 0);
+      const unreadHrMsgCount = (state.myMessages || []).filter((m) => !m.isRead).length;
+      const isActivitiesActive = state.currentRoute === '/requests' || state.currentRoute === '/department';
+
       let tabsHtml = `
         <button type="button" class="nav-tab ${state.currentRoute === '/open' ? 'active' : ''}" onclick="navigateTo('/open')">
           + New Support Request
         </button>
         ${!isOncall ? `
-          <button type="button" class="nav-tab ${state.currentRoute === '/requests' ? 'active' : ''}" onclick="navigateTo('/requests')">
-            My Requests (${state.myRequests.length})
+          <button type="button" class="nav-tab ${isActivitiesActive ? 'active' : ''}" onclick="navigateTo('/requests')">
+            My Activities <span class="count-pill">${totalActivitiesCount}</span>
+            ${unreadHrMsgCount > 0 ? `<span class="unread-pill" style="margin-left:5px;">${unreadHrMsgCount} new</span>` : ''}
           </button>
         ` : ''}
       `;
 
-      if (state.user.isStaff) {
+      if (isHRAdmin) {
         tabsHtml += `
-          <button type="button" class="nav-tab ${state.currentRoute === '/department' ? 'active' : ''}" onclick="navigateTo('/department')">
-            Messages <span class="count-pill">${state.departmentQueue.length}</span>
+          <button type="button" class="nav-tab ${state.currentRoute === '/messaging' ? 'active' : ''}" onclick="navigateTo('/messaging')">
+            Messaging
           </button>
         `;
       }
@@ -1827,7 +2281,11 @@
           renderMyRequestsView();
           break;
         case '/department':
-          renderDepartmentQueueView();
+          state.activitiesFilter = 'incoming';
+          renderMyRequestsView();
+          break;
+        case '/messaging':
+          renderHrMessagingView();
           break;
         case '/hr':
           renderHrAdminView();
@@ -2501,11 +2959,180 @@
     }
 
     /* ==========================================
-       MY REQUESTS VIEW (EMPLOYEE QUEUE)
+       MY ACTIVITIES VIEW (HR MESSAGES + SUPPORT REQUESTS)
        ========================================== */
+    function setActivitiesFilter(filter) {
+      state.activitiesFilter = filter;
+      renderMyRequestsView();
+    }
+
+    function renderHrMessageCardHtml(m, isHrManageView = false) {
+      const isUnread = !isHrManageView && !m.isRead;
+      const replies = Array.isArray(m.replies) ? m.replies : [];
+      const recipients = Array.isArray(m.recipients) ? m.recipients : [];
+      const channels = m.deliveryChannels || { gmail: true, website: true };
+
+      const channelBadges = [];
+      if (channels.gmail !== false) {
+        channelBadges.push(`<span style="background:#fef3c7; color:#92400e; font-size:0.72rem; font-weight:800; padding:3px 9px; border-radius:999px;">Gmail</span>`);
+      }
+      if (channels.website !== false) {
+        channelBadges.push(`<span style="background:#e0f2fe; color:#0369a1; font-size:0.72rem; font-weight:800; padding:3px 9px; border-radius:999px;">Website (My Activities)</span>`);
+      }
+
+      const recipientSummaryHtml = isHrManageView
+        ? `
+          <div style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);">
+            <strong>To (${recipients.length}):</strong>
+            <div style="display:flex; flex-wrap:wrap; gap:5px; margin-top:5px;">
+              ${recipients.map((r) => `
+                <span style="background:#f1f5f9; border:1px solid #cbd5e1; color:var(--navy-primary); font-size:0.74rem; padding:2px 8px; border-radius:999px;">
+                  ${escapeHtml(r.fullName)}${r.email ? ` &lt;${escapeHtml(r.email)}&gt;` : ''}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+        `
+        : `
+          <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">
+            From: <strong>${escapeHtml(m.senderName)}</strong> (${escapeHtml(m.senderRole || 'HR Admin')})
+            ${m.senderEmail ? `&bull; <code>${escapeHtml(m.senderEmail)}</code>` : ''}
+            ${recipients.length > 1 ? `&bull; Sent to ${recipients.length} recipients` : ''}
+          </div>
+        `;
+
+      const readCount = (m.readBy || []).filter((uid) => recipients.some((r) => r.userId === uid)).length;
+      const repliesHtml = replies.length
+        ? `
+          <div style="margin-top:12px; padding-top:10px; border-top:1px solid #e2e8f0;">
+            <div style="font-size:0.76rem; font-weight:800; color:var(--navy-primary); text-transform:uppercase; margin-bottom:8px;">
+              Replies (${replies.length})
+            </div>
+            ${replies.map((rp) => `
+              <div class="msg-reply-item ${rp.isHR ? 'hr-reply' : ''}">
+                <div style="display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:3px;">
+                  <strong style="color:var(--navy-primary);">${escapeHtml(rp.authorName)} <span style="font-weight:600; color:var(--text-muted);">(${escapeHtml(rp.authorRole || '')})</span></strong>
+                  <span style="font-size:0.74rem; color:var(--text-muted);">${escapeHtml(formatRequestTimestamp(rp.createdAt))}</span>
+                </div>
+                <div style="white-space:pre-wrap; color:var(--text-dark);">${escapeHtml(rp.text)}</div>
+              </div>
+            `).join('')}
+          </div>
+        `
+        : '';
+
+      const canReply = !isHrManageView || (channels.website !== false);
+      const replyFormHtml = canReply ? `
+        <form onsubmit="submitHrMessageReply(event, '${escapeHtml(m.id)}', ${isHrManageView ? 'true' : 'false'})" style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+          <input type="text" id="msgReplyInput-${escapeHtml(m.id)}-${isHrManageView ? 'hr' : 'act'}" class="input-control" style="flex:1; min-width:200px; padding:8px 11px; font-size:0.86rem;" placeholder="${isHrManageView ? 'Reply to recipients in this thread...' : 'Write a reply to HR Admin...'}" required />
+          <button type="submit" class="btn-secondary" style="padding:8px 14px; font-size:0.82rem;">Reply</button>
+        </form>
+      ` : '';
+
+      return `
+        <div class="hr-msg-card ${isUnread ? 'unread' : ''}">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+            <div>
+              <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:6px;">
+                <span style="background:var(--navy-primary); color:#fff; font-size:0.72rem; font-weight:800; padding:3px 9px; border-radius:999px;">
+                  ${escapeHtml(m.category || 'HR Announcement')}
+                </span>
+                ${isUnread ? `<span class="unread-pill">NEW</span>` : ''}
+                ${channelBadges.join('')}
+                <span style="font-size:0.76rem; color:var(--text-muted); font-family:monospace;">${escapeHtml(m.id)}</span>
+              </div>
+              <h3 style="color:var(--navy-primary); font-size:1.08rem; margin:0;">${escapeHtml(m.subject)}</h3>
+              ${recipientSummaryHtml}
+            </div>
+            <div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+              <span style="font-size:0.76rem; color:var(--text-muted);">${escapeHtml(formatRequestTimestamp(m.createdAt))}</span>
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                ${isUnread ? `
+                  <button type="button" class="btn-gold" style="padding:4px 10px; font-size:0.76rem;" onclick="markHrMessageRead('${escapeHtml(m.id)}')">
+                    Mark as Read
+                  </button>
+                ` : ''}
+                ${isHrManageView ? `
+                  <button type="button" class="btn-danger" style="padding:4px 10px; font-size:0.75rem;" onclick="deleteHrSentMessage('${escapeHtml(m.id)}')">
+                    Delete
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+
+          <div class="hr-msg-body">${m.bodyHtml ? m.bodyHtml : escapeHtml(m.body)}</div>
+
+          ${(Array.isArray(m.attachments) && m.attachments.length) ? `
+            <div class="msg-attachments-strip">
+              ${m.attachments.map((att) => `
+                <a class="msg-att-chip" href="/api/messages/${encodeURIComponent(m.id)}/attachment/${encodeURIComponent(att.id)}" target="_blank" rel="noopener">
+                  <span>&#128206;</span>
+                  <span>${escapeHtml(att.name)}</span>
+                  <span style="font-size:0.72rem; color:var(--text-muted); font-weight:500;">(${formatFileSize(att.size)})</span>
+                </a>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          ${(Array.isArray(m.ccEmails) && m.ccEmails.length) ? `
+            <div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:6px;">
+              <strong>Cc:</strong> ${m.ccEmails.map((e) => escapeHtml(e)).join(', ')}
+            </div>
+          ` : ''}
+
+          ${isHrManageView ? `
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:0.78rem; color:var(--text-muted);">
+              <span><strong>Status:</strong> ${escapeHtml(m.emailDeliveryStatus || 'Delivered')}</span>
+              ${channels.website !== false ? `<span><strong>Portal Read:</strong> ${readCount} / ${recipients.length}</span>` : ''}
+            </div>
+          ` : ''}
+
+          ${repliesHtml}
+          ${replyFormHtml}
+        </div>
+      `;
+    }
+
+    async function markHrMessageRead(msgId) {
+      const res = await fetch(`/api/messages/${encodeURIComponent(msgId)}/read`, { method: 'POST' });
+      if (res.ok) {
+        await refreshRequestsData();
+        renderHeaderAndNav();
+        renderMyRequestsView();
+      }
+    }
+
+    async function submitHrMessageReply(e, msgId, isHrView) {
+      e.preventDefault();
+      const inputId = `msgReplyInput-${msgId}-${isHrView ? 'hr' : 'act'}`;
+      const input = document.getElementById(inputId);
+      const text = (input?.value || '').trim();
+      if (!text) return;
+      const res = await fetch(`/api/messages/${encodeURIComponent(msgId)}/reply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      if (res.ok) {
+        await refreshRequestsData();
+        renderHeaderAndNav();
+        if (isHrView) renderActiveHrOrMessagingView('Reply sent.');
+        else renderMyRequestsView();
+      } else {
+        const d = await res.json().catch(() => ({}));
+        alert(d.error || 'Could not send reply.');
+      }
+    }
+
     function renderMyRequestsView() {
       const viewport = document.getElementById('appViewport');
-      const list = state.myRequests;
+      const isStaff = Boolean(state.user && state.user.isStaff);
+      const reqList = state.myRequests || [];
+      const deptList = isStaff ? (state.departmentQueue || []) : [];
+      const msgList = state.myMessages || [];
+      const unreadCount = msgList.filter((m) => !m.isRead).length;
+      const filter = state.activitiesFilter || 'all';
 
       let noticeHtml = '';
       if (state.lastSubmittedNotice) {
@@ -2526,52 +3153,92 @@
         state.lastSubmittedNotice = null;
       }
 
-      const cardsHtml = list.length === 0
-        ? `<div class="wizard-card" style="text-align:center; padding:48px 24px;">
-             <h3 style="color:var(--navy-primary); margin-bottom:8px;">No Active Support Requests</h3>
-             <p style="color:var(--text-muted); margin-bottom:20px;">You have no active requests within the current 365-day operational window.</p>
-             <button type="button" class="btn-gold" onclick="navigateTo('/open')">+ Create New Support Request</button>
-           </div>`
-        : list.map((r) => renderRequestCardHtml(r, false)).join('');
+      const deptIds = new Set(deptList.map((r) => r.id));
+      const uniqueReqList = isStaff ? reqList.filter((r) => !deptIds.has(r.id)) : reqList;
+      const totalAllCount = msgList.length + deptList.length + uniqueReqList.length;
+
+      let feedHtml = '';
+      if (filter === 'incoming' && isStaff) {
+        feedHtml = deptList.length === 0
+          ? `<div class="wizard-card" style="text-align:center; padding:42px 24px;">
+               <h3 style="color:var(--navy-primary); margin-bottom:8px;">No Incoming Department Messages</h3>
+               <p style="color:var(--text-muted);">Support requests assigned or CC'd to your department will appear here.</p>
+             </div>`
+          : deptList.map((r) => renderRequestCardHtml(r, true)).join('');
+      } else if (filter === 'messages') {
+        feedHtml = msgList.length === 0
+          ? `<div class="wizard-card" style="text-align:center; padding:42px 24px;">
+               <h3 style="color:var(--navy-primary); margin-bottom:8px;">No HR Messages Yet</h3>
+               <p style="color:var(--text-muted);">Messages sent by HR Admin to your website account will appear here automatically.</p>
+             </div>`
+          : msgList.map((m) => renderHrMessageCardHtml(m, false)).join('');
+      } else if (filter === 'requests') {
+        feedHtml = reqList.length === 0
+          ? `<div class="wizard-card" style="text-align:center; padding:42px 24px;">
+               <h3 style="color:var(--navy-primary); margin-bottom:8px;">No Active Support Requests</h3>
+               <p style="color:var(--text-muted); margin-bottom:20px;">You have no active requests within the current 365-day operational window.</p>
+               <button type="button" class="btn-gold" onclick="navigateTo('/open')">+ Create New Support Request</button>
+             </div>`
+          : reqList.map((r) => renderRequestCardHtml(r, false)).join('');
+      } else {
+        const combined = [
+          ...msgList.map((m) => ({ kind: 'message', ts: new Date(m.updatedAt || m.createdAt).getTime() || 0, item: m })),
+          ...deptList.map((r) => ({ kind: 'incoming', ts: new Date(r.updatedAt || r.createdAt).getTime() || 0, item: r })),
+          ...uniqueReqList.map((r) => ({ kind: 'request', ts: new Date(r.updatedAt || r.createdAt).getTime() || 0, item: r }))
+        ].sort((a, b) => b.ts - a.ts);
+
+        feedHtml = combined.length === 0
+          ? `<div class="wizard-card" style="text-align:center; padding:48px 24px;">
+               <h3 style="color:var(--navy-primary); margin-bottom:8px;">No Activities Yet</h3>
+               <p style="color:var(--text-muted); margin-bottom:20px;">Messages and support requests will appear here automatically.</p>
+               <button type="button" class="btn-gold" onclick="navigateTo('/open')">+ Create New Support Request</button>
+             </div>`
+          : combined.map((entry) => {
+              if (entry.kind === 'message') return renderHrMessageCardHtml(entry.item, false);
+              if (entry.kind === 'incoming') return renderRequestCardHtml(entry.item, true);
+              return renderRequestCardHtml(entry.item, false);
+            }).join('');
+      }
 
       viewport.innerHTML = `
         ${noticeHtml}
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
           <div>
-            <h2 style="color:var(--navy-primary); font-size:1.45rem;">My Submitted Support Requests</h2>
+            <h2 style="color:var(--navy-primary); font-size:1.45rem;">My Activities</h2>
             <p style="color:var(--text-muted); font-size:0.88rem;">
-              Showing active employee requests. Requests older than 365 days automatically archive into the Retention Trash queue.
+              ${isStaff
+                ? 'All incoming department messages, HR messages, and your submitted requests in one place.'
+                : 'HR messages and your active support requests in one place. Requests older than 365 days automatically archive.'}
             </p>
           </div>
           <button type="button" class="btn-gold" onclick="navigateTo('/open')">+ New Support Request</button>
         </div>
-        ${cardsHtml}
+
+        <div class="activity-filter-bar">
+          <button type="button" class="activity-filter-btn ${filter === 'all' ? 'active' : ''}" onclick="setActivitiesFilter('all')">
+            All Activities (${totalAllCount})
+          </button>
+          ${isStaff ? `
+            <button type="button" class="activity-filter-btn ${filter === 'incoming' ? 'active' : ''}" onclick="setActivitiesFilter('incoming')">
+              Department Messages (${deptList.length})
+            </button>
+          ` : ''}
+          <button type="button" class="activity-filter-btn ${filter === 'messages' ? 'active' : ''}" onclick="setActivitiesFilter('messages')">
+            HR Messages (${msgList.length})
+            ${unreadCount > 0 ? `<span class="unread-pill">${unreadCount} new</span>` : ''}
+          </button>
+          <button type="button" class="activity-filter-btn ${filter === 'requests' ? 'active' : ''}" onclick="setActivitiesFilter('requests')">
+            My Submitted Requests (${reqList.length})
+          </button>
+        </div>
+
+        ${feedHtml}
       `;
     }
 
-    /* ==========================================
-       5. DEPARTMENT SUPPORT & INLINE MONITORING
-       ========================================== */
     function renderDepartmentQueueView() {
-      const viewport = document.getElementById('appViewport');
-      const list = state.departmentQueue;
-
-      const cardsHtml = list.length === 0
-        ? `<div class="wizard-card" style="text-align:center; padding:40px;">No active requests in your Department Support queue.</div>`
-        : list.map((r) => renderRequestCardHtml(r, true)).join('');
-
-      viewport.innerHTML = `
-        <div class="sky-section-banner" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-          <div>
-            <h2 style="color:var(--navy-primary); font-size:1.3rem;">Messages</h2>
-            <p style="color:var(--text-muted); font-size:0.84rem;">
-              <strong>${escapeHtml(state.user.fullName)}</strong> &bull; ${escapeHtml(state.user.role)}
-            </p>
-          </div>
-          <button type="button" class="btn-secondary" onclick="navigateTo('/hr')">Manage Accounts &rarr;</button>
-        </div>
-        ${cardsHtml}
-      `;
+      state.activitiesFilter = 'incoming';
+      renderMyRequestsView();
     }
 
     function formatRequestTimestamp(isoStr) {
@@ -3134,28 +3801,64 @@
       } else if (tab === 'routing') {
         const roAttr = isHR ? '' : 'disabled';
         const roStyle = isHR ? '' : 'background:#f8fafc; color:#475569; cursor:default;';
-        const deptEmailInputs = Object.entries(deptEmails).map(([dept, email]) => `
-          <div class="form-group" style="margin-bottom:10px;">
-            <label style="font-size:0.8rem;">${escapeHtml(dept)} Mailbox</label>
-            <input type="email" class="input-control dept-email-setting" ${roAttr} style="${roStyle}" data-dept="${escapeHtml(dept)}" value="${escapeHtml(email)}" />
-          </div>
-        `).join('');
+        const allDirAccounts = getHrDirectoryRecipientList();
+        const deptNames = Array.from(new Set([
+          ...Object.keys(DEPARTMENT_CONFIG || {}),
+          ...Object.keys(deptEmails || {})
+        ]));
+
+        const deptCardsHtml = deptNames.map((dept) => {
+          const members = allDirAccounts.filter((u) =>
+            u.isStaff && (u.department === dept || (Array.isArray(u.secondaryDepartments) && u.secondaryDepartments.includes(dept)))
+          );
+          const membersHtml = members.length === 0
+            ? `<div style="font-size:0.8rem; color:var(--text-muted); padding:6px 0;">No officer accounts assigned to this department yet.</div>`
+            : members.map((m) => `
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; padding:7px 10px; background:#fff; border:1px solid #e2e8f0; border-radius:7px; margin-bottom:6px;">
+                <div style="min-width:160px;">
+                  <strong style="color:var(--navy-primary); font-size:0.85rem;">${escapeHtml(m.fullName)}</strong>
+                  <span style="font-size:0.75rem; color:var(--text-muted); margin-left:6px;">(${escapeHtml(m.role || dept)})</span>
+                </div>
+                <input type="email" class="input-control dept-member-email-input" ${roAttr} style="flex:1; min-width:210px; max-width:340px; padding:6px 10px; font-size:0.84rem; ${roStyle}" data-uid="${escapeHtml(m.id)}" value="${escapeHtml(m.email || '')}" placeholder="account@gmail.com" />
+              </div>
+            `).join('');
+
+          return `
+            <div class="dept-routing-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
+                <strong style="color:var(--navy-primary); font-size:0.94rem;">${escapeHtml(dept)}</strong>
+                <span style="font-size:0.74rem; font-weight:700; color:#0369a1; background:#e0f2fe; padding:2px 9px; border-radius:999px;">
+                  ${members.length} account${members.length === 1 ? '' : 's'} notified automatically
+                </span>
+              </div>
+              ${membersHtml}
+              <div style="margin-top:8px;">
+                <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700; display:block; margin-bottom:4px;">
+                  Additional Shared / Group Emails (optional — separate multiple emails with commas)
+                </label>
+                <input type="text" class="input-control dept-email-setting" ${roAttr} style="padding:7px 10px; font-size:0.84rem; ${roStyle}" data-dept="${escapeHtml(dept)}" value="${escapeHtml(deptEmails[dept] || '')}" placeholder="e.g., team@company.com, backup@gmail.com" />
+              </div>
+            </div>
+          `;
+        }).join('');
 
         panelHtml = `
           <div class="wizard-card" style="padding:24px; border-color:#bae6fd;">
-            <div class="sky-section-banner">
+            <div class="sky-section-banner" style="margin-bottom:14px;">
               <strong style="color:var(--navy-primary);">Department Mailboxes &amp; Routing</strong>
-              ${isHR ? '' : '<span style="margin-left:8px; font-size:0.8rem; color:#0369a1; font-weight:700;">(View Only — Only HR Admin can edit)</span>'}
+              <div style="font-size:0.8rem; color:var(--text-muted); margin-top:3px;">
+                ${isHR
+                  ? 'Every account assigned to a department automatically receives requests for that department — even if there are multiple accounts in the same department. Edit any email below.'
+                  : 'View Only — Only HR Admin can edit department emails.'}
+              </div>
             </div>
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap:12px;">
-              ${deptEmailInputs}
-            </div>
+            ${deptCardsHtml}
             <hr style="border:none; border-top:1px solid #bae6fd; margin:16px 0;" />
             <div class="form-group">
               <label>Seasonal Role Note</label>
               <input type="text" id="seasonalRoleNoteInput" class="input-control" ${roAttr} style="${roStyle}" value="${escapeHtml(s.seasonalRoleNote || '')}" />
             </div>
-            ${isHR ? `<button type="button" class="btn-gold" onclick="saveRoutingSettings()">Save Department Mailboxes</button>` : ''}
+            ${isHR ? `<button type="button" class="btn-gold" onclick="saveRoutingSettings()">Save Department Emails &amp; Routing</button>` : ''}
           </div>
         `;
       } else if (tab === 'employees') {
@@ -3178,8 +3881,18 @@
               ${!isHR
                 ? '<span style="color:var(--text-muted); font-size:0.78rem; font-weight:600;">View Only</span>'
                 : (isAdminAcct
-                  ? '<span style="color:var(--text-muted); font-size:0.78rem; font-weight:600;">Self-Managed</span>'
+                  ? `
+                    <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="openQuickMessageForUser('${escapeHtml(emp.id)}')">
+                      Message
+                    </button>
+                    <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="editAnyAccountEmail('${escapeHtml(emp.id)}', '${escapeHtml(emp.fullName)}', '${escapeHtml(emp.email || '')}')">
+                      Edit Email
+                    </button>
+                  `
                   : `
+                    <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="openQuickMessageForUser('${escapeHtml(emp.id)}')">
+                      Message
+                    </button>
                     <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="openHrEditModal('${escapeHtml(emp.id)}')">
                       Edit
                     </button>
@@ -3427,12 +4140,670 @@
           </button>
           <button type="button" class="settings-nav-btn ${tab === 'routing' ? 'active' : ''}" onclick="switchAdminSettingsTab('routing')">
             <h4>Department Mailboxes</h4>
-            <span>${isHR ? 'Edit routing &amp; notes' : 'View only (HR edits)'}</span>
+            <span>${isHR ? 'Edit routing &amp; emails' : 'View only (HR edits)'}</span>
           </button>
         </div>
 
         ${panelHtml}
       `;
+    }
+
+    /* ==========================================
+       TOP-LEVEL HR MESSAGING VIEW (/messaging)
+       ========================================== */
+    function renderActiveHrOrMessagingView(statusBanner = '') {
+      if (state.currentRoute === '/messaging') {
+        renderHrMessagingView(statusBanner);
+      } else {
+        renderHrAdminView(statusBanner);
+      }
+    }
+
+    function renderHrMessagingView(statusBanner = '') {
+      const viewport = document.getElementById('appViewport');
+      const isHR = Boolean(state.user && (state.user.isHR || state.user.isMasterAdmin || state.user.isModerator));
+      if (!isHR) {
+        viewport.innerHTML = `
+          <div class="wizard-card" style="padding:28px; border-color:#bae6fd;">
+            <h2 style="color:var(--navy-primary); margin-bottom:10px;">HR Messaging</h2>
+            <p style="color:var(--text-muted); margin-bottom:16px;">
+              Sending messages from the Employee Directory is strictly for <strong>HR Admin</strong>. Messages sent to you appear automatically in <strong>My Activities</strong>.
+            </p>
+            <button type="button" class="btn-gold" onclick="navigateTo('/requests')">Go to My Activities &rarr;</button>
+          </div>
+        `;
+        return;
+      }
+
+      const allRecipients = getHrDirectoryRecipientList();
+      const searchQ = (state.hrMsgSearch || '').trim().toLowerCase();
+      const filteredRecipients = allRecipients.filter((u) => {
+        if (!searchQ) return true;
+        return `${u.fullName} ${u.email} ${u.department} ${u.role} ${u.company} ${u.id}`.toLowerCase().includes(searchQ);
+      });
+      const selectedSet = new Set((state.hrMsgSelectedIds || []).map(String));
+      const allFilteredChecked = filteredRecipients.length > 0 && filteredRecipients.every((u) => selectedSet.has(String(u.id)));
+      const selectedRecipients = allRecipients.filter((u) => selectedSet.has(String(u.id)));
+      const totalRecipientCount = selectedRecipients.length;
+      const attachments = Array.isArray(state.hrMsgAttachments) ? state.hrMsgAttachments : [];
+
+      const recipientRowsHtml = filteredRecipients.length === 0
+        ? `<div style="padding:18px; text-align:center; color:var(--text-muted); font-size:0.85rem;">No matching people found in the Employee Directory.</div>`
+        : filteredRecipients.map((u) => {
+            const checked = selectedSet.has(String(u.id));
+            const isAdminRole = Boolean(u.isStaff || u.isHR);
+            return `
+              <div class="recipient-row ${checked ? 'selected' : ''}">
+                <label style="display:flex; align-items:center; gap:12px; flex:1; cursor:pointer; min-width:0;">
+                  <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleHrMsgRecipient('${escapeHtml(u.id)}', this.checked)" style="width:16px; height:16px; accent-color:#0b57d0; cursor:pointer; flex-shrink:0;" />
+                  <div style="flex:1; min-width:150px;">
+                    <div style="display:flex; align-items:center; flex-wrap:wrap; gap:7px;">
+                      <strong style="color:var(--navy-primary); font-size:0.88rem;">${escapeHtml(u.fullName)}</strong>
+                      <span style="font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:999px; ${isAdminRole ? 'background:#fef3c7; color:#92400e;' : 'background:#e0f2fe; color:#0369a1;'}">
+                        ${isAdminRole ? 'Admin' : escapeHtml(u.company || 'Employee')}
+                      </span>
+                    </div>
+                    <div style="font-size:0.77rem; color:var(--text-muted); margin-top:2px;">${escapeHtml(u.department || '')}${u.role ? ` &bull; ${escapeHtml(u.role)}` : ''}</div>
+                  </div>
+                </label>
+                <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+                  ${u.email
+                    ? `<span style="font-size:0.82rem; color:#334155;">${escapeHtml(u.email)}</span>`
+                    : `<span style="font-size:0.76rem; color:#b91c1c;">No email</span>`}
+                  <button type="button" class="gmail-link-btn" style="font-size:0.76rem; color:#0b57d0;" onclick="editAnyAccountEmail('${escapeHtml(u.id)}', '${escapeHtml(u.fullName)}', '${escapeHtml(u.email || '')}')">
+                    Edit
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+      let lastResultBanner = '';
+      if (state.hrMsgLastResult) {
+        const lr = state.hrMsgLastResult;
+        lastResultBanner = `
+          <div class="alert-box alert-success" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:18px;">
+            <div>
+              <strong>Message sent to ${lr.recipientCount} recipient${lr.recipientCount === 1 ? '' : 's'}!</strong>
+              <span style="font-size:0.84rem; margin-left:8px;">${escapeHtml(lr.emailDeliveryStatus || '')}</span>
+            </div>
+          </div>
+        `;
+        state.hrMsgLastResult = null;
+      }
+
+      const sentHistoryHtml = (state.hrSentMessages || []).length === 0
+        ? `<div style="text-align:center; padding:28px 16px; color:var(--text-muted); font-size:0.88rem;">No sent messages yet.</div>`
+        : state.hrSentMessages.map((m) => renderHrMessageCardHtml(m, true)).join('');
+
+      const sendGmail = state.hrMsgSendToGmail !== false;
+      const sendWebsite = state.hrMsgSendToWebsite !== false;
+      const emojiList = ['👍','🙏','✅','📢','📌','📅','🎉','⚠️','💼','📄','💡','🤝','👋','😊'];
+
+      viewport.innerHTML = `
+        <h2 style="color:var(--navy-primary); font-size:1.45rem; margin-bottom:14px;">Messaging</h2>
+        ${statusBanner ? `<div class="alert-box alert-success">${escapeHtml(statusBanner)}</div>` : ''}
+        ${lastResultBanner}
+
+        <div class="gmail-compose-card">
+          <div class="gmail-compose-header">
+            <h3>New Message</h3>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:0.78rem; font-weight:700; color:#0b57d0; background:#e1e9f8; padding:3px 10px; border-radius:999px;">
+                ${totalRecipientCount} selected
+              </span>
+              <button type="button" class="gmail-link-btn ${state.hrMsgShowCc ? 'active' : ''}" onclick="state.hrMsgShowCc = !state.hrMsgShowCc; renderHrMessagingView();">Cc</button>
+              <button type="button" class="gmail-link-btn ${state.hrMsgShowBcc ? 'active' : ''}" onclick="state.hrMsgShowBcc = !state.hrMsgShowBcc; renderHrMessagingView();">Bcc</button>
+            </div>
+          </div>
+
+          <div style="background:#f8fafc; border-bottom:1px solid #eceff1; padding:14px 22px 16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; flex:1; min-width:220px;">
+                <label style="display:inline-flex; align-items:center; gap:7px; font-size:0.84rem; font-weight:700; color:var(--navy-primary); cursor:pointer; white-space:nowrap;">
+                  <input type="checkbox" ${allFilteredChecked ? 'checked' : ''} onchange="toggleSelectAllHrRecipients(this.checked)" style="width:16px; height:16px; accent-color:#0b57d0;" />
+                  Select All${searchQ ? ' (Filtered)' : ` (${allRecipients.length})`}
+                </label>
+                <input type="text" id="hrMsgSearchInput" class="input-control" style="flex:1; min-width:190px; max-width:340px; padding:7px 12px; font-size:0.84rem; background:#fff;" placeholder="Search recipients by name or email..." value="${escapeHtml(state.hrMsgSearch || '')}" oninput="updateHrMsgSearch(this.value)" />
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <button type="button" class="btn-secondary" style="padding:5px 11px; font-size:0.75rem;" onclick="quickSelectHrRecipients('all')">Pick All</button>
+                <button type="button" class="btn-secondary" style="padding:5px 11px; font-size:0.75rem;" onclick="quickSelectHrRecipients('employees')">Employees</button>
+                <button type="button" class="btn-secondary" style="padding:5px 11px; font-size:0.75rem;" onclick="quickSelectHrRecipients('admins')">Admins</button>
+                <button type="button" class="btn-secondary" style="padding:5px 11px; font-size:0.75rem;" onclick="quickSelectHrRecipients('bsii')">BSII</button>
+                <button type="button" class="btn-secondary" style="padding:5px 11px; font-size:0.75rem;" onclick="quickSelectHrRecipients('esteems')">Esteems</button>
+                <button type="button" class="btn-secondary" style="padding:5px 11px; font-size:0.75rem;" onclick="quickSelectHrRecipients('none')">Clear</button>
+              </div>
+            </div>
+            <div class="recipient-picker-scroll">
+              ${recipientRowsHtml}
+            </div>
+          </div>
+
+          ${state.hrMsgShowCc ? `
+            <div class="gmail-field-row">
+              <span class="gmail-field-label">Cc</span>
+              <input type="text" class="gmail-inline-input" placeholder="Add Cc email addresses (comma-separated)..." value="${escapeHtml(state.hrMsgCcText || '')}" oninput="state.hrMsgCcText = this.value" />
+            </div>
+          ` : ''}
+
+          ${state.hrMsgShowBcc ? `
+            <div class="gmail-field-row">
+              <span class="gmail-field-label">Bcc</span>
+              <input type="text" class="gmail-inline-input" placeholder="Add Bcc email addresses (comma-separated)..." value="${escapeHtml(state.hrMsgBccText || '')}" oninput="state.hrMsgBccText = this.value" />
+            </div>
+          ` : ''}
+
+          <div class="gmail-field-row">
+            <input type="text" id="hrMsgSubjectInput" class="gmail-inline-input" style="font-size:0.95rem; padding:6px 0;" placeholder="Subject" value="${escapeHtml(state.hrMsgSubject || '')}" oninput="state.hrMsgSubject = this.value" />
+          </div>
+
+          <div id="hrMsgRichEditor" class="gmail-editor" contenteditable="true" data-placeholder="Write your message..." oninput="syncGmailEditorState()">${state.hrMsgBodyHtml || ''}</div>
+
+          ${attachments.length > 0 ? `
+            <div style="padding:4px 22px 12px;">
+              <div class="msg-attachments-strip">
+                ${attachments.map((att, idx) => `
+                  <span class="msg-att-chip" style="cursor:default;">
+                    <span>&#128206;</span>
+                    <span>${escapeHtml(att.name)}</span>
+                    <span style="font-size:0.72rem; color:var(--text-muted); font-weight:500;">(${formatFileSize(att.size)})</span>
+                    <button type="button" title="Remove file" onclick="removeHrAttachment(${idx})" style="background:none; border:none; color:#64748b; font-weight:800; cursor:pointer; font-size:0.95rem; padding:0 2px;">&times;</button>
+                  </span>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${state.hrMsgShowFormatBar ? `
+            <div class="gmail-format-bar" aria-label="Formatting options">
+              <button type="button" class="gmail-fmt-btn" title="Undo" onclick="execGmailFormat('undo')">&#8630;</button>
+              <button type="button" class="gmail-fmt-btn" title="Redo" onclick="execGmailFormat('redo')">&#8631;</button>
+              <span style="width:1px; height:18px; background:#cbd5e1; margin:0 4px;"></span>
+              <select class="gmail-fmt-select" title="Font" onchange="execGmailFormatWithValue('fontName', this.value)">
+                <option value="Arial, sans-serif">Sans Serif</option>
+                <option value="Georgia, serif">Serif</option>
+                <option value="Courier New, monospace">Fixed Width</option>
+                <option value="Tahoma, sans-serif">Tahoma</option>
+                <option value="Verdana, sans-serif">Verdana</option>
+              </select>
+              <select class="gmail-fmt-select" title="Font size" onchange="execGmailFormatWithValue('fontSize', this.value)">
+                <option value="2">Small</option>
+                <option value="3" selected>Normal</option>
+                <option value="4">Large</option>
+                <option value="5">Huge</option>
+              </select>
+              <span style="width:1px; height:18px; background:#cbd5e1; margin:0 4px;"></span>
+              <button type="button" class="gmail-fmt-btn" title="Bold" onclick="execGmailFormat('bold')"><strong>B</strong></button>
+              <button type="button" class="gmail-fmt-btn" title="Italic" onclick="execGmailFormat('italic')"><em>I</em></button>
+              <button type="button" class="gmail-fmt-btn" title="Underline" onclick="execGmailFormat('underline')"><u>U</u></button>
+              <button type="button" class="gmail-fmt-btn" title="Strikethrough" onclick="execGmailFormat('strikeThrough')"><s>S</s></button>
+              <label class="gmail-fmt-btn" title="Text color" style="position:relative; gap:2px;">
+                <span style="border-bottom:2px solid #0b57d0; line-height:1;">A</span>
+                <input type="color" value="#002147" oninput="execGmailFormatWithValue('foreColor', this.value)" style="position:absolute; opacity:0; inset:0; width:100%; height:100%; cursor:pointer;" />
+              </label>
+              <span style="width:1px; height:18px; background:#cbd5e1; margin:0 4px;"></span>
+              <button type="button" class="gmail-fmt-btn" title="Align left" onclick="execGmailFormat('justifyLeft')">&#8676;</button>
+              <button type="button" class="gmail-fmt-btn" title="Align center" onclick="execGmailFormat('justifyCenter')">&#8596;</button>
+              <button type="button" class="gmail-fmt-btn" title="Align right" onclick="execGmailFormat('justifyRight')">&#8677;</button>
+              <span style="width:1px; height:18px; background:#cbd5e1; margin:0 4px;"></span>
+              <button type="button" class="gmail-fmt-btn" title="Bulleted list" onclick="execGmailFormat('insertUnorderedList')">&bull; List</button>
+              <button type="button" class="gmail-fmt-btn" title="Numbered list" onclick="execGmailFormat('insertOrderedList')">1. List</button>
+              <button type="button" class="gmail-fmt-btn" title="Clear formatting" onclick="execGmailFormat('removeFormat')">T<sub>x</sub></button>
+            </div>
+          ` : ''}
+
+          <input type="file" id="hrMsgFileInput" multiple style="display:none;" onchange="handleHrAttachFiles(event)" />
+          <input type="file" id="hrMsgPhotoInput" accept="image/*" style="display:none;" onchange="handleHrInsertPhoto(event)" />
+
+          <div class="gmail-compose-footer">
+            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+              <button type="button" id="hrMsgSendBtn" class="gmail-send-btn" onclick="sendHrDirectoryMessage(event)" ${totalRecipientCount === 0 ? 'disabled' : ''}>
+                Send
+              </button>
+
+              <button type="button" class="gmail-icon-tool ${state.hrMsgShowFormatBar ? 'active' : ''}" title="Formatting options" onclick="state.hrMsgShowFormatBar = !state.hrMsgShowFormatBar; renderHrMessagingView();">
+                Aa
+              </button>
+
+              <button type="button" class="gmail-icon-tool" title="Attach files" onclick="document.getElementById('hrMsgFileInput').click()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+              </button>
+
+              <button type="button" class="gmail-icon-tool" title="Insert link" onclick="insertHrMessageLink()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              </button>
+
+              <div style="position:relative; display:inline-flex;">
+                <button type="button" class="gmail-icon-tool ${state.hrMsgShowEmojiPicker ? 'active' : ''}" title="Insert emoji" onclick="state.hrMsgShowEmojiPicker = !state.hrMsgShowEmojiPicker; renderHrMessagingView();">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                </button>
+                ${state.hrMsgShowEmojiPicker ? `
+                  <div class="gmail-emoji-popover">
+                    ${emojiList.map((em) => `<button type="button" class="gmail-emoji-btn" onclick="insertHrEmoji('${em}')">${em}</button>`).join('')}
+                  </div>
+                ` : ''}
+              </div>
+
+              <button type="button" class="gmail-icon-tool" title="Insert photo" onclick="document.getElementById('hrMsgPhotoInput').click()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </button>
+
+              <span style="width:1px; height:22px; background:#e2e8f0; margin:0 6px;"></span>
+
+              <label class="gmail-delivery-pill ${sendGmail ? 'active' : ''}" title="Send to each recipient's email address (default)">
+                <input type="checkbox" ${sendGmail ? 'checked' : ''} onchange="toggleHrMsgChannel('gmail', this.checked)" style="accent-color:#0b57d0;" />
+                Email (Default)
+              </label>
+              <label class="gmail-delivery-pill ${sendWebsite ? 'active' : ''}" title="Also deliver to each recipient's website account under My Activities">
+                <input type="checkbox" ${sendWebsite ? 'checked' : ''} onchange="toggleHrMsgChannel('website', this.checked)" style="accent-color:#0b57d0;" />
+                Website Account (My Activities)
+              </label>
+            </div>
+
+            <button type="button" class="gmail-icon-tool" title="Discard draft" onclick="discardGmailDraft()" aria-label="Discard draft">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="wizard-card" style="padding:22px 24px; border-color:#bae6fd;">
+          <div class="sky-section-banner" style="margin-bottom:14px;">
+            <strong style="color:var(--navy-primary);">Sent Messages (${(state.hrSentMessages || []).length})</strong>
+          </div>
+          ${sentHistoryHtml}
+        </div>
+      `;
+    }
+
+    /* ==========================================
+       HR DIRECTORY MESSAGING HELPERS
+       ========================================== */
+    function getHrDirectoryRecipientList() {
+      if (Array.isArray(state.directoryRecipients) && state.directoryRecipients.length > 0) {
+        return state.directoryRecipients;
+      }
+      return Array.isArray(state.hrEmployees) ? state.hrEmployees : [];
+    }
+
+    function toggleHrMsgRecipient(userId, checked) {
+      const idStr = String(userId);
+      const set = new Set((state.hrMsgSelectedIds || []).map(String));
+      if (checked) set.add(idStr);
+      else set.delete(idStr);
+      state.hrMsgSelectedIds = Array.from(set);
+      renderActiveHrOrMessagingView();
+    }
+
+    function toggleSelectAllHrRecipients(checked) {
+      const all = getHrDirectoryRecipientList();
+      const searchQ = (state.hrMsgSearch || '').trim().toLowerCase();
+      const filtered = all.filter((u) => {
+        if (!searchQ) return true;
+        return `${u.fullName} ${u.email} ${u.department} ${u.role} ${u.company} ${u.id}`.toLowerCase().includes(searchQ);
+      });
+      const set = new Set((state.hrMsgSelectedIds || []).map(String));
+      filtered.forEach((u) => {
+        if (checked) set.add(String(u.id));
+        else set.delete(String(u.id));
+      });
+      state.hrMsgSelectedIds = Array.from(set);
+      renderActiveHrOrMessagingView();
+    }
+
+    function quickSelectHrRecipients(mode) {
+      const all = getHrDirectoryRecipientList();
+      if (mode === 'none') {
+        state.hrMsgSelectedIds = [];
+      } else if (mode === 'all') {
+        state.hrMsgSelectedIds = all.map((u) => String(u.id));
+      } else if (mode === 'admins') {
+        state.hrMsgSelectedIds = all.filter((u) => u.isStaff || u.isHR).map((u) => String(u.id));
+      } else if (mode === 'employees') {
+        state.hrMsgSelectedIds = all.filter((u) => !u.isStaff && !u.isHR).map((u) => String(u.id));
+      } else if (mode === 'bsii') {
+        state.hrMsgSelectedIds = all.filter((u) => String(u.company || '').toLowerCase().includes('bsii')).map((u) => String(u.id));
+      } else if (mode === 'esteems') {
+        state.hrMsgSelectedIds = all.filter((u) => String(u.company || '').toLowerCase().includes('esteems')).map((u) => String(u.id));
+      }
+      renderActiveHrOrMessagingView();
+    }
+
+    function updateHrMsgSearch(val) {
+      state.hrMsgSearch = val;
+      renderActiveHrOrMessagingView();
+      const el = document.getElementById('hrMsgSearchInput');
+      if (el) {
+        el.focus();
+        el.setSelectionRange(el.value.length, el.value.length);
+      }
+    }
+
+    function toggleHrMsgChannel(channel, checked) {
+      if (channel === 'gmail') {
+        if (!checked && !state.hrMsgSendToWebsite) {
+          alert('Keep at least one destination enabled (Email or Website Account).');
+          renderActiveHrOrMessagingView();
+          return;
+        }
+        state.hrMsgSendToGmail = checked;
+      } else if (channel === 'website') {
+        if (!checked && !state.hrMsgSendToGmail) {
+          alert('Keep at least one destination enabled (Email or Website Account).');
+          renderActiveHrOrMessagingView();
+          return;
+        }
+        state.hrMsgSendToWebsite = checked;
+      }
+      renderActiveHrOrMessagingView();
+    }
+
+    function openQuickMessageForUser(userId) {
+      state.hrMsgSelectedIds = [String(userId)];
+      navigateTo('/messaging');
+    }
+
+    function formatFileSize(bytes) {
+      const n = Number(bytes) || 0;
+      if (n < 1024) return `${n} B`;
+      if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+      return `${(n / (1024 * 1024)).toFixed(2)} MB`;
+    }
+
+    function execGmailFormat(cmd) {
+      const editor = document.getElementById('hrMsgRichEditor');
+      if (!editor) return;
+      editor.focus();
+      try { document.execCommand(cmd, false, null); } catch (_) {}
+      syncGmailEditorState();
+    }
+
+    function execGmailFormatWithValue(cmd, val) {
+      const editor = document.getElementById('hrMsgRichEditor');
+      if (!editor) return;
+      editor.focus();
+      try { document.execCommand(cmd, false, val); } catch (_) {}
+      syncGmailEditorState();
+    }
+
+    function insertHrMessageLink() {
+      const editor = document.getElementById('hrMsgRichEditor');
+      if (!editor) return;
+      const sel = window.getSelection();
+      const selectedText = sel && sel.rangeCount > 0 && editor.contains(sel.anchorNode) ? sel.toString().trim() : '';
+      const rawUrl = prompt('Enter URL (e.g., https://example.com):', 'https://');
+      if (!rawUrl) return;
+      let cleanUrl = rawUrl.trim();
+      if (!/^https?:\/\//i.test(cleanUrl)) cleanUrl = 'https://' + cleanUrl;
+      const label = selectedText || prompt('Text to display for link:', cleanUrl) || cleanUrl;
+      editor.focus();
+      const linkHtml = `<a href="${escapeHtml(cleanUrl)}" target="_blank" rel="noopener">${escapeHtml(label)}</a>&nbsp;`;
+      try {
+        document.execCommand('insertHTML', false, linkHtml);
+      } catch (_) {
+        editor.innerHTML += linkHtml;
+      }
+      syncGmailEditorState();
+    }
+
+    function insertHrEmoji(emoji) {
+      state.hrMsgShowEmojiPicker = false;
+      const editor = document.getElementById('hrMsgRichEditor');
+      if (editor) {
+        editor.focus();
+        try {
+          document.execCommand('insertText', false, emoji);
+        } catch (_) {
+          editor.innerHTML += emoji;
+        }
+        syncGmailEditorState();
+      } else {
+        state.hrMsgBodyHtml = (state.hrMsgBodyHtml || '') + emoji;
+        state.hrMsgBody = (state.hrMsgBody || '') + emoji;
+      }
+      renderActiveHrOrMessagingView();
+    }
+
+    function handleHrAttachFiles(event) {
+      const files = Array.from((event.target && event.target.files) || []);
+      event.target.value = '';
+      if (!files.length) return;
+      const current = Array.isArray(state.hrMsgAttachments) ? state.hrMsgAttachments.slice() : [];
+      const maxFiles = 5;
+      const maxSizeBytes = 3 * 1024 * 1024;
+
+      const toAdd = files.slice(0, Math.max(0, maxFiles - current.length));
+      if (files.length > toAdd.length) {
+        alert(`You can attach up to ${maxFiles} files per message.`);
+      }
+      let remaining = toAdd.length;
+      if (remaining === 0) return;
+
+      toAdd.forEach((file) => {
+        if (file.size > maxSizeBytes) {
+          alert(`"${file.name}" exceeds the 3 MB per-file limit.`);
+          remaining--;
+          if (remaining === 0) {
+            state.hrMsgAttachments = current;
+            renderActiveHrOrMessagingView();
+          }
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          current.push({
+            name: file.name,
+            size: file.size,
+            type: file.type || 'application/octet-stream',
+            dataUrl: String(reader.result || '')
+          });
+          remaining--;
+          if (remaining === 0) {
+            state.hrMsgAttachments = current;
+            renderActiveHrOrMessagingView();
+          }
+        };
+        reader.onerror = () => {
+          remaining--;
+          if (remaining === 0) {
+            state.hrMsgAttachments = current;
+            renderActiveHrOrMessagingView();
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function removeHrAttachment(idx) {
+      const list = Array.isArray(state.hrMsgAttachments) ? state.hrMsgAttachments.slice() : [];
+      list.splice(idx, 1);
+      state.hrMsgAttachments = list;
+      renderActiveHrOrMessagingView();
+    }
+
+    function handleHrInsertPhoto(event) {
+      const file = event.target && event.target.files && event.target.files[0];
+      event.target.value = '';
+      if (!file || !file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 960;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            const ratio = Math.min(maxDim / w, maxDim / h);
+            w = Math.round(w * ratio);
+            h = Math.round(h * ratio);
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          const editor = document.getElementById('hrMsgRichEditor');
+          const imgHtml = `<div><img src="${compressedDataUrl}" alt="${escapeHtml(file.name)}" /></div><p><br/></p>`;
+          if (editor) {
+            editor.focus();
+            try {
+              document.execCommand('insertHTML', false, imgHtml);
+            } catch (_) {
+              editor.innerHTML += imgHtml;
+            }
+            syncGmailEditorState();
+          } else {
+            state.hrMsgBodyHtml = (state.hrMsgBodyHtml || '') + imgHtml;
+          }
+        };
+        img.src = String(reader.result || '');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function syncGmailEditorState() {
+      const editor = document.getElementById('hrMsgRichEditor');
+      if (!editor) return;
+      state.hrMsgBodyHtml = editor.innerHTML;
+      state.hrMsgBody = (editor.innerText || editor.textContent || '').trim();
+    }
+
+    function discardGmailDraft() {
+      const hasContent = Boolean(state.hrMsgSubject || state.hrMsgBody || state.hrMsgBodyHtml || (state.hrMsgAttachments || []).length || (state.hrMsgSelectedIds || []).length);
+      if (hasContent && !confirm('Discard this draft?')) {
+        return;
+      }
+      state.hrMsgSelectedIds = [];
+      state.hrMsgCcText = '';
+      state.hrMsgBccText = '';
+      state.hrMsgShowCc = false;
+      state.hrMsgShowBcc = false;
+      state.hrMsgShowEmojiPicker = false;
+      state.hrMsgAttachments = [];
+      state.hrMsgSearch = '';
+      state.hrMsgSubject = '';
+      state.hrMsgBody = '';
+      state.hrMsgBodyHtml = '';
+      state.hrMsgSendToGmail = true;
+      state.hrMsgSendToWebsite = true;
+      renderActiveHrOrMessagingView();
+    }
+
+    async function editAnyAccountEmail(userId, fullName, currentEmail) {
+      const next = prompt(`Edit email address for ${fullName}:`, currentEmail || '');
+      if (next === null) return;
+      const cleaned = next.trim();
+      if (!cleaned || !cleaned.includes('@')) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+      const res = await fetch(`/api/hr/employees/${encodeURIComponent(userId)}/email`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleaned })
+      });
+      const d = await res.json();
+      if (res.ok) {
+        await refreshRequestsData();
+        await refreshHrData();
+        renderActiveHrOrMessagingView(`Updated email for ${fullName} to ${cleaned}.`);
+      } else {
+        alert(d.error || 'Could not update email address.');
+      }
+    }
+
+    async function sendHrDirectoryMessage(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      syncGmailEditorState();
+
+      const recipientIds = (state.hrMsgSelectedIds || []).slice();
+      const ccEmails = String(state.hrMsgCcText || '').split(/[,;\n]+/).map((s) => s.trim()).filter((s) => s.includes('@'));
+      const bccEmails = String(state.hrMsgBccText || '').split(/[,;\n]+/).map((s) => s.trim()).filter((s) => s.includes('@'));
+      const subject = (state.hrMsgSubject || '').trim();
+      const body = (state.hrMsgBody || '').trim();
+      const bodyHtml = (state.hrMsgBodyHtml || '').trim();
+      const attachments = Array.isArray(state.hrMsgAttachments) ? state.hrMsgAttachments : [];
+      const sendToGmail = state.hrMsgSendToGmail !== false;
+      const sendToWebsite = state.hrMsgSendToWebsite !== false;
+
+      if (recipientIds.length === 0) {
+        alert('Please check at least one recipient.');
+        return;
+      }
+      if (!subject || (!body && !bodyHtml && attachments.length === 0)) {
+        alert('Please enter a Subject and a message (or attach a file/photo).');
+        return;
+      }
+
+      const btn = document.getElementById('hrMsgSendBtn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+      }
+
+      try {
+        const res = await fetch('/api/hr/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recipientIds,
+            ccEmails,
+            bccEmails,
+            subject,
+            body,
+            bodyHtml,
+            attachments,
+            category: 'HR Message',
+            sendToGmail,
+            sendToWebsite
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          alert(data.error || 'Unable to send message.');
+          renderActiveHrOrMessagingView();
+          return;
+        }
+        const msg = data.message;
+        state.hrMsgLastResult = {
+          id: msg.id,
+          subject: msg.subject,
+          body: msg.body,
+          deliveryChannels: msg.deliveryChannels,
+          sentViaLiveEmail: msg.sentViaLiveEmail,
+          emailDeliveryStatus: msg.emailDeliveryStatus,
+          recipientCount: (msg.recipients || []).length,
+          recipientEmails: (msg.recipients || []).map((r) => r.email).filter((em) => em && em.includes('@'))
+        };
+        state.hrMsgSubject = '';
+        state.hrMsgBody = '';
+        state.hrMsgBodyHtml = '';
+        state.hrMsgAttachments = [];
+        state.hrMsgCcText = '';
+        state.hrMsgBccText = '';
+        state.hrMsgShowEmojiPicker = false;
+        state.hrMsgSearch = '';
+        await refreshRequestsData();
+        renderHeaderAndNav();
+        renderActiveHrOrMessagingView();
+      } catch (err) {
+        alert('Network error sending message.');
+        renderActiveHrOrMessagingView();
+      }
+    }
+
+    async function deleteHrSentMessage(msgId) {
+      if (!confirm('Delete this sent HR message from history and recipient views?')) return;
+      const res = await fetch(`/api/hr/messages/${encodeURIComponent(msgId)}`, { method: 'DELETE' });
+      if (res.ok) {
+        await refreshRequestsData();
+        renderHeaderAndNav();
+        renderActiveHrOrMessagingView('Sent HR message deleted.');
+      } else {
+        const d = await res.json().catch(() => ({}));
+        alert(d.error || 'Could not delete message.');
+      }
     }
 
     function getClassifications() {
@@ -3629,8 +5000,16 @@
       document.querySelectorAll('.dept-email-setting').forEach((el) => {
         departmentEmails[el.getAttribute('data-dept')] = el.value.trim();
       });
+      const userEmails = {};
+      document.querySelectorAll('.dept-member-email-input').forEach((el) => {
+        const uid = el.getAttribute('data-uid');
+        const val = el.value.trim();
+        if (uid && val && val.includes('@')) {
+          userEmails[uid] = val;
+        }
+      });
 
-      const payload = { globalCcEnabled: false, seasonalRoleNote, departmentEmails };
+      const payload = { globalCcEnabled: false, seasonalRoleNote, departmentEmails, userEmails };
       const res = await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -3639,8 +5018,9 @@
       if (res.ok) {
         const d = await res.json();
         state.settings = d.settings || state.settings;
+        await refreshRequestsData();
         await refreshHrData();
-        renderHrAdminView('Department Mailboxes & Routing settings updated.');
+        renderHrAdminView('Department routing & account emails updated.');
       }
     }
 

@@ -532,7 +532,8 @@ const DEFAULT_DATA = {
         ]
       }
     }
-  }
+  },
+  hrMessages: []
 };
 
 function validateStrongAdminPassword(password, fullName, lastName) {
@@ -688,11 +689,17 @@ function refreshSignedStateTokens(data) {
     users: data.users,
     settings: data.settings
   });
+  const compactHrMessages = (data.hrMessages || []).slice(0, 40).map((m) => ({
+    ...m,
+    bodyHtml: typeof m.bodyHtml === 'string' && m.bodyHtml.length < 4000 && !m.bodyHtml.includes('data:image') ? m.bodyHtml : '',
+    attachments: Array.isArray(m.attachments) ? m.attachments.map((a) => ({ id: a.id, name: a.name, size: a.size, type: a.type })) : []
+  }));
   latestStateToken = signCompressedState({
     ts,
     users: data.users,
     settings: data.settings,
-    requests: (data.requests || []).slice(0, 60)
+    requests: (data.requests || []).slice(0, 60),
+    hrMessages: compactHrMessages
   });
 }
 
@@ -728,6 +735,9 @@ function applyIncomingSyncedState(parsed, req) {
     }
     if (Array.isArray(best.requests) && best.requests.length > 0) {
       parsed.requests = best.requests;
+    }
+    if (Array.isArray(best.hrMessages)) {
+      parsed.hrMessages = best.hrMessages;
     }
     parsed._lastSavedTs = best.ts;
     parsed.users.forEach((u) => syncUserAcrossRequests(parsed, u));
@@ -769,6 +779,10 @@ function loadData(req) {
     let changed = false;
     if (!Array.isArray(parsed.emailDispatchLog)) {
       parsed.emailDispatchLog = [];
+      changed = true;
+    }
+    if (!Array.isArray(parsed.hrMessages)) {
+      parsed.hrMessages = [];
       changed = true;
     }
     if (Array.isArray(parsed.users)) {
@@ -990,18 +1004,21 @@ function collectRelatedAdminEmails(data, reqObj) {
       (u.isStaff || u.isHR || u.isMasterAdmin) &&
       (u.department === dept || (Array.isArray(u.secondaryDepartments) && u.secondaryDepartments.includes(dept)))
     );
-    const realAdminEmails = deptAdmins.map((u) => u.email).filter((e) => e && !isPlaceholderEmail(e));
-    const configuredDeptBox = deptEmails[dept];
+    const allAdminEmails = deptAdmins.map((u) => String(u.email || '').trim()).filter((e) => e.includes('@'));
+    const realAdminEmails = allAdminEmails.filter((e) => !isPlaceholderEmail(e));
+    const configuredExtraBoxes = String(deptEmails[dept] || '')
+      .split(/[,;\n]+/)
+      .map((e) => e.trim())
+      .filter((e) => e.includes('@'));
 
     if (realAdminEmails.length > 0) {
       realAdminEmails.forEach(add);
-      if (configuredDeptBox && !isPlaceholderEmail(configuredDeptBox)) {
-        add(configuredDeptBox);
-      }
-    } else if (configuredDeptBox) {
-      add(configuredDeptBox);
-    } else if (deptAdmins[0] && deptAdmins[0].email) {
-      add(deptAdmins[0].email);
+      configuredExtraBoxes.filter((e) => !isPlaceholderEmail(e)).forEach(add);
+    } else if (configuredExtraBoxes.length > 0) {
+      configuredExtraBoxes.forEach(add);
+      allAdminEmails.forEach(add);
+    } else {
+      allAdminEmails.forEach(add);
     }
   });
 
@@ -1145,7 +1162,11 @@ async function postFormSubmit(toEmail, subject, text, meta) {
   return second.ok || second.pendingActivation ? second : first;
 }
 
-function sendGmailSmtp({ user, pass, toList, subject, text }) {
+function wrapBase64Mime(b64) {
+  return String(b64 || '').replace(/(.{76})/g, '$1\r\n');
+}
+
+function sendGmailSmtp({ user, pass, toList, subject, text, html, attachments, replyTo, bccMode }) {
   return new Promise((resolve, reject) => {
     const cleanUser = String(user || '').trim();
     const cleanPass = String(pass || '').replace(/\s+/g, '');
@@ -1168,7 +1189,7 @@ function sendGmailSmtp({ user, pass, toList, subject, text }) {
       else resolve(true);
     };
 
-    socket.setTimeout(12000, () => finish(new Error('Gmail SMTP connection timed out.')));
+    socket.setTimeout(20000, () => finish(new Error('Gmail SMTP connection timed out.')));
     socket.on('error', (err) => finish(err));
 
     const sendCmd = (cmd, expectedPrefix, onSuccess) => {
@@ -1176,16 +1197,65 @@ function sendGmailSmtp({ user, pass, toList, subject, text }) {
       socket.write(cmd + '\r\n');
     };
 
-    const rawMime = [
-      `From: "BSIISUPPORT Portal" <${cleanUser}>`,
-      `To: ${recipients.map((r) => `<${r}>`).join(', ')}`,
-      `Subject: ${String(subject || '').replace(/[\r\n]+/g, ' ')}`,
-      'MIME-Version: 1.0',
-      'Content-Type: text/plain; charset=utf-8',
-      '',
-      String(text || '').replace(/\r?\n/g, '\r\n').replace(/^\./gm, '..'),
-      '.'
-    ].join('\r\n');
+    const toHeader = (bccMode && recipients.length > 1)
+      ? `"BSIISUPPORT Recipients" <${cleanUser}>`
+      : recipients.map((r) => `<${r}>`).join(', ');
+
+    const validAttachments = Array.isArray(attachments)
+      ? attachments.filter((a) => a && a.name && typeof a.dataUrl === 'string' && a.dataUrl.includes('base64,'))
+      : [];
+    const hasHtml = Boolean(html && String(html).trim());
+    const mixedBoundary = '----BSII_MIXED_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+    const altBoundary = '----BSII_ALT_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+
+    const commonHeaders = [
+      `From: "BSIISUPPORT HR Portal" <${cleanUser}>`,
+      `To: ${toHeader}`,
+      ...(replyTo && String(replyTo).includes('@') ? [`Reply-To: <${String(replyTo).trim()}>`] : []),
+      `Subject: =?UTF-8?B?${Buffer.from(String(subject || '').replace(/[\r\n]+/g, ' '), 'utf8').toString('base64')}?=`,
+      'MIME-Version: 1.0'
+    ];
+
+    let bodyParts = [];
+    if (validAttachments.length > 0) {
+      bodyParts.push(`Content-Type: multipart/mixed; boundary="${mixedBoundary}"`, '');
+      bodyParts.push(`--${mixedBoundary}`);
+      if (hasHtml) {
+        bodyParts.push(`Content-Type: multipart/alternative; boundary="${altBoundary}"`, '');
+        bodyParts.push(`--${altBoundary}`, 'Content-Type: text/plain; charset=utf-8', 'Content-Transfer-Encoding: base64', '', wrapBase64Mime(Buffer.from(String(text || ''), 'utf8').toString('base64')));
+        bodyParts.push(`--${altBoundary}`, 'Content-Type: text/html; charset=utf-8', 'Content-Transfer-Encoding: base64', '', wrapBase64Mime(Buffer.from(String(html), 'utf8').toString('base64')));
+        bodyParts.push(`--${altBoundary}--`);
+      } else {
+        bodyParts.push('Content-Type: text/plain; charset=utf-8', 'Content-Transfer-Encoding: base64', '', wrapBase64Mime(Buffer.from(String(text || ''), 'utf8').toString('base64')));
+      }
+      validAttachments.forEach((att) => {
+        const b64Data = att.dataUrl.split('base64,')[1] || '';
+        const safeName = String(att.name || 'attachment').replace(/["\r\n]/g, '');
+        const mimeType = String(att.type || 'application/octet-stream').replace(/[\r\n;]/g, '');
+        bodyParts.push(
+          `--${mixedBoundary}`,
+          `Content-Type: ${mimeType}; name="${safeName}"`,
+          'Content-Transfer-Encoding: base64',
+          `Content-Disposition: attachment; filename="${safeName}"`,
+          '',
+          wrapBase64Mime(b64Data)
+        );
+      });
+      bodyParts.push(`--${mixedBoundary}--`);
+    } else if (hasHtml) {
+      bodyParts.push(`Content-Type: multipart/alternative; boundary="${altBoundary}"`, '');
+      bodyParts.push(`--${altBoundary}`, 'Content-Type: text/plain; charset=utf-8', 'Content-Transfer-Encoding: base64', '', wrapBase64Mime(Buffer.from(String(text || ''), 'utf8').toString('base64')));
+      bodyParts.push(`--${altBoundary}`, 'Content-Type: text/html; charset=utf-8', 'Content-Transfer-Encoding: base64', '', wrapBase64Mime(Buffer.from(String(html), 'utf8').toString('base64')));
+      bodyParts.push(`--${altBoundary}--`);
+    } else {
+      bodyParts.push(
+        'Content-Type: text/plain; charset=utf-8',
+        '',
+        String(text || '').replace(/\r?\n/g, '\r\n').replace(/^\./gm, '..')
+      );
+    }
+
+    const rawMime = [...commonHeaders, ...bodyParts, '.'].join('\r\n');
 
     const sendNextRcpt = (idx) => {
       if (idx >= recipients.length) {
@@ -1230,7 +1300,7 @@ function sendGmailSmtp({ user, pass, toList, subject, text }) {
   });
 }
 
-async function deliverWebsiteEmail(data, { toList, subject, text, requestId, meta }) {
+async function deliverWebsiteEmail(data, { toList, subject, text, html, attachments, requestId, meta, replyTo, bccMode, skipFormSubmitFallback }) {
   if (!Array.isArray(data.emailDispatchLog)) data.emailDispatchLog = [];
   const cleanRecipients = Array.from(new Set((toList || []).map((e) => String(e || '').trim()).filter((e) => e.includes('@'))));
   const entry = {
@@ -1263,21 +1333,25 @@ async function deliverWebsiteEmail(data, { toList, subject, text, requestId, met
         recipients: cleanRecipients,
         subject,
         text,
+        ...(html ? { html } : {}),
+        ...(replyTo ? { replyTo } : {}),
         ...(meta || {})
       });
-      entry.deliveryStatus = 'Sent via Email Webhook';
+      entry.deliveryStatus = `Sent automatically to ${cleanRecipients.length} inbox(es) via Email Webhook`;
       entry.sentViaLiveEmail = true;
     } catch (err) {
       entry.deliveryStatus = `Webhook Error: ${err.message}`;
     }
   } else if (smtpUser && smtpPass) {
     try {
-      await sendGmailSmtp({ user: smtpUser, pass: smtpPass, toList: cleanRecipients, subject, text });
-      entry.deliveryStatus = 'Sent to Gmail Inbox';
+      await sendGmailSmtp({ user: smtpUser, pass: smtpPass, toList: cleanRecipients, subject, text, html, attachments, replyTo, bccMode });
+      entry.deliveryStatus = `Sent automatically to ${cleanRecipients.length} email inbox(es)`;
       entry.sentViaLiveEmail = true;
     } catch (err) {
       entry.deliveryStatus = `Gmail SMTP Error: ${err.message}`;
     }
+  } else if (skipFormSubmitFallback) {
+    entry.deliveryStatus = 'Delivered in Portal';
   } else {
     // Zero-setup default: FormSubmit.co sends the message straight to each admin's own email
     const results = await Promise.all(cleanRecipients.map((addr) => postFormSubmit(addr, subject, text, meta)));
@@ -1601,7 +1675,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Protected UI routes: if not logged in, redirect to /login
-  const protectedUiRoutes = ['/open', '/requests', '/department', '/hr', '/trash'];
+  const protectedUiRoutes = ['/open', '/requests', '/department', '/messaging', '/hr', '/trash'];
   if (protectedUiRoutes.includes(pathname) && req.method === 'GET') {
     if (!currentUser) {
       res.writeHead(302, {
@@ -1777,13 +1851,382 @@ const server = http.createServer(async (req, res) => {
       }
     });
 
+    const isHrOrMod = Boolean(currentUser.isHR || currentUser.isMasterAdmin || currentUser.isModerator);
+    const stripAttachmentBlobs = (m) => ({
+      ...m,
+      attachments: Array.isArray(m.attachments)
+        ? m.attachments.map((a) => ({ id: a.id, name: a.name, size: a.size, type: a.type }))
+        : []
+    });
+
+    const activeHrMessages = (data.hrMessages || []).filter((m) => !m.deletedAt);
+    const myMessages = (currentUser.type !== 'oncall')
+      ? activeHrMessages
+        .filter((m) => {
+          const deliveredToWebsite = !m.deliveryChannels || m.deliveryChannels.website !== false;
+          return deliveredToWebsite && Array.isArray(m.recipients) && m.recipients.some((rec) => rec.userId === currentUser.id);
+        })
+        .map((m) => ({
+          ...stripAttachmentBlobs(m),
+          isRead: Array.isArray(m.readBy) && m.readBy.includes(currentUser.id)
+        }))
+        .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt))
+      : [];
+
+    const hrSentMessages = isHrOrMod
+      ? activeHrMessages
+        .map(stripAttachmentBlobs)
+        .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt))
+      : [];
+
+    const directoryRecipients = (isHrOrMod || currentUser.isStaff)
+      ? (data.users || []).map((u) => ({
+          id: u.id,
+          fullName: u.fullName || '',
+          email: u.email || '',
+          company: u.company || '',
+          department: u.department || '',
+          secondaryDepartments: Array.isArray(u.secondaryDepartments) ? u.secondaryDepartments : [],
+          role: u.role || '',
+          isStaff: Boolean(u.isStaff || u.isHR || u.isMasterAdmin || u.isModerator),
+          isHR: Boolean(u.isHR || u.isMasterAdmin || u.isModerator)
+        }))
+      : [];
+
     sendJson(res, 200, {
       myRequests: myActiveRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+      myMessages,
+      hrSentMessages,
+      directoryRecipients,
       departmentQueue: departmentQueue.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
       retentionTrash: (currentUser.isHR || currentUser.isMasterAdmin || currentUser.isStaff)
         ? retentionTrash.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         : []
     });
+    return;
+  }
+
+  // HR Messaging: Send Gmail-style message to selected employees & admins (Website Account My Activities + Email)
+  if (pathname === '/api/hr/messages' && req.method === 'POST') {
+    if (!currentUser || (!currentUser.isHR && !currentUser.isMasterAdmin && !currentUser.isModerator)) {
+      return sendJson(res, 403, { error: 'Strictly for HR Admin only.' });
+    }
+    const body = await readJsonBody(req);
+    const recipientIds = Array.isArray(body.recipientIds) ? body.recipientIds.map((id) => String(id).trim()).filter(Boolean) : [];
+    const customToEmails = Array.isArray(body.customToEmails)
+      ? body.customToEmails.map((e) => String(e || '').trim()).filter((e) => e.includes('@'))
+      : [];
+    const ccEmails = Array.isArray(body.ccEmails)
+      ? body.ccEmails.map((e) => String(e || '').trim()).filter((e) => e.includes('@'))
+      : [];
+    const bccEmails = Array.isArray(body.bccEmails)
+      ? body.bccEmails.map((e) => String(e || '').trim()).filter((e) => e.includes('@'))
+      : [];
+    const cleanSubject = String(body.subject || '').trim();
+    const cleanBody = String(body.body || '').trim();
+    const cleanBodyHtml = typeof body.bodyHtml === 'string'
+      ? body.bodyHtml
+          .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+          .replace(/<iframe[\s\S]*?>[\s\S]*?<\/iframe>/gi, '')
+          .replace(/\son\w+\s*=\s*"[^"]*"/gi, '')
+          .replace(/\son\w+\s*=\s*'[^']*'/gi, '')
+          .replace(/javascript:/gi, '')
+          .trim()
+      : '';
+    const rawAttachments = Array.isArray(body.attachments) ? body.attachments.slice(0, 5) : [];
+    const cleanAttachments = rawAttachments
+      .filter((a) => a && a.name && typeof a.dataUrl === 'string' && a.dataUrl.startsWith('data:') && a.dataUrl.length <= 4500000)
+      .map((a, idx) => ({
+        id: 'ATT-' + Date.now() + '-' + idx,
+        name: String(a.name).slice(0, 160),
+        size: Number(a.size) || 0,
+        type: String(a.type || 'application/octet-stream').slice(0, 120),
+        dataUrl: a.dataUrl
+      }));
+    const cleanCategory = String(body.category || 'HR Message').trim() || 'HR Message';
+    const sendToGmail = body.sendToGmail !== false; // Email ON by default (optional)
+    const sendToWebsite = body.sendToWebsite !== false; // Website Account (My Activities) ON by default (toggleable)
+
+    if (!sendToGmail && !sendToWebsite) {
+      return sendJson(res, 400, { error: 'Please select at least one destination (Email or Website Account).' });
+    }
+    if (recipientIds.length === 0 && customToEmails.length === 0) {
+      return sendJson(res, 400, { error: 'Please select at least one recipient.' });
+    }
+    if (!cleanSubject || (!cleanBody && !cleanBodyHtml && cleanAttachments.length === 0)) {
+      return sendJson(res, 400, { error: 'Subject and message content are required.' });
+    }
+
+    const idSet = new Set(recipientIds);
+    const matchedUsers = (data.users || []).filter((u) => idSet.has(String(u.id)));
+
+    // Also match any manually typed emails against directory accounts so they receive it in My Activities too
+    const matchedIds = new Set(matchedUsers.map((u) => String(u.id)));
+    customToEmails.forEach((em) => {
+      const found = (data.users || []).find((u) => u.email && u.email.toLowerCase() === em.toLowerCase());
+      if (found && !matchedIds.has(String(found.id))) {
+        matchedUsers.push(found);
+        matchedIds.add(String(found.id));
+      }
+    });
+
+    if (matchedUsers.length === 0 && customToEmails.length === 0) {
+      return sendJson(res, 400, { error: 'No matching recipients found.' });
+    }
+
+    const nowIso = new Date().toISOString();
+    const recipientsList = matchedUsers.map((u) => ({
+      userId: u.id,
+      fullName: u.fullName || '',
+      email: u.email || '',
+      company: u.company || '',
+      department: u.department || '',
+      role: u.role || '',
+      isStaff: Boolean(u.isStaff || u.isHR || u.isMasterAdmin || u.isModerator)
+    }));
+    customToEmails.forEach((em) => {
+      if (!recipientsList.some((r) => r.email && r.email.toLowerCase() === em.toLowerCase())) {
+        recipientsList.push({
+          userId: null,
+          fullName: em,
+          email: em,
+          company: 'External Email',
+          department: '',
+          role: '',
+          isStaff: false
+        });
+      }
+    });
+
+    const newMsg = {
+      id: 'MSG-2026-' + Math.floor(1000 + Math.random() * 9000),
+      senderId: currentUser.id,
+      senderName: currentUser.fullName,
+      senderRole: currentUser.role || 'HR Admin',
+      senderEmail: currentUser.email || '',
+      category: cleanCategory,
+      subject: cleanSubject,
+      body: cleanBody || (cleanAttachments.length ? `[${cleanAttachments.length} attachment(s)]` : ''),
+      bodyHtml: cleanBodyHtml || '',
+      attachments: cleanAttachments,
+      ccEmails,
+      bccEmails,
+      deliveryChannels: {
+        gmail: sendToGmail,
+        website: sendToWebsite
+      },
+      recipients: recipientsList,
+      readBy: [currentUser.id],
+      replies: [],
+      emailDeliveryStatus: sendToWebsite && sendToGmail
+        ? 'Sent to Website Account (My Activities) & Email'
+        : (sendToWebsite ? 'Sent to Website Account (My Activities)' : 'Sent to Email'),
+      sentViaLiveEmail: false,
+      createdAt: nowIso,
+      updatedAt: nowIso
+    };
+
+    if (!Array.isArray(data.hrMessages)) data.hrMessages = [];
+    data.hrMessages.unshift(newMsg);
+    saveData(data);
+
+    const recipientEmails = Array.from(new Set([
+      ...recipientsList.map((r) => String(r.email || '').trim()),
+      ...ccEmails,
+      ...bccEmails
+    ].filter((e) => e.includes('@'))));
+
+    if (sendToGmail && recipientEmails.length > 0) {
+      const emailText = [
+        cleanBody || (cleanAttachments.length ? `Attached ${cleanAttachments.length} file(s).` : ''),
+        '',
+        '----------------------------------------',
+        `From: ${currentUser.fullName} (${currentUser.role || 'HR Admin'})`,
+        ...(sendToWebsite ? [
+          'Also available in your BSIISUPPORT Website Account under "My Activities":',
+          'https://bsiisupport.vercel.app/requests'
+        ] : [])
+      ].join('\n');
+
+      const emailHtml = `
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#1f2937;">
+          ${cleanBodyHtml || `<p>${String(cleanBody || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>')}</p>`}
+          <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0 12px;" />
+          <p style="font-size:12px;color:#6b7280;margin:0;">
+            From: <strong>${String(currentUser.fullName || '').replace(/</g, '&lt;')}</strong> (${String(currentUser.role || 'HR Admin').replace(/</g, '&lt;')})
+            ${sendToWebsite ? '<br/>View &amp; reply in <a href="https://bsiisupport.vercel.app/requests">BSIISUPPORT &rarr; My Activities</a>' : ''}
+          </p>
+        </div>
+      `;
+
+      const dispatch = await deliverWebsiteEmail(data, {
+        toList: recipientEmails,
+        subject: cleanSubject,
+        text: emailText,
+        html: emailHtml,
+        attachments: cleanAttachments,
+        requestId: newMsg.id,
+        replyTo: currentUser.email || '',
+        bccMode: bccEmails.length > 0 || recipientEmails.length > 1,
+        skipFormSubmitFallback: true,
+        meta: { type: 'hr_message', messageId: newMsg.id, category: cleanCategory }
+      });
+
+      newMsg.sentViaLiveEmail = Boolean(dispatch.sentViaLiveEmail);
+      if (sendToWebsite && sendToGmail) {
+        newMsg.emailDeliveryStatus = dispatch.sentViaLiveEmail
+          ? 'Delivered to Website Account (My Activities) & Email Inbox'
+          : 'Delivered to Website Account (My Activities) & Email Queued';
+      } else if (sendToGmail) {
+        newMsg.emailDeliveryStatus = dispatch.sentViaLiveEmail
+          ? 'Delivered to Email Inbox'
+          : 'Email Queued';
+      }
+      saveData(data);
+    }
+
+    const safeResponseMsg = {
+      ...newMsg,
+      attachments: (newMsg.attachments || []).map((a) => ({ id: a.id, name: a.name, size: a.size, type: a.type }))
+    };
+    sendJson(res, 201, { success: true, message: safeResponseMsg });
+    return;
+  }
+
+  // Download or preview an HR message attachment
+  const msgAttMatch = pathname.match(/^\/api\/messages\/([^/]+)\/attachment\/([^/]+)$/);
+  if (msgAttMatch && req.method === 'GET') {
+    if (!currentUser || currentUser.type === 'oncall') {
+      res.writeHead(401);
+      res.end('Unauthorized');
+      return;
+    }
+    const msgId = decodeURIComponent(msgAttMatch[1]);
+    const attId = decodeURIComponent(msgAttMatch[2]);
+    const msg = (data.hrMessages || []).find((m) => m.id === msgId && !m.deletedAt);
+    if (!msg) {
+      res.writeHead(404);
+      res.end('Message not found');
+      return;
+    }
+    const isRecipient = Array.isArray(msg.recipients) && msg.recipients.some((r) => r.userId === currentUser.id);
+    const isHrOrMod = Boolean(currentUser.isHR || currentUser.isMasterAdmin || currentUser.isModerator);
+    if (!isRecipient && !isHrOrMod) {
+      res.writeHead(403);
+      res.end('Forbidden');
+      return;
+    }
+    const att = (msg.attachments || []).find((a) => a.id === attId);
+    if (!att || !att.dataUrl || !att.dataUrl.includes('base64,')) {
+      res.writeHead(404);
+      res.end('Attachment not found');
+      return;
+    }
+    const b64 = att.dataUrl.split('base64,')[1];
+    const buf = Buffer.from(b64, 'base64');
+    const safeName = String(att.name || 'file').replace(/["\r\n]/g, '_');
+    const isInlineImg = /^image\//i.test(att.type || '');
+    res.writeHead(200, {
+      'Content-Type': att.type || 'application/octet-stream',
+      'Content-Disposition': `${isInlineImg ? 'inline' : 'attachment'}; filename="${safeName}"`,
+      'Content-Length': buf.length
+    });
+    res.end(buf);
+    return;
+  }
+
+  // Mark an HR message as read by the current recipient
+  const msgReadMatch = pathname.match(/^\/api\/messages\/([^/]+)\/read$/);
+  if (msgReadMatch && req.method === 'POST') {
+    if (!currentUser || currentUser.type === 'oncall') {
+      return sendJson(res, 401, { error: 'Unauthorized' });
+    }
+    const msgId = decodeURIComponent(msgReadMatch[1]);
+    const msg = (data.hrMessages || []).find((m) => m.id === msgId && !m.deletedAt);
+    if (!msg) return sendJson(res, 404, { error: 'Message not found.' });
+    const isRecipient = Array.isArray(msg.recipients) && msg.recipients.some((r) => r.userId === currentUser.id);
+    const isHrOrMod = Boolean(currentUser.isHR || currentUser.isMasterAdmin || currentUser.isModerator);
+    if (!isRecipient && !isHrOrMod) {
+      return sendJson(res, 403, { error: 'Not authorized to access this message.' });
+    }
+    if (!Array.isArray(msg.readBy)) msg.readBy = [];
+    if (!msg.readBy.includes(currentUser.id)) {
+      msg.readBy.push(currentUser.id);
+      saveData(data);
+    }
+    sendJson(res, 200, { success: true, readBy: msg.readBy });
+    return;
+  }
+
+  // Reply to an HR message (available to recipients and HR Admin)
+  const msgReplyMatch = pathname.match(/^\/api\/messages\/([^/]+)\/reply$/);
+  if (msgReplyMatch && req.method === 'POST') {
+    if (!currentUser || currentUser.type === 'oncall') {
+      return sendJson(res, 401, { error: 'Unauthorized' });
+    }
+    const msgId = decodeURIComponent(msgReplyMatch[1]);
+    const msg = (data.hrMessages || []).find((m) => m.id === msgId && !m.deletedAt);
+    if (!msg) return sendJson(res, 404, { error: 'Message not found.' });
+    const isRecipient = Array.isArray(msg.recipients) && msg.recipients.some((r) => r.userId === currentUser.id);
+    const isHrOrMod = Boolean(currentUser.isHR || currentUser.isMasterAdmin || currentUser.isModerator);
+    if (!isRecipient && !isHrOrMod) {
+      return sendJson(res, 403, { error: 'Not authorized to reply to this message.' });
+    }
+    const body = await readJsonBody(req);
+    const text = String(body.text || '').trim();
+    if (!text) return sendJson(res, 400, { error: 'Reply text cannot be empty.' });
+
+    const nowIso = new Date().toISOString();
+    if (!Array.isArray(msg.replies)) msg.replies = [];
+    msg.replies.push({
+      id: 'RPL-' + Date.now(),
+      authorId: currentUser.id,
+      authorName: currentUser.fullName,
+      authorRole: currentUser.role || currentUser.department || 'Employee',
+      isHR: isHrOrMod,
+      text,
+      createdAt: nowIso
+    });
+    if (!Array.isArray(msg.readBy)) msg.readBy = [];
+    if (!msg.readBy.includes(currentUser.id)) msg.readBy.push(currentUser.id);
+    msg.updatedAt = nowIso;
+    saveData(data);
+
+    // If HR replies back, optionally copy recipients via live SMTP/Webhook; if recipient replies, notify HR sender
+    const notifyEmails = isHrOrMod
+      ? Array.from(new Set((msg.recipients || []).map((r) => r.email).filter((e) => e && e.includes('@'))))
+      : (msg.senderEmail && msg.senderEmail.includes('@') ? [msg.senderEmail] : []);
+
+    if (notifyEmails.length > 0 && ((data.settings && data.settings.emailWebhookUrl) || process.env.EMAIL_WEBHOOK_URL || ((data.settings && data.settings.smtpUser && data.settings.smtpPass) || (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD)))) {
+      await deliverWebsiteEmail(data, {
+        toList: notifyEmails,
+        subject: `[BSIISUPPORT Reply] Re: ${msg.subject}`,
+        text: `${currentUser.fullName} (${currentUser.role || 'Employee'}) replied to "${msg.subject}":\n\n${text}\n\nView in BSIISUPPORT Portal -> My Activities:\nhttps://bsiisupport.vercel.app/requests`,
+        requestId: msg.id,
+        replyTo: currentUser.email || '',
+        bccMode: notifyEmails.length > 1,
+        skipFormSubmitFallback: true,
+        meta: { type: 'hr_message_reply', messageId: msg.id }
+      });
+    }
+
+    sendJson(res, 200, { success: true, message: msg });
+    return;
+  }
+
+  // Delete an HR message (HR Admin only)
+  const msgDeleteMatch = pathname.match(/^\/api\/hr\/messages\/([^/]+)$/);
+  if (msgDeleteMatch && req.method === 'DELETE') {
+    if (!currentUser || (!currentUser.isHR && !currentUser.isMasterAdmin && !currentUser.isModerator)) {
+      return sendJson(res, 403, { error: 'Strictly for HR Admin only.' });
+    }
+    const msgId = decodeURIComponent(msgDeleteMatch[1]);
+    const msg = (data.hrMessages || []).find((m) => m.id === msgId);
+    if (!msg) return sendJson(res, 404, { error: 'Message not found.' });
+    msg.deletedAt = new Date().toISOString();
+    msg.deletedBy = currentUser.fullName;
+    saveData(data);
+    sendJson(res, 200, { success: true });
     return;
   }
 
@@ -2413,6 +2856,28 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // HR Edit Email Address for ANY Account (Employees AND Admins/Officers)
+  const emailEditMatch = pathname.match(/^\/api\/hr\/employees\/([^/]+)\/email$/);
+  if (emailEditMatch && req.method === 'PATCH') {
+    if (!currentUser || (!currentUser.isHR && !currentUser.isMasterAdmin && !currentUser.isModerator)) {
+      return sendJson(res, 403, { error: 'Strictly for HR Admin only.' });
+    }
+    const empId = decodeURIComponent(emailEditMatch[1]);
+    const emp = data.users.find((u) => u.id === empId);
+    if (!emp) return sendJson(res, 404, { error: 'Account not found.' });
+    const body = await readJsonBody(req);
+    const nextEmail = String(body.email || '').trim();
+    if (!nextEmail || !nextEmail.includes('@')) {
+      return sendJson(res, 400, { error: 'Please enter a valid email address.' });
+    }
+    emp.email = nextEmail;
+    emp.updatedAt = new Date().toISOString();
+    syncUserAcrossRequests(data, emp);
+    saveData(data);
+    sendJson(res, 200, { success: true, user: sanitizeSessionUser(emp) });
+    return;
+  }
+
   // HR Edit Employee Directory Record (Standard Employees Only)
   if (pathname.startsWith('/api/hr/employees/') && req.method === 'PATCH') {
     if (!currentUser || (!currentUser.isHR && !currentUser.isMasterAdmin && !currentUser.isModerator)) {
@@ -2500,6 +2965,18 @@ const server = http.createServer(async (req, res) => {
         ...data.settings.departmentEmails,
         ...body.departmentEmails
       };
+    }
+    if (body.userEmails && typeof body.userEmails === 'object') {
+      Object.entries(body.userEmails).forEach(([uid, nextEmail]) => {
+        const cleanEmail = String(nextEmail || '').trim();
+        if (!cleanEmail || !cleanEmail.includes('@')) return;
+        const targetUser = (data.users || []).find((u) => String(u.id) === String(uid));
+        if (targetUser && targetUser.email !== cleanEmail) {
+          targetUser.email = cleanEmail;
+          targetUser.updatedAt = new Date().toISOString();
+          syncUserAcrossRequests(data, targetUser);
+        }
+      });
     }
     if (currentUser.isHR || currentUser.isMasterAdmin || currentUser.isModerator) {
       if (typeof body.emailWebhookUrl === 'string') {
