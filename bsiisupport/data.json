@@ -1,5 +1,5 @@
 {
-  "_lastSavedTs": 1795227185719,
+  "_lastSavedTs": 1795227263940,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
@@ -1483,6 +1483,18 @@
   },
   "emailDispatchLog": [
     {
+      "id": "DISP-1795227263858-702",
+      "requestId": "VERIFY-676767",
+      "to": [
+        "janericsaladaga2@gmail.com"
+      ],
+      "subject": "[BSIISUPPORT] Security Verification Code: 622125",
+      "body": "Hello Juan Dela Cruz,\n\nYou requested to verify changes to your BSIISUPPORT account or password.\n\nYOUR 6-DIGIT VERIFICATION CODE: 622125\n\nOr click the secure link below in your Gmail to verify with 1 click:\nhttps://bsiisupport.vercel.app/api/account/verify-link?v=Q3w0-u-KW_CFbBSHxymDFymWuuJZ--_wL5nOOKnuKxoTKd7y7PUy3KLtDn_gWHhqaCX5Gi6-PLewIw7iRXFsTk6UvTwNGwNr2AmKq5QoQSOXP-ei9uONNG3K888VYFKDvFpWJ3rIfRnKj9iu3Xz0T-wC\n\nThis security code expires in 10 minutes. If you did not request this, please ignore this email.",
+      "deliveryStatus": "Failed: janericsaladaga2@gmail.com: <!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-21T02:14:23.858Z"
+    },
+    {
       "id": "DISP-1795227185659-202",
       "requestId": "VERIFY-676767",
       "to": [
@@ -1646,10 +1658,10 @@
   ],
   "pendingEmailVerifications": {
     "676767": {
-      "codeHash": "cf431da86dcb431dff6a994cc439ac1e5c020fdd219b7618d3134173eaf9ab35",
+      "codeHash": "40bcb680c9e7355c2c3a048c5930747ed1c8d48e1db89461abc5141ce4f2fc36",
       "email": "janericsaladaga2@gmail.com",
-      "sentAt": 1795227185656,
-      "expiresAt": 1795227785656,
+      "sentAt": 1795227263855,
+      "expiresAt": 1795227863855,
       "approved": false,
       "approvedCode": null
     }
