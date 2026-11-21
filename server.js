@@ -2593,7 +2593,7 @@ const server = http.createServer(async (req, res) => {
     const body = await readJsonBody(req);
     const password = String(body.password || '').trim();
     if (!password || password !== currentUser.adminPassword) {
-      return sendJson(res, 403, { error: 'Incorrect password. Unable to view Employee Directory.' });
+      return sendJson(res, 403, { error: 'Incorrect password. Unable to view Employee Accounts.' });
     }
     const rec = getSessionRecord(req);
     const updatedSession = rec
@@ -2973,13 +2973,13 @@ const server = http.createServer(async (req, res) => {
   // HR Edit Employee Directory Record (Standard Employees Only)
   if (pathname.startsWith('/api/hr/employees/') && req.method === 'PATCH') {
     if (!currentUser || (!currentUser.isHR && !currentUser.isMasterAdmin && !currentUser.isModerator)) {
-      return sendJson(res, 403, { error: 'Strict HR Security Policy: ONLY HR can edit employee directory accounts.' });
+      return sendJson(res, 403, { error: 'Strict HR Security Policy: ONLY HR can edit employee accounts.' });
     }
     const empId = decodeURIComponent(pathname.replace('/api/hr/employees/', ''));
     const emp = data.users.find((u) => u.id === empId);
     if (!emp) return sendJson(res, 404, { error: 'Employee not found.' });
     if (emp.isStaff || emp.isHR || emp.isMasterAdmin || emp.isModerator) {
-      return sendJson(res, 403, { error: 'Admin & Officer accounts are hidden from the Employee Directory and can only be updated by the admin owner via their own Profile.' });
+      return sendJson(res, 403, { error: 'Admin & Officer accounts can only be updated by the admin owner via their own Profile.' });
     }
 
     const body = await readJsonBody(req);
@@ -3024,7 +3024,7 @@ const server = http.createServer(async (req, res) => {
     if (idx === -1) return sendJson(res, 404, { error: 'Employee not found.' });
     const target = data.users[idx];
     if (target.isStaff || target.isHR || target.isMasterAdmin || target.isModerator) {
-      return sendJson(res, 403, { error: 'Admin & Officer accounts cannot be deleted from the Employee Directory.' });
+      return sendJson(res, 403, { error: 'Admin & Officer accounts cannot be deleted from Employee Accounts.' });
     }
     data.users.splice(idx, 1);
     saveData(data);

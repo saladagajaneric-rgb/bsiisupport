@@ -501,13 +501,13 @@
 
     .wizard-stepper {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-bottom: 32px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
     .step-indicator {
-      padding: 14px 16px;
+      padding: 10px 12px;
       border-radius: 8px;
       border: 2px solid var(--border-subtle);
       background: #f8fafc;
@@ -706,16 +706,16 @@
 
     .settings-nav-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 12px;
-      margin-bottom: 22px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
     }
 
     .settings-nav-btn {
       background: #f0f9ff;
       border: 2px solid #bae6fd;
       border-radius: 10px;
-      padding: 16px 18px;
+      padding: 12px 14px;
       text-align: left;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -1538,17 +1538,56 @@
       }
 
       .wizard-stepper {
-        grid-template-columns: 1fr;
-        gap: 8px;
-        margin-bottom: 20px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+        margin-bottom: 14px;
       }
 
       .step-indicator {
-        padding: 10px 12px;
+        padding: 8px 6px;
+        gap: 6px;
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+      }
+
+      .step-indicator .step-num {
+        width: 22px;
+        height: 22px;
+        font-size: 0.74rem;
+      }
+
+      .step-indicator .step-kicker {
+        display: none;
+      }
+
+      .step-indicator .step-title {
+        font-size: clamp(0.7rem, 2.5vw, 0.82rem) !important;
+        line-height: 1.15;
+      }
+
+      .settings-nav-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 6px;
+        margin-bottom: 14px;
+      }
+
+      .settings-nav-btn {
+        padding: 9px 7px;
+        text-align: center;
+      }
+
+      .settings-nav-btn h4 {
+        font-size: clamp(0.72rem, 2.5vw, 0.86rem);
+        margin-bottom: 0;
+        line-height: 1.2;
+      }
+
+      .settings-nav-btn span {
+        display: none;
       }
 
       .dept-grid,
-      .settings-nav-grid,
       .details-grid,
       .responsive-two-col {
         grid-template-columns: 1fr !important;
@@ -1705,7 +1744,7 @@
           <div>
             <h3 style="color: #ffffff; font-size: 1.12rem; font-weight: 800; margin: 0; letter-spacing: 0.01em;">My Account &amp; Profile</h3>
             <p style="font-size: 0.77rem; color: #cbd5e1; margin: 2px 0 0 0;">
-              Changes sync live across the header, employee directory, and support requests.
+              Changes sync live across the header, employee accounts, and support requests.
             </p>
           </div>
         </div>
@@ -1823,7 +1862,7 @@
   <!-- HR EDIT EMPLOYEE MODAL -->
   <div id="hrEditEmployeeModal" class="modal-backdrop" style="display: none;">
     <div class="modal-panel" style="max-width:560px;">
-      <h3 style="color: var(--navy-primary); font-size: 1.2rem; margin-bottom: 12px;">Edit Employee Directory Account</h3>
+      <h3 style="color: var(--navy-primary); font-size: 1.2rem; margin-bottom: 12px;">Edit Employee Account</h3>
       <input type="hidden" id="editEmpOriginalId" />
       <div class="form-group">
         <label>Employee ID</label>
@@ -2213,13 +2252,11 @@
 
       // Primary navigation bar: Oncall ONLY has "+ New Support Request" (one-way, no My Activities)
       primaryNav.style.display = 'block';
-      const isHRAdmin = Boolean(state.user.isHR || state.user.isMasterAdmin || state.user.isModerator);
       const deptQueueIds = new Set((state.departmentQueue || []).map((r) => r.id));
       const uniqueMyReqCount = state.user.isStaff
         ? (state.myRequests || []).filter((r) => !deptQueueIds.has(r.id)).length
         : (state.myRequests || []).length;
-      const totalActivitiesCount = uniqueMyReqCount + (state.myMessages || []).length + (state.user.isStaff ? (state.departmentQueue || []).length : 0);
-      const unreadHrMsgCount = (state.myMessages || []).filter((m) => !m.isRead).length;
+      const totalActivitiesCount = uniqueMyReqCount + (state.user.isStaff ? (state.departmentQueue || []).length : 0);
       const isActivitiesActive = state.currentRoute === '/requests' || state.currentRoute === '/department';
 
       let tabsHtml = `
@@ -2229,18 +2266,9 @@
         ${!isOncall ? `
           <button type="button" class="nav-tab ${isActivitiesActive ? 'active' : ''}" onclick="navigateTo('/requests')">
             My Activities <span class="count-pill">${totalActivitiesCount}</span>
-            ${unreadHrMsgCount > 0 ? `<span class="unread-pill" style="margin-left:5px;">${unreadHrMsgCount} new</span>` : ''}
           </button>
         ` : ''}
       `;
-
-      if (isHRAdmin) {
-        tabsHtml += `
-          <button type="button" class="nav-tab ${state.currentRoute === '/messaging' ? 'active' : ''}" onclick="navigateTo('/messaging')">
-            Messaging
-          </button>
-        `;
-      }
 
       if (state.user.isHR || state.user.isMasterAdmin || state.user.isStaff) {
         tabsHtml += `
@@ -2281,7 +2309,9 @@
           renderMyRequestsView();
           break;
         case '/messaging':
-          renderHrMessagingView();
+          window.history.replaceState({}, '', '/open');
+          state.currentRoute = '/open';
+          renderWizardView();
           break;
         case '/hr':
           renderHrAdminView();
@@ -2773,22 +2803,22 @@
             <div class="step-indicator ${w.step === 1 ? 'active' : w.step > 1 ? 'completed' : ''}">
               <span class="step-num">1</span>
               <div>
-                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">STEP 1</div>
-                <div style="font-weight:800; color:var(--navy-primary); font-size:0.9rem;">Department Selection</div>
+                <div class="step-kicker" style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">STEP 1</div>
+                <div class="step-title" style="font-weight:800; color:var(--navy-primary); font-size:0.86rem;">Department</div>
               </div>
             </div>
             <div class="step-indicator ${w.step === 2 ? 'active' : w.step > 2 ? 'completed' : ''}">
               <span class="step-num">2</span>
               <div>
-                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">STEP 2</div>
-                <div style="font-weight:800; color:var(--navy-primary); font-size:0.9rem;">Category &amp; Dynamic Fields</div>
+                <div class="step-kicker" style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">STEP 2</div>
+                <div class="step-title" style="font-weight:800; color:var(--navy-primary); font-size:0.86rem;">Details</div>
               </div>
             </div>
             <div class="step-indicator ${w.step === 3 ? 'active' : ''}">
               <span class="step-num">3</span>
               <div>
-                <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">STEP 3</div>
-                <div style="font-weight:800; color:var(--navy-primary); font-size:0.9rem;">Keep in the Loop &amp; Confirm</div>
+                <div class="step-kicker" style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">STEP 3</div>
+                <div class="step-title" style="font-weight:800; color:var(--navy-primary); font-size:0.86rem;">Confirm</div>
               </div>
             </div>
           </div>
@@ -3128,9 +3158,7 @@
       const isStaff = Boolean(state.user && state.user.isStaff);
       const reqList = state.myRequests || [];
       const deptList = isStaff ? (state.departmentQueue || []) : [];
-      const msgList = state.myMessages || [];
-      const unreadCount = msgList.filter((m) => !m.isRead).length;
-      const filter = state.activitiesFilter || 'all';
+      const filter = state.activitiesFilter === 'messages' ? 'all' : (state.activitiesFilter || 'all');
 
       let noticeHtml = '';
       if (state.lastSubmittedNotice) {
@@ -3153,23 +3181,16 @@
 
       const deptIds = new Set(deptList.map((r) => r.id));
       const uniqueReqList = isStaff ? reqList.filter((r) => !deptIds.has(r.id)) : reqList;
-      const totalAllCount = msgList.length + deptList.length + uniqueReqList.length;
+      const totalAllCount = deptList.length + uniqueReqList.length;
 
       let feedHtml = '';
       if (filter === 'incoming' && isStaff) {
         feedHtml = deptList.length === 0
           ? `<div class="wizard-card" style="text-align:center; padding:42px 24px;">
-               <h3 style="color:var(--navy-primary); margin-bottom:8px;">No Incoming Department Messages</h3>
+               <h3 style="color:var(--navy-primary); margin-bottom:8px;">No Incoming Department Requests</h3>
                <p style="color:var(--text-muted);">Support requests assigned or CC'd to your department will appear here.</p>
              </div>`
           : deptList.map((r) => renderRequestCardHtml(r, true)).join('');
-      } else if (filter === 'messages') {
-        feedHtml = msgList.length === 0
-          ? `<div class="wizard-card" style="text-align:center; padding:42px 24px;">
-               <h3 style="color:var(--navy-primary); margin-bottom:8px;">No HR Messages Yet</h3>
-               <p style="color:var(--text-muted);">Messages sent by HR Admin to your website account will appear here automatically.</p>
-             </div>`
-          : msgList.map((m) => renderHrMessageCardHtml(m, false)).join('');
       } else if (filter === 'requests') {
         feedHtml = reqList.length === 0
           ? `<div class="wizard-card" style="text-align:center; padding:42px 24px;">
@@ -3180,7 +3201,6 @@
           : reqList.map((r) => renderRequestCardHtml(r, false)).join('');
       } else {
         const combined = [
-          ...msgList.map((m) => ({ kind: 'message', ts: new Date(m.updatedAt || m.createdAt).getTime() || 0, item: m })),
           ...deptList.map((r) => ({ kind: 'incoming', ts: new Date(r.updatedAt || r.createdAt).getTime() || 0, item: r })),
           ...uniqueReqList.map((r) => ({ kind: 'request', ts: new Date(r.updatedAt || r.createdAt).getTime() || 0, item: r }))
         ].sort((a, b) => b.ts - a.ts);
@@ -3188,47 +3208,43 @@
         feedHtml = combined.length === 0
           ? `<div class="wizard-card" style="text-align:center; padding:48px 24px;">
                <h3 style="color:var(--navy-primary); margin-bottom:8px;">No Activities Yet</h3>
-               <p style="color:var(--text-muted); margin-bottom:20px;">Messages and support requests will appear here automatically.</p>
+               <p style="color:var(--text-muted); margin-bottom:20px;">Your active support requests will appear here.</p>
                <button type="button" class="btn-gold" onclick="navigateTo('/open')">+ Create New Support Request</button>
              </div>`
-          : combined.map((entry) => {
-              if (entry.kind === 'message') return renderHrMessageCardHtml(entry.item, false);
-              if (entry.kind === 'incoming') return renderRequestCardHtml(entry.item, true);
-              return renderRequestCardHtml(entry.item, false);
-            }).join('');
+          : combined.map((entry) =>
+              entry.kind === 'incoming'
+                ? renderRequestCardHtml(entry.item, true)
+                : renderRequestCardHtml(entry.item, false)
+            ).join('');
       }
 
       viewport.innerHTML = `
         ${noticeHtml}
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
           <div>
-            <h2 style="color:var(--navy-primary); font-size:1.45rem;">My Activities</h2>
-            <p style="color:var(--text-muted); font-size:0.88rem;">
+            <h2 style="color:var(--navy-primary); font-size:1.4rem;">My Activities</h2>
+            <p style="color:var(--text-muted); font-size:0.84rem;">
               ${isStaff
-                ? 'All incoming department messages, HR messages, and your submitted requests in one place.'
-                : 'HR messages and your active support requests in one place. Requests older than 365 days automatically archive.'}
+                ? 'Incoming department requests and your submitted requests in one place.'
+                : 'Your active support requests (auto-archived after 365 days).'}
             </p>
           </div>
           <button type="button" class="btn-gold" onclick="navigateTo('/open')">+ New Support Request</button>
         </div>
 
-        <div class="activity-filter-bar">
-          <button type="button" class="activity-filter-btn ${filter === 'all' ? 'active' : ''}" onclick="setActivitiesFilter('all')">
-            All Activities (${totalAllCount})
-          </button>
-          ${isStaff ? `
-            <button type="button" class="activity-filter-btn ${filter === 'incoming' ? 'active' : ''}" onclick="setActivitiesFilter('incoming')">
-              Department Messages (${deptList.length})
+        ${isStaff ? `
+          <div class="activity-filter-bar">
+            <button type="button" class="activity-filter-btn ${filter === 'all' ? 'active' : ''}" onclick="setActivitiesFilter('all')">
+              All Activities (${totalAllCount})
             </button>
-          ` : ''}
-          <button type="button" class="activity-filter-btn ${filter === 'messages' ? 'active' : ''}" onclick="setActivitiesFilter('messages')">
-            HR Messages (${msgList.length})
-            ${unreadCount > 0 ? `<span class="unread-pill">${unreadCount} new</span>` : ''}
-          </button>
-          <button type="button" class="activity-filter-btn ${filter === 'requests' ? 'active' : ''}" onclick="setActivitiesFilter('requests')">
-            My Submitted Requests (${reqList.length})
-          </button>
-        </div>
+            <button type="button" class="activity-filter-btn ${filter === 'incoming' ? 'active' : ''}" onclick="setActivitiesFilter('incoming')">
+              Department Requests (${deptList.length})
+            </button>
+            <button type="button" class="activity-filter-btn ${filter === 'requests' ? 'active' : ''}" onclick="setActivitiesFilter('requests')">
+              My Submitted Requests (${reqList.length})
+            </button>
+          </div>
+        ` : ''}
 
         ${feedHtml}
       `;
@@ -3880,17 +3896,11 @@
                 ? '<span style="color:var(--text-muted); font-size:0.78rem; font-weight:600;">View Only</span>'
                 : (isAdminAcct
                   ? `
-                    <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="openQuickMessageForUser('${escapeHtml(emp.id)}')">
-                      Message
-                    </button>
                     <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="editAnyAccountEmail('${escapeHtml(emp.id)}', '${escapeHtml(emp.fullName)}', '${escapeHtml(emp.email || '')}')">
                       Edit Email
                     </button>
                   `
                   : `
-                    <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="openQuickMessageForUser('${escapeHtml(emp.id)}')">
-                      Message
-                    </button>
                     <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="openHrEditModal('${escapeHtml(emp.id)}')">
                       Edit
                     </button>
@@ -4050,7 +4060,7 @@
           panelHtml = `
             <div class="wizard-card" style="padding:20px 24px; border-color:#bae6fd; overflow-x:auto;">
               <div class="sky-section-banner" style="margin-bottom:14px;">
-                <strong style="color:var(--navy-primary);">Employee Directory (View Only)</strong>
+                <strong style="color:var(--navy-primary);">Employee Accounts (View Only)</strong>
                 <span style="font-size:0.78rem; color:var(--text-muted); margin-left:8px;">Only HR Admin can register, edit, or delete accounts. Login credentials are hidden.</span>
               </div>
               <table class="corp-table">
@@ -4073,15 +4083,15 @@
           panelHtml = `
             <div class="wizard-card" style="padding:24px; border-color:#bae6fd;">
               <div class="sky-section-banner" style="margin-bottom:14px;">
-                <strong style="color:var(--navy-primary);">Employee Directory — Password Required</strong>
+                <strong style="color:var(--navy-primary);">Employee Accounts — Password Required</strong>
               </div>
               <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:14px;">
-                Account information is confidential. Enter your HR Admin password to unlock the Employee Directory.
+                Account information is confidential. Enter your HR Admin password to unlock Employee Accounts.
               </p>
               <form onsubmit="unlockHrDirectory(event)" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                 <input type="password" id="hrDirPasswordInput" class="input-control" style="max-width:260px;" placeholder="Enter your HR password" required />
                 <button type="submit" class="btn-gold">
-                  Unlock Employee Directory
+                  Unlock Employee Accounts
                 </button>
               </form>
               <div id="hrDirUnlockStatus" style="font-size:0.82rem; margin-top:10px; color:#b91c1c;"></div>
@@ -4101,8 +4111,8 @@
 
             <div class="wizard-card" style="padding:20px 24px; border-color:#bae6fd; overflow-x:auto;">
               <div class="sky-section-banner" style="margin-bottom:14px;">
-                <strong style="color:var(--navy-primary);">Employee Directory</strong>
-                <span style="font-size:0.78rem; color:var(--text-muted); margin-left:8px;">(Admin login credentials are masked as FirstLetter****** and can only be edited by the admin owner via Profile)</span>
+                <strong style="color:var(--navy-primary);">Employee Accounts</strong>
+                <span style="font-size:0.78rem; color:var(--text-muted); margin-left:8px;">(Admin passwords are masked and managed via Profile)</span>
               </div>
               <table class="corp-table">
                 <thead>
@@ -4124,12 +4134,12 @@
       }
 
       viewport.innerHTML = `
-        <h2 style="color:var(--navy-primary); font-size:1.45rem; margin-bottom:14px;">Manage Accounts &amp; Settings</h2>
+        <h2 style="color:var(--navy-primary); font-size:1.35rem; margin-bottom:12px;">Manage Accounts &amp; Settings</h2>
         ${statusBanner ? `<div class="alert-box alert-success">${escapeHtml(statusBanner)}</div>` : ''}
 
         <div class="settings-nav-grid">
           <button type="button" class="settings-nav-btn ${tab === 'employees' ? 'active' : ''}" onclick="switchAdminSettingsTab('employees')">
-            <h4>Employee Directory</h4>
+            <h4>Employee Accounts</h4>
             <span>${isHR ? 'Create, edit &amp; manage' : 'View only (HR edits)'}</span>
           </button>
           <button type="button" class="settings-nav-btn ${tab === 'steps' ? 'active' : ''}" onclick="switchAdminSettingsTab('steps')">
@@ -5300,79 +5310,39 @@
 
     function renderTrashView(statusBanner = '') {
       const viewport = document.getElementById('appViewport');
-      const isHR = Boolean(state.user && (state.user.isHR || state.user.isMasterAdmin || state.user.isModerator));
       const reqList = state.retentionTrash || [];
-      const sentMsgs = isHR ? (state.hrSentMessages || []) : [];
-      const filter = state.historyFilter || 'all';
 
-      const renderReqHistoryRow = (r) => `
-        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px 18px; margin-bottom:10px; color:#475569;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-            <div>
-              <strong style="color:#334155;">${escapeHtml(r.id)}</strong>
-              <span style="margin:0 6px;">&bull;</span>
-              <span>${escapeHtml(r.department)} — ${escapeHtml(r.category)}</span>
-              <span style="margin-left:8px; background:#e2e8f0; color:#475569; padding:2px 8px; border-radius:999px; font-size:0.74rem; font-weight:700;">
-                ${escapeHtml(r.retentionReason)}
+      const itemsHtml = reqList.length === 0
+        ? `<div class="wizard-card" style="text-align:center; padding:40px; color:var(--text-muted); border-color:#e2e8f0;">No completed or archived requests in History.</div>`
+        : reqList.map((r) => `
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px 18px; margin-bottom:10px; color:#475569;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div>
+                <strong style="color:#334155;">${escapeHtml(r.id)}</strong>
+                <span style="margin:0 6px;">&bull;</span>
+                <span>${escapeHtml(r.department)} — ${escapeHtml(r.category)}</span>
+                <span style="margin-left:8px; background:#e2e8f0; color:#475569; padding:2px 8px; border-radius:999px; font-size:0.74rem; font-weight:700;">
+                  ${escapeHtml(r.retentionReason)}
+                </span>
+              </div>
+              <span style="font-size:0.74rem; color:#64748b; white-space:nowrap;">
+                ${escapeHtml(formatRequestTimestamp(r.createdAt))}
               </span>
             </div>
-            <span style="font-size:0.74rem; color:#64748b; white-space:nowrap;">
-              ${escapeHtml(formatRequestTimestamp(r.createdAt))}
-            </span>
+            <div style="font-size:0.8rem; color:#64748b; margin-top:4px;">
+              Employee: ${escapeHtml(r.employeeName)} (${escapeHtml(r.employeeId)})
+            </div>
           </div>
-          <div style="font-size:0.8rem; color:#64748b; margin-top:4px;">
-            Employee: ${escapeHtml(r.employeeName)} (${escapeHtml(r.employeeId)})
-          </div>
-        </div>
-      `;
-
-      let itemsHtml = '';
-      if (filter === 'messages' && isHR) {
-        itemsHtml = sentMsgs.length === 0
-          ? `<div class="wizard-card" style="text-align:center; padding:40px; color:var(--text-muted); border-color:#e2e8f0;">No sent messages in History yet.</div>`
-          : sentMsgs.map((m) => renderHrMessageCardHtml(m, true)).join('');
-      } else if (filter === 'requests') {
-        itemsHtml = reqList.length === 0
-          ? `<div class="wizard-card" style="text-align:center; padding:40px; color:var(--text-muted); border-color:#e2e8f0;">No completed or archived requests in History.</div>`
-          : reqList.map(renderReqHistoryRow).join('');
-      } else {
-        const combined = [
-          ...sentMsgs.map((m) => ({ kind: 'message', ts: new Date(m.updatedAt || m.createdAt).getTime() || 0, item: m })),
-          ...reqList.map((r) => ({ kind: 'request', ts: new Date(r.updatedAt || r.createdAt).getTime() || 0, item: r }))
-        ].sort((a, b) => b.ts - a.ts);
-
-        itemsHtml = combined.length === 0
-          ? `<div class="wizard-card" style="text-align:center; padding:40px; color:var(--text-muted); border-color:#e2e8f0;">No records in History yet.</div>`
-          : combined.map((entry) =>
-              entry.kind === 'message'
-                ? renderHrMessageCardHtml(entry.item, true)
-                : renderReqHistoryRow(entry.item)
-            ).join('');
-      }
+        `).join('');
 
       viewport.innerHTML = `
         <div style="margin-bottom:16px;">
           <h2 style="color:var(--navy-primary); font-size:1.35rem;">History</h2>
           <p style="color:#64748b; font-size:0.84rem;">
-            ${isHR
-              ? 'Sent HR messages and completed/archived support requests. Archived requests are automatically deleted after 365 days.'
-              : 'Completed and archived requests. Records are automatically deleted after 365 days.'}
+            Completed and archived requests. Records are automatically deleted after 365 days.
           </p>
         </div>
         ${statusBanner ? `<div class="alert-box alert-success">${escapeHtml(statusBanner)}</div>` : ''}
-        ${isHR ? `
-          <div class="activity-filter-bar">
-            <button type="button" class="activity-filter-btn ${filter === 'all' ? 'active' : ''}" onclick="setHistoryFilter('all')">
-              All History (${sentMsgs.length + reqList.length})
-            </button>
-            <button type="button" class="activity-filter-btn ${filter === 'messages' ? 'active' : ''}" onclick="setHistoryFilter('messages')">
-              Sent Messages (${sentMsgs.length})
-            </button>
-            <button type="button" class="activity-filter-btn ${filter === 'requests' ? 'active' : ''}" onclick="setHistoryFilter('requests')">
-              Archived / Completed Requests (${reqList.length})
-            </button>
-          </div>
-        ` : ''}
         ${itemsHtml}
       `;
     }
@@ -5389,7 +5359,7 @@
       const data = await res.json();
       if (res.ok) {
         await refreshHrData();
-        renderHrAdminView('Employee Directory unlocked.');
+        renderHrAdminView('Employee Accounts unlocked.');
       } else if (statusEl) {
         statusEl.textContent = data.error || 'Incorrect password.';
       }
