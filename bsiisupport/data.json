@@ -1,5 +1,5 @@
 {
-  "_lastSavedTs": 1795226607588,
+  "_lastSavedTs": 1795226636856,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
@@ -156,11 +156,11 @@
       "isHR": true,
       "isMasterAdmin": true,
       "isModerator": true,
-      "needsProfileSync": true,
-      "hasCompletedFirstSelfUpdate": false,
+      "needsProfileSync": false,
+      "hasCompletedFirstSelfUpdate": true,
       "email": "saladagajaneric@gmail.com",
       "mobile": "0917-000-0001",
-      "updatedAt": "2026-11-21T01:59:53.923Z"
+      "updatedAt": "2026-11-21T02:03:56.856Z"
     }
   ],
   "requests": [
@@ -1632,14 +1632,6 @@
       "sentAt": "2026-11-17T05:26:57.294Z"
     }
   ],
-  "pendingEmailVerifications": {
-    "000001": {
-      "codeHash": "e08bd2f475a20fc7789805bddd385ad45989dea5ba7dcf54ca37e33e276229b4",
-      "email": "saladagajaneric@gmail.com",
-      "expiresAt": 1795227207526,
-      "approved": false,
-      "approvedCode": null
-    }
-  },
+  "pendingEmailVerifications": {},
   "hrMessages": []
 }
