@@ -1,5 +1,5 @@
 {
-  "_lastSavedTs": 1795228623378,
+  "_lastSavedTs": 1795228625518,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
@@ -164,6 +164,37 @@
     }
   ],
   "requests": [
+    {
+      "id": "REQ-2026-2990",
+      "isOncall": false,
+      "employeeId": "676767",
+      "employeeName": "Juan Dela Cruz",
+      "employeeCompany": "BSII Employee",
+      "employeeEmail": "juan.delacruz@bsii.com.ph",
+      "employeeMobile": "0917-676-7676",
+      "department": "HR Admin",
+      "category": "Leave Request",
+      "details": {
+        "Leave Type": "Vacation Leave",
+        "Start Date": "",
+        "End Date": "",
+        "Number of Days": "",
+        "Reason": ""
+      },
+      "ccDepartments": [],
+      "ccEmails": [],
+      "customMonitoringEmails": [],
+      "status": "Submitted / Pending Officer Review",
+      "priority": "Standard",
+      "createdAt": "2026-11-21T02:37:05.473Z",
+      "updatedAt": "2026-11-21T02:37:05.473Z",
+      "deletedAt": null,
+      "deletedBy": null,
+      "comments": [],
+      "notifiedEmails": [
+        "saladagajaneric@gmail.com"
+      ]
+    },
     {
       "id": "REQ-2026-1909",
       "isOncall": false,
@@ -1513,6 +1544,18 @@
     }
   },
   "emailDispatchLog": [
+    {
+      "id": "DISP-1795228625475-487",
+      "requestId": "REQ-2026-2990",
+      "to": [
+        "saladagajaneric@gmail.com"
+      ],
+      "subject": "[BSIISUPPORT REQ-2026-2990] HR Admin — Leave Request (Juan Dela Cruz)",
+      "body": "A new support request related to your department/role was submitted.\n\nRequest ID: REQ-2026-2990\nDate & Time Sent: Nov 21, 2026, 10:37 AM\nDepartment: HR Admin\nCategory: Leave Request\nStatus: Submitted / Pending Officer Review\nPriority: Standard\n\nSubmitted By: Juan Dela Cruz (ID: 676767, BSII Employee)\nSubmitter Email: juan.delacruz@bsii.com.ph\nSubmitter Mobile: 0917-676-7676\n\nRequest Details:\n- Leave Type: Vacation Leave\n- Start Date: \n- End Date: \n- Number of Days: \n- Reason: ",
+      "deliveryStatus": "Failed: saladagajaneric@gmail.com: <!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-21T02:37:05.475Z"
+    },
     {
       "id": "DISP-1795228623324-705",
       "requestId": "REQ-2026-1909",
