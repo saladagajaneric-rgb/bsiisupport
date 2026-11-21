@@ -2154,6 +2154,25 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Update delivery status after browser-side email relay completes
+  const msgDeliveryMatch = pathname.match(/^\/api\/hr\/messages\/([^/]+)\/delivery-status$/);
+  if (msgDeliveryMatch && req.method === 'PATCH') {
+    if (!currentUser || (!currentUser.isHR && !currentUser.isMasterAdmin && !currentUser.isModerator)) {
+      return sendJson(res, 403, { error: 'Strictly for HR Admin only.' });
+    }
+    const msgId = decodeURIComponent(msgDeliveryMatch[1]);
+    const msg = (data.hrMessages || []).find((m) => m.id === msgId);
+    if (!msg) return sendJson(res, 404, { error: 'Message not found.' });
+    const body = await readJsonBody(req);
+    if (typeof body.sentViaLiveEmail === 'boolean') msg.sentViaLiveEmail = body.sentViaLiveEmail;
+    if (typeof body.emailDeliveryStatus === 'string' && body.emailDeliveryStatus.trim()) {
+      msg.emailDeliveryStatus = body.emailDeliveryStatus.trim();
+    }
+    saveData(data);
+    sendJson(res, 200, { success: true });
+    return;
+  }
+
   // Download or preview an HR message attachment
   const msgAttMatch = pathname.match(/^\/api\/messages\/([^/]+)\/attachment\/([^/]+)$/);
   if (msgAttMatch && req.method === 'GET') {

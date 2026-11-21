@@ -4772,15 +4772,81 @@
           return;
         }
         const msg = data.message;
+        const targetEmails = Array.from(new Set([
+          ...(msg.recipients || []).map((r) => r.email),
+          ...(msg.ccEmails || []),
+          ...(msg.bccEmails || [])
+        ].map((em) => String(em || '').trim()).filter((em) => em.includes('@'))));
+
+        let sentViaLiveEmail = Boolean(msg.sentViaLiveEmail);
+        let deliveryStatus = msg.emailDeliveryStatus || '';
+
+        // Match Support Requests: if server-side SMTP/Resend isn't configured, send directly from the browser via FormSubmit AJAX
+        if (sendToGmail && !sentViaLiveEmail && targetEmails.length > 0) {
+          const portalUrl = `${window.location.origin}/requests`;
+          const attLinksText = (msg.attachments || []).length
+            ? '\n\nAttachments:\n' + msg.attachments.map((a) => `- ${a.name}: ${window.location.origin}/api/messages/${encodeURIComponent(msg.id)}/attachment/${encodeURIComponent(a.id)}`).join('\n')
+            : '';
+          const fullBodyText = (msg.body || '') + attLinksText + (sendToWebsite ? `\n\nView & reply in My Activities: ${portalUrl}` : '');
+
+          let okCount = 0;
+          let activationCount = 0;
+          await Promise.all(targetEmails.map(async (addr) => {
+            try {
+              const fsRes = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(addr)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({
+                  _subject: msg.subject,
+                  _template: 'box',
+                  _captcha: 'false',
+                  ...(msg.senderEmail && msg.senderEmail.includes('@') ? { _replyto: msg.senderEmail } : {}),
+                  From: `${msg.senderName} (${msg.senderRole || 'HR Admin'})`,
+                  Message_ID: msg.id,
+                  Message: fullBodyText
+                })
+              });
+              const fsJson = await fsRes.json().catch(() => ({}));
+              if (String(fsJson.success) === 'true') {
+                okCount++;
+              } else if (/activate|confirm/i.test(String(fsJson.message || ''))) {
+                activationCount++;
+              }
+            } catch (_) {}
+          }));
+
+          if (okCount > 0) {
+            sentViaLiveEmail = true;
+            deliveryStatus = sendToWebsite
+              ? `Delivered to Website Account (My Activities) & ${okCount} Email Inbox${okCount === 1 ? '' : 'es'}`
+              : `Delivered to ${okCount} Email Inbox${okCount === 1 ? '' : 'es'}`;
+            if (activationCount > 0) {
+              deliveryStatus += ` (${activationCount} new email${activationCount === 1 ? '' : 's'} sent a one-time activation link)`;
+            }
+          } else if (activationCount > 0) {
+            deliveryStatus = sendToWebsite
+              ? `Delivered to Website Account (My Activities) — ${activationCount} new email${activationCount === 1 ? '' : 's'} sent a one-time FormSubmit confirmation`
+              : `${activationCount} new email${activationCount === 1 ? '' : 's'} sent a one-time FormSubmit confirmation`;
+          }
+
+          if (okCount > 0 || activationCount > 0) {
+            fetch(`/api/hr/messages/${encodeURIComponent(msg.id)}/delivery-status`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ sentViaLiveEmail, emailDeliveryStatus: deliveryStatus })
+            }).catch(() => {});
+          }
+        }
+
         state.hrMsgLastResult = {
           id: msg.id,
           subject: msg.subject,
           body: msg.body,
           deliveryChannels: msg.deliveryChannels,
-          sentViaLiveEmail: msg.sentViaLiveEmail,
-          emailDeliveryStatus: msg.emailDeliveryStatus,
+          sentViaLiveEmail,
+          emailDeliveryStatus: deliveryStatus,
           recipientCount: (msg.recipients || []).length,
-          recipientEmails: (msg.recipients || []).map((r) => r.email).filter((em) => em && em.includes('@'))
+          recipientEmails: targetEmails
         };
         state.hrMsgSubject = '';
         state.hrMsgBody = '';
