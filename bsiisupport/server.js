@@ -1300,6 +1300,55 @@ function sendGmailSmtp({ user, pass, toList, subject, text, html, attachments, r
   });
 }
 
+function sendResendEmail({ apiKey, from, toList, subject, text, html, attachments, replyTo }) {
+  return new Promise((resolve, reject) => {
+    const cleanKey = String(apiKey || '').trim();
+    const recipients = (toList || []).map((e) => String(e || '').trim()).filter((e) => e.includes('@'));
+    if (!cleanKey || recipients.length === 0) {
+      return reject(new Error('Missing Resend API key or recipients.'));
+    }
+    const validAttachments = Array.isArray(attachments)
+      ? attachments
+          .filter((a) => a && a.name && typeof a.dataUrl === 'string' && a.dataUrl.includes('base64,'))
+          .map((a) => ({ filename: a.name, content: a.dataUrl.split('base64,')[1] }))
+      : [];
+    const payload = JSON.stringify({
+      from: from || 'BSIISUPPORT HR Portal <onboarding@resend.dev>',
+      to: recipients,
+      subject: String(subject || 'BSIISUPPORT Notification'),
+      text: String(text || ''),
+      ...(html ? { html: String(html) } : {}),
+      ...(replyTo && String(replyTo).includes('@') ? { reply_to: String(replyTo).trim() } : {}),
+      ...(validAttachments.length ? { attachments: validAttachments } : {})
+    });
+    const req = https.request({
+      hostname: 'api.resend.com',
+      port: 443,
+      path: '/emails',
+      method: 'POST',
+      timeout: 12000,
+      rejectUnauthorized: false,
+      headers: {
+        'Authorization': `Bearer ${cleanKey}`,
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(payload)
+      }
+    }, (res) => {
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => {
+        const bodyTxt = Buffer.concat(chunks).toString('utf8');
+        if (res.statusCode >= 200 && res.statusCode < 300) resolve(true);
+        else reject(new Error(`Resend HTTP ${res.statusCode}: ${bodyTxt.slice(0, 180)}`));
+      });
+    });
+    req.on('error', reject);
+    req.on('timeout', () => { req.destroy(); reject(new Error('Resend request timed out.')); });
+    req.write(payload);
+    req.end();
+  });
+}
+
 async function deliverWebsiteEmail(data, { toList, subject, text, html, attachments, requestId, meta, replyTo, bccMode, skipFormSubmitFallback }) {
   if (!Array.isArray(data.emailDispatchLog)) data.emailDispatchLog = [];
   const cleanRecipients = Array.from(new Set((toList || []).map((e) => String(e || '').trim()).filter((e) => e.includes('@'))));
@@ -1323,6 +1372,8 @@ async function deliverWebsiteEmail(data, { toList, subject, text, html, attachme
   }
 
   const webhookUrl = (data.settings && data.settings.emailWebhookUrl) || process.env.EMAIL_WEBHOOK_URL || '';
+  const resendApiKey = (data.settings && data.settings.resendApiKey) || process.env.RESEND_API_KEY || '';
+  const resendFrom = (data.settings && data.settings.resendFrom) || process.env.RESEND_FROM || '';
   const smtpUser = (data.settings && data.settings.smtpUser) || process.env.GMAIL_USER || '';
   const smtpPass = (data.settings && data.settings.smtpPass) || process.env.GMAIL_APP_PASSWORD || '';
 
@@ -1342,6 +1393,14 @@ async function deliverWebsiteEmail(data, { toList, subject, text, html, attachme
     } catch (err) {
       entry.deliveryStatus = `Webhook Error: ${err.message}`;
     }
+  } else if (resendApiKey) {
+    try {
+      await sendResendEmail({ apiKey: resendApiKey, from: resendFrom, toList: cleanRecipients, subject, text, html, attachments, replyTo });
+      entry.deliveryStatus = `Sent automatically to ${cleanRecipients.length} email inbox(es)`;
+      entry.sentViaLiveEmail = true;
+    } catch (err) {
+      entry.deliveryStatus = `Email Delivery Error: ${err.message}`;
+    }
   } else if (smtpUser && smtpPass) {
     try {
       await sendGmailSmtp({ user: smtpUser, pass: smtpPass, toList: cleanRecipients, subject, text, html, attachments, replyTo, bccMode });
@@ -1351,7 +1410,7 @@ async function deliverWebsiteEmail(data, { toList, subject, text, html, attachme
       entry.deliveryStatus = `Gmail SMTP Error: ${err.message}`;
     }
   } else if (skipFormSubmitFallback) {
-    entry.deliveryStatus = 'Delivered in Portal';
+    entry.deliveryStatus = 'Server email sender not configured yet';
   } else {
     // Zero-setup default: FormSubmit.co sends the message straight to each admin's own email
     const results = await Promise.all(cleanRecipients.map((addr) => postFormSubmit(addr, subject, text, meta)));
@@ -1863,12 +1922,14 @@ const server = http.createServer(async (req, res) => {
     const myMessages = (currentUser.type !== 'oncall')
       ? activeHrMessages
         .filter((m) => {
+          const isSender = m.senderId === currentUser.id;
+          const isRecipient = Array.isArray(m.recipients) && m.recipients.some((rec) => rec.userId === currentUser.id);
           const deliveredToWebsite = !m.deliveryChannels || m.deliveryChannels.website !== false;
-          return deliveredToWebsite && Array.isArray(m.recipients) && m.recipients.some((rec) => rec.userId === currentUser.id);
+          return isSender || (deliveredToWebsite && isRecipient);
         })
         .map((m) => ({
           ...stripAttachmentBlobs(m),
-          isRead: Array.isArray(m.readBy) && m.readBy.includes(currentUser.id)
+          isRead: m.senderId === currentUser.id || (Array.isArray(m.readBy) && m.readBy.includes(currentUser.id))
         }))
         .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt))
       : [];
@@ -2076,11 +2137,11 @@ const server = http.createServer(async (req, res) => {
       if (sendToWebsite && sendToGmail) {
         newMsg.emailDeliveryStatus = dispatch.sentViaLiveEmail
           ? 'Delivered to Website Account (My Activities) & Email Inbox'
-          : 'Delivered to Website Account (My Activities) & Email Queued';
+          : `Delivered to Website Account (My Activities) (${dispatch.deliveryStatus})`;
       } else if (sendToGmail) {
         newMsg.emailDeliveryStatus = dispatch.sentViaLiveEmail
           ? 'Delivered to Email Inbox'
-          : 'Email Queued';
+          : dispatch.deliveryStatus;
       }
       saveData(data);
     }
