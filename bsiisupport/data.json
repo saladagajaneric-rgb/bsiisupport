@@ -1,5 +1,5 @@
 {
-  "_lastSavedTs": 1795223825494,
+  "_lastSavedTs": 1795225822765,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
@@ -1483,6 +1483,18 @@
   },
   "emailDispatchLog": [
     {
+      "id": "DISP-1795225822763-358",
+      "requestId": "MSG-2026-8440",
+      "to": [
+        "saladagajaneric@gmail.com"
+      ],
+      "subject": "Testing",
+      "body": "Testing\n\n----------------------------------------\nFrom: Jan Eric Saladaga (HR Admin)\nAlso available in your BSIISUPPORT Website Account under \"My Activities\":\nhttps://bsiisupport.vercel.app/requests",
+      "deliveryStatus": "Server email sender not configured yet",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-21T01:50:22.763Z"
+    },
+    {
       "id": "DISP-1795223825493-237",
       "requestId": "MSG-2026-7088",
       "to": [
@@ -1598,6 +1610,43 @@
   ],
   "pendingEmailVerifications": {},
   "hrMessages": [
+    {
+      "id": "MSG-2026-8440",
+      "senderId": "371",
+      "senderName": "Jan Eric Saladaga",
+      "senderRole": "HR Admin",
+      "senderEmail": "saladagajaneric@gmail.com",
+      "category": "HR Message",
+      "subject": "Testing",
+      "body": "Testing",
+      "bodyHtml": "Testing",
+      "attachments": [],
+      "ccEmails": [],
+      "bccEmails": [],
+      "deliveryChannels": {
+        "gmail": true,
+        "website": true
+      },
+      "recipients": [
+        {
+          "userId": "371",
+          "fullName": "Jan Eric Saladaga",
+          "email": "saladagajaneric@gmail.com",
+          "company": "BSII Employee",
+          "department": "HR Admin",
+          "role": "HR Admin",
+          "isStaff": true
+        }
+      ],
+      "readBy": [
+        "371"
+      ],
+      "replies": [],
+      "emailDeliveryStatus": "Delivered to Website Account (My Activities) (Server email sender not configured yet)",
+      "sentViaLiveEmail": false,
+      "createdAt": "2026-11-21T01:50:22.760Z",
+      "updatedAt": "2026-11-21T01:50:22.760Z"
+    },
     {
       "id": "MSG-2026-7088",
       "senderId": "371",
