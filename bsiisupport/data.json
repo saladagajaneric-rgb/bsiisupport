@@ -1,11 +1,11 @@
 {
-  "_lastSavedTs": 1795229265142,
+  "_lastSavedTs": 1795229447194,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
     "seasonalRoleNote": "Team Leader currently acts as Accounting & Payroll Officer (editable per season).",
     "departmentEmails": {
-      "HR Admin": "saladagajaneric@gmail.com",
+      "HR Admin": "hr@bsii.com.ph",
       "Purchasing Officer": "purchasing@bsii.com.ph",
       "Office of the Vice President, BSII": "vp.bsii@bsii.com.ph",
       "Office of the Vice President, Esteems": "vp.esteems@bsii.com.ph",
@@ -156,11 +156,11 @@
       "isHR": true,
       "isMasterAdmin": true,
       "isModerator": true,
-      "needsProfileSync": false,
-      "hasCompletedFirstSelfUpdate": true,
-      "email": "saladagajaneric@gmail.com",
+      "needsProfileSync": true,
+      "hasCompletedFirstSelfUpdate": false,
+      "email": "moderator@bsii.com.ph",
       "mobile": "0917-000-0001",
-      "updatedAt": "2026-11-21T02:03:56.856Z"
+      "updatedAt": "2026-11-21T02:50:47.193Z"
     }
   ],
   "requests": [],
@@ -1216,15 +1216,6 @@
     }
   },
   "emailDispatchLog": [],
-  "pendingEmailVerifications": {
-    "676767": {
-      "codeHash": "40bcb680c9e7355c2c3a048c5930747ed1c8d48e1db89461abc5141ce4f2fc36",
-      "email": "janericsaladaga2@gmail.com",
-      "sentAt": 1795227263855,
-      "expiresAt": 1795227863855,
-      "approved": false,
-      "approvedCode": null
-    }
-  },
+  "pendingEmailVerifications": {},
   "hrMessages": []
 }
