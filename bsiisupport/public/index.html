@@ -1776,43 +1776,38 @@
           </div>
         </div>
 
-        <!-- Security Verification Card -->
+        <!-- Security Verification Card (Gmail Code Only) -->
         <div id="profConfirmPassBox" style="background: linear-gradient(180deg, #f0f9ff 0%, #f8fafc 100%); border: 1px solid #bae6fd; border-radius: 12px; padding: 14px 16px;">
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
             <div style="display: flex; align-items: center; gap: 7px;">
               <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; background: #e0f2fe; color: #0369a1; font-size: 0.85rem; font-weight: 800;">&#128274;</span>
-              <span style="color: var(--navy-primary); font-weight: 800; font-size: 0.88rem;">Security Verification</span>
+              <span style="color: var(--navy-primary); font-weight: 800; font-size: 0.88rem;">Gmail Security Verification</span>
             </div>
-            <!-- Segmented Mode Switcher -->
-            <div style="display: inline-flex; background: #e2e8f0; padding: 3px; border-radius: 8px; gap: 2px;">
-              <button type="button" id="profTabGmailBtn" onclick="toggleProfileVerifyMethod('gmail')" style="border: none; background: #ffffff; color: var(--navy-primary); font-weight: 700; font-size: 0.75rem; padding: 5px 11px; border-radius: 6px; cursor: pointer; box-shadow: 0 1px 3px rgba(15,23,42,0.12); transition: all 0.15s;">
-                &#9993; Gmail Code
-              </button>
-              <button type="button" id="profTabPassBtn" onclick="toggleProfileVerifyMethod('password')" style="border: none; background: transparent; color: #475569; font-weight: 700; font-size: 0.75rem; padding: 5px 11px; border-radius: 6px; cursor: pointer; transition: all 0.15s;">
-                &#128273; Current Password
-              </button>
-            </div>
+            <span style="font-size: 0.74rem; font-weight: 700; color: #0369a1; background: #e0f2fe; padding: 3px 9px; border-radius: 999px;">&#9993; Gmail Code Required</span>
           </div>
 
-          <!-- Gmail Verification Pane -->
           <div id="profGmailVerifyPane">
-            <div id="profGmailVerifyStatus" style="font-size: 0.8rem; line-height: 1.45; color: #334155; background: rgba(255,255,255,0.75); border: 1px solid #e0f2fe; border-radius: 8px; padding: 8px 11px; margin-bottom: 10px;">
-              Click <strong>Send Code to Gmail</strong> to receive a 6-digit security code or 1-click verification link in your inbox.
+            <div id="profGmailVerifyStatus" style="font-size: 0.8rem; line-height: 1.45; color: #334155; background: rgba(255,255,255,0.85); border: 1px solid #e0f2fe; border-radius: 8px; padding: 9px 12px; margin-bottom: 12px;">
+              Click <strong>Send Code to Gmail</strong> below to receive a 6-digit security code or 1-click verification link in your inbox.
             </div>
-            <div class="prof-otp-row" style="display: flex; gap: 10px; align-items: stretch;">
-              <input type="text" id="profVerifyCodeInput" class="input-control" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="Enter 6-digit code" style="flex: 1; padding: 9px 12px;" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6); updateProfileSaveButtonState();" />
-              <button type="button" id="profSendCodeBtn" class="btn-gold" style="padding: 9px 16px; font-size: 0.82rem; white-space: nowrap; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" onclick="sendProfileVerificationEmail()">
-                Send Code to Gmail
+
+            <!-- Step 1: Initial Send Button (shown before first send) -->
+            <div id="profInitialSendWrap">
+              <button type="button" id="profSendCodeBtn" class="btn-gold" style="width: 100%; padding: 10px 16px; font-size: 0.85rem; border-radius: 8px;" onclick="sendProfileVerificationEmail()">
+                &#9993; Send Verification Code to Gmail
               </button>
             </div>
-          </div>
 
-          <!-- Password Verification Pane -->
-          <div id="profPasswordVerifyPane" style="display:none;">
-            <p style="font-size: 0.79rem; color: #475569; margin: 0 0 8px 0;">
-              Enter your current login password to confirm and save changes immediately:
-            </p>
-            <input type="password" id="profCurrentPassInput" class="input-control" autocomplete="new-password" placeholder="Enter your current password" style="padding: 9px 12px; background: #ffffff;" oninput="updateProfileSaveButtonState();" />
+            <!-- Step 2: Code Input + Subtle Resend Link with 60s Cooldown (shown after sending) -->
+            <div id="profCodeEntryWrap" style="display: none;">
+              <input type="text" id="profVerifyCodeInput" class="input-control" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="Enter 6-digit code, then click Save & Sync below" style="width: 100%; padding: 10px 14px;" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6); updateProfileSaveButtonState();" />
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; font-size: 0.78rem; color: #64748b;">
+                <span>Enter the 6-digit code, then click <strong>Save &amp; Sync</strong> below.</span>
+                <button type="button" id="profResendLinkBtn" onclick="sendProfileVerificationEmail()" style="background: none; border: none; padding: 2px 4px; font-size: 0.78rem; font-weight: 700; color: #64748b; cursor: not-allowed; text-decoration: underline;" disabled>
+                  Resend in 60s
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -5404,12 +5399,58 @@
        EMPLOYEE PROFILE MODAL (SELF-SYNC)
        ========================================== */
     let profileVerifyTimer = null;
+    let profileResendCooldownTimer = null;
+    let profileResendCooldownUntil = 0;
 
     function stopProfileVerifyPolling() {
       if (profileVerifyTimer) {
         clearInterval(profileVerifyTimer);
         profileVerifyTimer = null;
       }
+    }
+
+    function stopProfileResendCooldown() {
+      if (profileResendCooldownTimer) {
+        clearInterval(profileResendCooldownTimer);
+        profileResendCooldownTimer = null;
+      }
+    }
+
+    function renderProfileResendCooldown() {
+      const resendBtn = document.getElementById('profResendLinkBtn');
+      const sendBtn = document.getElementById('profSendCodeBtn');
+      const remaining = Math.max(0, Math.ceil((profileResendCooldownUntil - Date.now()) / 1000));
+      if (remaining > 0) {
+        if (resendBtn) {
+          resendBtn.disabled = true;
+          resendBtn.style.color = '#64748b';
+          resendBtn.style.cursor = 'not-allowed';
+          resendBtn.textContent = `Resend in ${remaining}s`;
+        }
+        if (sendBtn) {
+          sendBtn.disabled = true;
+          sendBtn.textContent = `Wait ${remaining}s to resend`;
+        }
+      } else {
+        stopProfileResendCooldown();
+        if (resendBtn) {
+          resendBtn.disabled = false;
+          resendBtn.style.color = '#0369a1';
+          resendBtn.style.cursor = 'pointer';
+          resendBtn.textContent = 'Resend code to Gmail';
+        }
+        if (sendBtn) {
+          sendBtn.disabled = false;
+          sendBtn.innerHTML = '&#9993; Send Verification Code to Gmail';
+        }
+      }
+    }
+
+    function startProfileResendCooldown(seconds = 60) {
+      profileResendCooldownUntil = Date.now() + Math.max(1, Number(seconds) || 60) * 1000;
+      stopProfileResendCooldown();
+      renderProfileResendCooldown();
+      profileResendCooldownTimer = setInterval(renderProfileResendCooldown, 500);
     }
 
     function updateProfileSaveButtonState() {
@@ -5421,12 +5462,11 @@
         return;
       }
       const codeVal = (document.getElementById('profVerifyCodeInput')?.value || '').replace(/\D/g, '');
-      const passVal = (document.getElementById('profCurrentPassInput')?.value || '').trim();
-      const isVerifiedReady = codeVal.length === 6 || passVal.length > 0;
+      const isVerifiedReady = codeVal.length === 6;
       saveBtn.disabled = !isVerifiedReady;
       saveBtn.title = isVerifiedReady
         ? 'Save and synchronize changes'
-        : 'Enter your 6-digit Gmail verification code or current password first';
+        : 'Enter the 6-digit Gmail verification code first';
     }
 
     function setChangePasswordLocked(type, locked) {
@@ -5497,6 +5537,10 @@
 
     function applyGmailVerifiedCode(code) {
       if (!code) return;
+      const initWrap = document.getElementById('profInitialSendWrap');
+      const entryWrap = document.getElementById('profCodeEntryWrap');
+      if (initWrap) initWrap.style.display = 'none';
+      if (entryWrap) entryWrap.style.display = 'block';
       const codeEl = document.getElementById('profVerifyCodeInput');
       const statusEl = document.getElementById('profGmailVerifyStatus');
       if (codeEl) codeEl.value = String(code).trim();
@@ -5527,50 +5571,25 @@
       } catch (_) {}
     }
 
-    function toggleProfileVerifyMethod(mode) {
-      const gmailPane = document.getElementById('profGmailVerifyPane');
-      const passPane = document.getElementById('profPasswordVerifyPane');
-      const gmailTab = document.getElementById('profTabGmailBtn');
-      const passTab = document.getElementById('profTabPassBtn');
-      if (mode === 'password') {
-        gmailPane.style.display = 'none';
-        passPane.style.display = 'block';
-        document.getElementById('profVerifyCodeInput').value = '';
-        if (gmailTab) {
-          gmailTab.style.background = 'transparent';
-          gmailTab.style.color = '#475569';
-          gmailTab.style.boxShadow = 'none';
-        }
-        if (passTab) {
-          passTab.style.background = '#ffffff';
-          passTab.style.color = 'var(--navy-primary)';
-          passTab.style.boxShadow = '0 1px 3px rgba(15,23,42,0.12)';
-        }
-      } else {
-        gmailPane.style.display = 'block';
-        passPane.style.display = 'none';
-        document.getElementById('profCurrentPassInput').value = '';
-        if (gmailTab) {
-          gmailTab.style.background = '#ffffff';
-          gmailTab.style.color = 'var(--navy-primary)';
-          gmailTab.style.boxShadow = '0 1px 3px rgba(15,23,42,0.12)';
-        }
-        if (passTab) {
-          passTab.style.background = 'transparent';
-          passTab.style.color = '#475569';
-          passTab.style.boxShadow = 'none';
-        }
-      }
-      updateProfileSaveButtonState();
-    }
-
     async function sendProfileVerificationEmail() {
-      const btn = document.getElementById('profSendCodeBtn');
+      const remaining = Math.ceil((profileResendCooldownUntil - Date.now()) / 1000);
+      if (remaining > 0) {
+        renderProfileResendCooldown();
+        return;
+      }
+
+      const sendBtn = document.getElementById('profSendCodeBtn');
+      const resendBtn = document.getElementById('profResendLinkBtn');
       const statusEl = document.getElementById('profGmailVerifyStatus');
       const emailVal = document.getElementById('profEmailInput')?.value || '';
-      if (btn) btn.disabled = true;
+      if (sendBtn) sendBtn.disabled = true;
+      if (resendBtn) {
+        resendBtn.disabled = true;
+        resendBtn.textContent = 'Sending...';
+      }
       if (statusEl) {
         statusEl.style.color = '#0369a1';
+        statusEl.style.fontWeight = '600';
         statusEl.textContent = 'Sending security code & verification link to your Gmail inbox...';
       }
       try {
@@ -5581,11 +5600,23 @@
         });
         const data = await res.json();
         if (!res.ok) {
+          if (res.status === 429 && data.retryAfterSeconds) {
+            const initWrap = document.getElementById('profInitialSendWrap');
+            const entryWrap = document.getElementById('profCodeEntryWrap');
+            if (initWrap) initWrap.style.display = 'none';
+            if (entryWrap) entryWrap.style.display = 'block';
+            startProfileResendCooldown(data.retryAfterSeconds);
+          } else {
+            if (sendBtn) sendBtn.disabled = false;
+            if (resendBtn) {
+              resendBtn.disabled = false;
+              resendBtn.textContent = 'Resend code to Gmail';
+            }
+          }
           if (statusEl) {
             statusEl.style.color = '#b91c1c';
             statusEl.textContent = data.error || 'Could not send verification email.';
           }
-          if (btn) btn.disabled = false;
           return;
         }
         state.profileVerificationToken = data.verificationToken || '';
@@ -5606,15 +5637,20 @@
           });
         }
 
+        const initWrap = document.getElementById('profInitialSendWrap');
+        const entryWrap = document.getElementById('profCodeEntryWrap');
+        if (initWrap) initWrap.style.display = 'none';
+        if (entryWrap) entryWrap.style.display = 'block';
+
         const targetList = (data.sentTo || []).join(', ');
         if (statusEl) {
           statusEl.style.color = '#15803d';
+          statusEl.style.fontWeight = '600';
           statusEl.innerHTML = `&#9993; Verification email sent to <strong>${escapeHtml(targetList)}</strong>! Check your Gmail inbox and either click the 1-click verification link or enter the 6-digit code below.`;
         }
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = 'Resend to Gmail';
-        }
+        startProfileResendCooldown(60);
+        const codeEl = document.getElementById('profVerifyCodeInput');
+        if (codeEl) codeEl.focus();
 
         stopProfileVerifyPolling();
         profileVerifyTimer = setInterval(async () => {
@@ -5633,7 +5669,11 @@
           statusEl.style.color = '#b91c1c';
           statusEl.textContent = 'Network error while sending verification email.';
         }
-        if (btn) btn.disabled = false;
+        if (sendBtn) sendBtn.disabled = false;
+        if (resendBtn) {
+          resendBtn.disabled = false;
+          resendBtn.textContent = 'Resend code to Gmail';
+        }
       }
     }
 
@@ -5663,20 +5703,24 @@
         setChangePasswordLocked('employee', true);
       }
       state.profileVerificationToken = '';
-      toggleProfileVerifyMethod('gmail');
-      document.getElementById('profVerifyCodeInput').value = '';
-      document.getElementById('profCurrentPassInput').value = '';
+      const codeInput = document.getElementById('profVerifyCodeInput');
+      if (codeInput) codeInput.value = '';
       updateProfileSaveButtonState();
-      const sendBtn = document.getElementById('profSendCodeBtn');
-      if (sendBtn) {
-        sendBtn.disabled = false;
-        sendBtn.textContent = 'Send Code to Gmail';
-      }
+
+      const hasActiveCooldown = profileResendCooldownUntil > Date.now();
+      const initWrap = document.getElementById('profInitialSendWrap');
+      const entryWrap = document.getElementById('profCodeEntryWrap');
+      if (initWrap) initWrap.style.display = hasActiveCooldown ? 'none' : 'block';
+      if (entryWrap) entryWrap.style.display = hasActiveCooldown ? 'block' : 'none';
+      renderProfileResendCooldown();
+
       const statusEl = document.getElementById('profGmailVerifyStatus');
       if (statusEl) {
         statusEl.style.color = '#334155';
         statusEl.style.fontWeight = '400';
-        statusEl.innerHTML = 'Click <strong>Send Code to Gmail</strong> to receive a 6-digit security code or 1-click verification link in your inbox.';
+        statusEl.innerHTML = hasActiveCooldown
+          ? 'Enter the 6-digit verification code sent to your Gmail inbox below, then click <strong>Save &amp; Sync</strong>.'
+          : 'Click <strong>Send Verification Code to Gmail</strong> below to receive a 6-digit security code or 1-click verification link in your inbox.';
       }
       document.getElementById('profEmailInput').value = state.user.email || '';
       document.getElementById('profMobileInput').value = state.user.mobile || '';
@@ -5714,8 +5758,7 @@
         email: document.getElementById('profEmailInput').value,
         mobile: document.getElementById('profMobileInput').value,
         verificationCode: document.getElementById('profVerifyCodeInput').value.trim(),
-        verificationToken: state.profileVerificationToken || '',
-        currentPassword: document.getElementById('profCurrentPassInput').value
+        verificationToken: state.profileVerificationToken || ''
       };
       if (isOfficer) {
         payload.newId = document.getElementById('profReadonlyName').value.trim();
@@ -5737,9 +5780,13 @@
         stopProfileVerifyPolling();
         state.user = { ...state.user, ...data.user };
         renderHeaderAndNav();
-        document.getElementById('profVerifyCodeInput').value = '';
-        document.getElementById('profCurrentPassInput').value = '';
+        const codeEl = document.getElementById('profVerifyCodeInput');
+        if (codeEl) codeEl.value = '';
         state.profileVerificationToken = '';
+        const initWrap = document.getElementById('profInitialSendWrap');
+        const entryWrap = document.getElementById('profCodeEntryWrap');
+        if (initWrap) initWrap.style.display = 'block';
+        if (entryWrap) entryWrap.style.display = 'none';
         if (isOfficer) {
           setChangePasswordLocked('officer', true);
         } else {

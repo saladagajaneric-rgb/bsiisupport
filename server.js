@@ -1489,21 +1489,18 @@ async function handleSelfAccountUpdate(res, data, currentUser, body) {
   if (!user) return sendJson(res, 404, { error: 'Account not found.' });
 
   const isAdminAcct = Boolean(user.isStaff || user.isHR || user.isMasterAdmin);
-  const currentPass = String(body.currentPassword || '').trim();
   const verificationCode = String(body.verificationCode || '').trim();
   const verificationToken = String(body.verificationToken || '').trim();
-  const expectedPass = isAdminAcct ? user.adminPassword : user.lastName;
 
   const verifiedByEmail = verificationCode
     ? checkEmailVerificationCode(user.id, verificationCode, verificationToken, data)
     : false;
-  const verifiedByPassword = Boolean(currentPass && currentPass === expectedPass);
 
-  if (!verifiedByEmail && !verifiedByPassword) {
+  if (!verifiedByEmail) {
     return sendJson(res, 403, {
       error: verificationCode
-        ? 'Invalid or expired 6-digit Gmail verification code. Please click "Send Code to Gmail" to get a fresh code.'
-        : 'Verification required: Please enter the 6-digit code sent to your Gmail (or verify with your current password).'
+        ? 'Invalid or expired 6-digit Gmail verification code. Please request a fresh code.'
+        : 'Gmail verification required: Please send and enter the 6-digit verification code from your Gmail first.'
     });
   }
 
@@ -2646,9 +2643,22 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
+    const memPrev = emailVerifications.get(user.id);
+    const diskPrev = data.pendingEmailVerifications && data.pendingEmailVerifications[user.id];
+    const lastSentAt = Math.max(Number(memPrev && memPrev.sentAt) || 0, Number(diskPrev && diskPrev.sentAt) || 0);
+    const elapsedSec = Math.floor((Date.now() - lastSentAt) / 1000);
+    if (lastSentAt > 0 && elapsedSec < 60) {
+      const retryAfterSeconds = 60 - elapsedSec;
+      return sendJson(res, 429, {
+        error: `Please wait ${retryAfterSeconds}s before resending a verification email.`,
+        retryAfterSeconds
+      });
+    }
+
     const primaryEmail = recipients[0];
     const code = String(crypto.randomInt(100000, 1000000));
-    const expiresAt = Date.now() + 10 * 60 * 1000;
+    const nowMs = Date.now();
+    const expiresAt = nowMs + 10 * 60 * 1000;
     const verificationToken = createEmailVerificationToken(user.id, primaryEmail, code, expiresAt);
     const magicToken = encryptMagicVerifyToken({
       uid: user.id,
@@ -2660,6 +2670,7 @@ const server = http.createServer(async (req, res) => {
     emailVerifications.set(user.id, {
       code,
       email: primaryEmail,
+      sentAt: nowMs,
       expiresAt,
       approved: false
     });
@@ -2667,6 +2678,7 @@ const server = http.createServer(async (req, res) => {
     data.pendingEmailVerifications[user.id] = {
       codeHash: hashEmailVerificationCode(user.id, code, expiresAt),
       email: primaryEmail,
+      sentAt: nowMs,
       expiresAt,
       approved: false,
       approvedCode: null
