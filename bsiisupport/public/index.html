@@ -1433,6 +1433,51 @@
       margin-bottom: 12px;
     }
 
+    /* GMAIL-STYLE UNDO SEND SNACKBAR */
+    #undoSendToast {
+      position: fixed;
+      left: 24px;
+      bottom: 24px;
+      z-index: 2500;
+      background: #202124;
+      color: #f8fafc;
+      border-radius: 8px;
+      padding: 13px 18px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.35);
+      display: none;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.88rem;
+      min-width: 260px;
+      max-width: calc(100vw - 32px);
+    }
+    #undoSendToast .undo-btn {
+      background: none;
+      border: none;
+      color: #8ab4f8;
+      font-weight: 800;
+      font-size: 0.88rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 5px;
+    }
+    #undoSendToast .undo-btn:hover {
+      background: rgba(138, 180, 248, 0.16);
+    }
+    #undoSendToast .close-toast-btn {
+      background: none;
+      border: none;
+      color: #9aa0a6;
+      font-size: 1.05rem;
+      cursor: pointer;
+      padding: 2px 6px;
+      line-height: 1;
+      border-radius: 4px;
+    }
+    #undoSendToast .close-toast-btn:hover {
+      color: #ffffff;
+    }
+
     /* RESPONSIVE & MOBILE-SAFE LAYOUT RULES */
     html, body {
       max-width: 100%;
@@ -1935,6 +1980,12 @@
         <button type="button" class="btn-danger" id="confirmSenderDeleteBtn">Remove from My View</button>
       </div>
     </div>
+  </div>
+
+  <!-- GMAIL-STYLE 5-SECOND UNDO SEND TOAST -->
+  <div id="undoSendToast" role="status" aria-live="polite">
+    <span id="undoSendToastText">Request sent.</span>
+    <span id="undoSendToastActions" style="display:inline-flex; align-items:center; gap:6px; margin-left:auto;"></span>
   </div>
 
   <!-- FOOTER -->
@@ -2913,17 +2964,40 @@
       return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
 
-    async function submitFinalEmployeeRequest() {
-      const w = state.wizard;
+    let pendingSendState = null;
+
+    function hideUndoSendToast() {
+      const toast = document.getElementById('undoSendToast');
+      if (toast) toast.style.display = 'none';
+    }
+
+    function showUndoSendToast(messageHtml, actionsHtml = '', autoHideMs = 0) {
+      const toast = document.getElementById('undoSendToast');
+      const textEl = document.getElementById('undoSendToastText');
+      const actionsEl = document.getElementById('undoSendToastActions');
+      if (!toast || !textEl || !actionsEl) return;
+      textEl.innerHTML = messageHtml;
+      actionsEl.innerHTML = actionsHtml;
+      toast.style.display = 'flex';
+      if (toast._hideTimer) {
+        clearTimeout(toast._hideTimer);
+        toast._hideTimer = null;
+      }
+      if (autoHideMs > 0) {
+        toast._hideTimer = setTimeout(hideUndoSendToast, autoHideMs);
+      }
+    }
+
+    async function commitEmployeeRequestNow(draft) {
       const res = await fetch('/api/requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          department: w.department,
-          category: w.category,
-          details: w.details,
-          ccDepartments: w.ccDepartments,
-          colleagueEmail: w.colleagueEmail
+          department: draft.department,
+          category: draft.category,
+          details: draft.details,
+          ccDepartments: draft.ccDepartments,
+          colleagueEmail: draft.colleagueEmail
         })
       });
       if (res.ok) {
@@ -2964,24 +3038,99 @@
           sentViaLiveEmail: browserSent,
           deliveryStatus: d.emailDeliveryStatus || ''
         };
-        // Reset wizard to step 1 default
-        const defaultDept = getVisibleWizardDepartments()[0] || 'HR Admin';
-        const defaultCat = Object.keys((DEPARTMENT_CONFIG[defaultDept] && DEPARTMENT_CONFIG[defaultDept].categories) || {})[0] || '';
-        state.wizard = {
-          step: 1,
-          department: defaultDept,
-          category: defaultCat,
-          details: {},
-          ccDepartments: [],
-          colleagueEmail: ''
-        };
-        if (state.user && state.user.type === 'oncall') {
-          navigateTo('/open');
-        } else {
-          await refreshRequestsData();
-          navigateTo('/requests');
+        await refreshRequestsData();
+        renderHeaderAndNav();
+        if (state.currentRoute === '/requests' || state.currentRoute === '/open') {
+          renderCurrentRoute();
         }
+        showUndoSendToast(`&#10003; Request <strong>${escapeHtml(reqObj.id)}</strong> sent.`, '', 2800);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        showUndoSendToast(escapeHtml(err.error || 'Could not send request.'), '', 4000);
       }
+    }
+
+    function undoPendingEmployeeRequest() {
+      if (!pendingSendState) return;
+      clearTimeout(pendingSendState.timer);
+      clearInterval(pendingSendState.tickTimer);
+      const restoredDraft = pendingSendState.draft;
+      pendingSendState = null;
+
+      state.wizard = restoredDraft;
+      if (state.currentRoute !== '/open') {
+        navigateTo('/open');
+      } else {
+        renderWizardView();
+      }
+      showUndoSendToast('Sending undone. You can edit your request.', '', 3000);
+    }
+
+    function flushPendingEmployeeRequestNow() {
+      if (!pendingSendState) {
+        hideUndoSendToast();
+        return;
+      }
+      clearTimeout(pendingSendState.timer);
+      clearInterval(pendingSendState.tickTimer);
+      const draft = pendingSendState.draft;
+      pendingSendState = null;
+      showUndoSendToast('Sending request...', '', 0);
+      commitEmployeeRequestNow(draft);
+    }
+
+    async function submitFinalEmployeeRequest() {
+      // If a previous 5-second send is still pending, commit it first so nothing is lost
+      if (pendingSendState) {
+        flushPendingEmployeeRequestNow();
+      }
+
+      const draft = JSON.parse(JSON.stringify(state.wizard));
+
+      // Reset wizard to step 1 default immediately (like Gmail closing compose)
+      const defaultDept = getVisibleWizardDepartments()[0] || 'HR Admin';
+      const defaultCat = Object.keys((DEPARTMENT_CONFIG[defaultDept] && DEPARTMENT_CONFIG[defaultDept].categories) || {})[0] || '';
+      state.wizard = {
+        step: 1,
+        department: defaultDept,
+        category: defaultCat,
+        details: {},
+        ccDepartments: [],
+        colleagueEmail: ''
+      };
+
+      if (state.user && state.user.type === 'oncall') {
+        navigateTo('/open');
+      } else {
+        navigateTo('/requests');
+      }
+
+      let secondsLeft = 5;
+      const updateToast = () => {
+        showUndoSendToast(
+          `Message sent <span style="color:#9aa0a6; font-size:0.8rem;">(${secondsLeft}s)</span>`,
+          `<button type="button" class="undo-btn" onclick="undoPendingEmployeeRequest()">Undo</button>
+           <button type="button" class="close-toast-btn" title="Send now" onclick="flushPendingEmployeeRequestNow()">&times;</button>`,
+          0
+        );
+      };
+      updateToast();
+
+      const tickTimer = setInterval(() => {
+        secondsLeft = Math.max(1, secondsLeft - 1);
+        if (pendingSendState) updateToast();
+      }, 1000);
+
+      const timer = setTimeout(() => {
+        if (!pendingSendState) return;
+        clearInterval(tickTimer);
+        const committedDraft = pendingSendState.draft;
+        pendingSendState = null;
+        showUndoSendToast('Sending request...', '', 0);
+        commitEmployeeRequestNow(committedDraft);
+      }, 5000);
+
+      pendingSendState = { draft, timer, tickTimer };
     }
 
     /* ==========================================
@@ -3193,10 +3342,9 @@
           : deptList.map((r) => renderRequestCardHtml(r, true)).join('');
       } else if (filter === 'requests') {
         feedHtml = reqList.length === 0
-          ? `<div class="wizard-card" style="text-align:center; padding:42px 24px;">
+          ? `<div class="wizard-card" style="text-align:center; padding:38px 24px;">
                <h3 style="color:var(--navy-primary); margin-bottom:8px;">No Active Support Requests</h3>
-               <p style="color:var(--text-muted); margin-bottom:20px;">You have no active requests within the current 365-day operational window.</p>
-               <button type="button" class="btn-gold" onclick="navigateTo('/open')">+ Create New Support Request</button>
+               <p style="color:var(--text-muted); margin:0;">You have no active requests within the current 365-day operational window.</p>
              </div>`
           : reqList.map((r) => renderRequestCardHtml(r, false)).join('');
       } else {
@@ -3206,10 +3354,9 @@
         ].sort((a, b) => b.ts - a.ts);
 
         feedHtml = combined.length === 0
-          ? `<div class="wizard-card" style="text-align:center; padding:48px 24px;">
+          ? `<div class="wizard-card" style="text-align:center; padding:42px 24px;">
                <h3 style="color:var(--navy-primary); margin-bottom:8px;">No Activities Yet</h3>
-               <p style="color:var(--text-muted); margin-bottom:20px;">Your active support requests will appear here.</p>
-               <button type="button" class="btn-gold" onclick="navigateTo('/open')">+ Create New Support Request</button>
+               <p style="color:var(--text-muted); margin:0;">Your active support requests will appear here.</p>
              </div>`
           : combined.map((entry) =>
               entry.kind === 'incoming'
