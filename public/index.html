@@ -706,7 +706,7 @@
 
     .settings-nav-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
       margin-bottom: 18px;
     }
@@ -1567,7 +1567,7 @@
       }
 
       .settings-nav-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 6px;
         margin-bottom: 14px;
       }
@@ -3657,7 +3657,7 @@
       const s = state.settings || {};
       const deptEmails = s.departmentEmails || {};
       const isHR = Boolean(state.user.isHR || state.user.isMasterAdmin || state.user.isModerator);
-      const tab = state.adminSettingsTab || 'employees';
+      const tab = (state.adminSettingsTab === 'steps') ? 'steps' : 'employees';
 
       // All admins can view all departments in Step Options; only HR can edit
       const allDepts = Object.keys(DEPARTMENT_CONFIG);
@@ -3895,11 +3895,7 @@
               ${!isHR
                 ? '<span style="color:var(--text-muted); font-size:0.78rem; font-weight:600;">View Only</span>'
                 : (isAdminAcct
-                  ? `
-                    <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="editAnyAccountEmail('${escapeHtml(emp.id)}', '${escapeHtml(emp.fullName)}', '${escapeHtml(emp.email || '')}')">
-                      Edit Email
-                    </button>
-                  `
+                  ? '<span style="color:var(--text-muted); font-size:0.78rem; font-weight:600;">Self-Managed</span>'
                   : `
                     <button type="button" class="btn-secondary" style="padding:4px 9px; font-size:0.75rem;" onclick="openHrEditModal('${escapeHtml(emp.id)}')">
                       Edit
@@ -4145,10 +4141,6 @@
           <button type="button" class="settings-nav-btn ${tab === 'steps' ? 'active' : ''}" onclick="switchAdminSettingsTab('steps')">
             <h4>Step &amp; Form Options</h4>
             <span>${isHR ? 'Edit all departments' : 'View only (HR edits)'}</span>
-          </button>
-          <button type="button" class="settings-nav-btn ${tab === 'routing' ? 'active' : ''}" onclick="switchAdminSettingsTab('routing')">
-            <h4>Department Mailboxes</h4>
-            <span>${isHR ? 'Edit routing &amp; emails' : 'View only (HR edits)'}</span>
           </button>
         </div>
 
@@ -4990,7 +4982,9 @@
       });
       if (res.ok) {
         closeHrEditModal();
+        await refreshRequestsData();
         await refreshHrData();
+        renderHeaderAndNav();
         renderHrAdminView(`Updated employee account #${newId || originalId}.`);
       } else {
         const d = await res.json();
@@ -5770,6 +5764,8 @@
         if (state.user.isHR || state.user.isMasterAdmin || state.user.isModerator) {
           await refreshHrData();
         }
+        renderHeaderAndNav();
+        renderCurrentRoute();
         renderCurrentRoute();
       } else {
         document.getElementById('profileModalAlert').innerHTML = `

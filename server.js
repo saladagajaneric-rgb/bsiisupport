@@ -1459,13 +1459,36 @@ function formatDirectoryUser(u) {
   return copy;
 }
 
-function syncUserAcrossRequests(data, userRecord) {
+function syncUserAcrossRequests(data, userRecord, oldSnapshot = null) {
+  const oldId = oldSnapshot && oldSnapshot.id ? oldSnapshot.id : userRecord.id;
+  const oldName = oldSnapshot && oldSnapshot.fullName ? oldSnapshot.fullName : null;
+  const oldEmail = oldSnapshot && oldSnapshot.email ? String(oldSnapshot.email).trim().toLowerCase() : null;
+  const newEmail = String(userRecord.email || '').trim();
+
   (data.requests || []).forEach((r) => {
-    if (r.employeeId === userRecord.id) {
+    if (r.employeeId === userRecord.id || r.employeeId === oldId) {
+      r.employeeId = userRecord.id;
       r.employeeName = userRecord.fullName;
       r.employeeCompany = userRecord.company;
       r.employeeEmail = userRecord.email;
       r.employeeMobile = userRecord.mobile;
+    }
+    if (Array.isArray(r.comments)) {
+      r.comments.forEach((c) => {
+        if ((c.authorId && (c.authorId === userRecord.id || c.authorId === oldId)) || (oldName && c.author === oldName)) {
+          c.authorId = userRecord.id;
+          c.author = userRecord.fullName;
+          if (userRecord.role) c.role = userRecord.role;
+        }
+      });
+    }
+    if (oldEmail && newEmail && oldEmail !== newEmail.toLowerCase()) {
+      if (Array.isArray(r.notifiedEmails)) {
+        r.notifiedEmails = r.notifiedEmails.map((em) => (String(em || '').trim().toLowerCase() === oldEmail ? newEmail : em));
+      }
+      if (Array.isArray(r.ccEmails)) {
+        r.ccEmails = r.ccEmails.map((em) => (String(em || '').trim().toLowerCase() === oldEmail ? newEmail : em));
+      }
     }
   });
 }
@@ -1503,6 +1526,12 @@ async function handleSelfAccountUpdate(res, data, currentUser, body) {
         : 'Gmail verification required: Please send and enter the 6-digit verification code from your Gmail first.'
     });
   }
+
+  const oldSnapshot = {
+    id: user.id,
+    fullName: user.fullName,
+    email: user.email
+  };
 
   if (body.fullName && String(body.fullName).trim()) user.fullName = String(body.fullName).trim();
   if (typeof body.email === 'string' && body.email.trim()) user.email = body.email.trim();
@@ -1558,7 +1587,7 @@ async function handleSelfAccountUpdate(res, data, currentUser, body) {
   user.needsProfileSync = false;
   user.hasCompletedFirstSelfUpdate = true;
   user.updatedAt = new Date().toISOString();
-  syncUserAcrossRequests(data, user);
+  syncUserAcrossRequests(data, user, oldSnapshot);
   saveData(data);
 
   const nextSid = createSignedSid({ type: 'employee', userId: user.id });
@@ -2948,7 +2977,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // HR Edit Email Address for ANY Account (Employees AND Admins/Officers)
+  // HR Edit Email Address (Standard Employees Only — Admins/Officers are strictly self-managed)
   const emailEditMatch = pathname.match(/^\/api\/hr\/employees\/([^/]+)\/email$/);
   if (emailEditMatch && req.method === 'PATCH') {
     if (!currentUser || (!currentUser.isHR && !currentUser.isMasterAdmin && !currentUser.isModerator)) {
@@ -2957,14 +2986,18 @@ const server = http.createServer(async (req, res) => {
     const empId = decodeURIComponent(emailEditMatch[1]);
     const emp = data.users.find((u) => u.id === empId);
     if (!emp) return sendJson(res, 404, { error: 'Account not found.' });
+    if (emp.isStaff || emp.isHR || emp.isMasterAdmin || emp.isModerator) {
+      return sendJson(res, 403, { error: 'Admin & Officer accounts are self-managed and cannot be edited by HR.' });
+    }
     const body = await readJsonBody(req);
     const nextEmail = String(body.email || '').trim();
     if (!nextEmail || !nextEmail.includes('@')) {
       return sendJson(res, 400, { error: 'Please enter a valid email address.' });
     }
+    const oldSnapshot = { id: emp.id, fullName: emp.fullName, email: emp.email };
     emp.email = nextEmail;
     emp.updatedAt = new Date().toISOString();
-    syncUserAcrossRequests(data, emp);
+    syncUserAcrossRequests(data, emp, oldSnapshot);
     saveData(data);
     sendJson(res, 200, { success: true, user: sanitizeSessionUser(emp) });
     return;
@@ -2982,6 +3015,7 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 403, { error: 'Admin & Officer accounts can only be updated by the admin owner via their own Profile.' });
     }
 
+    const oldSnapshot = { id: emp.id, fullName: emp.fullName, email: emp.email };
     const body = await readJsonBody(req);
     const nextId = typeof body.newId === 'string' ? body.newId.trim() : '';
     if (nextId && nextId !== emp.id) {
@@ -3005,7 +3039,7 @@ const server = http.createServer(async (req, res) => {
     if (typeof body.email === 'string') emp.email = body.email.trim();
     if (typeof body.mobile === 'string') emp.mobile = body.mobile.trim();
     emp.updatedAt = new Date().toISOString();
-    syncUserAcrossRequests(data, emp);
+    syncUserAcrossRequests(data, emp, oldSnapshot);
 
     saveData(data);
     sendJson(res, 200, { success: true, employee: emp });
