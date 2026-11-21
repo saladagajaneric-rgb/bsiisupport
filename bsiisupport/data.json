@@ -1,5 +1,5 @@
 {
-  "_lastSavedTs": 1795225827084,
+  "_lastSavedTs": 1795226393923,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
@@ -144,7 +144,7 @@
       "hasCompletedFirstSelfUpdate": false
     },
     {
-      "id": "371",
+      "id": "000001",
       "lastName": "SALADAGA",
       "adminUsername": "bsii.moderator",
       "adminPassword": "Moderator!2026",
@@ -156,11 +156,11 @@
       "isHR": true,
       "isMasterAdmin": true,
       "isModerator": true,
-      "needsProfileSync": false,
-      "hasCompletedFirstSelfUpdate": true,
+      "needsProfileSync": true,
+      "hasCompletedFirstSelfUpdate": false,
       "email": "saladagajaneric@gmail.com",
-      "mobile": "09917703151",
-      "updatedAt": "2026-11-19T01:44:27.215Z"
+      "mobile": "0917-000-0001",
+      "updatedAt": "2026-11-21T01:59:53.923Z"
     }
   ],
   "requests": [
@@ -1609,156 +1609,5 @@
     }
   ],
   "pendingEmailVerifications": {},
-  "hrMessages": [
-    {
-      "id": "MSG-2026-8440",
-      "senderId": "371",
-      "senderName": "Jan Eric Saladaga",
-      "senderRole": "HR Admin",
-      "senderEmail": "saladagajaneric@gmail.com",
-      "category": "HR Message",
-      "subject": "Testing",
-      "body": "Testing",
-      "bodyHtml": "Testing",
-      "attachments": [],
-      "ccEmails": [],
-      "bccEmails": [],
-      "deliveryChannels": {
-        "gmail": true,
-        "website": true
-      },
-      "recipients": [
-        {
-          "userId": "371",
-          "fullName": "Jan Eric Saladaga",
-          "email": "saladagajaneric@gmail.com",
-          "company": "BSII Employee",
-          "department": "HR Admin",
-          "role": "HR Admin",
-          "isStaff": true
-        }
-      ],
-      "readBy": [
-        "371"
-      ],
-      "replies": [],
-      "emailDeliveryStatus": "Delivered to Website Account (My Activities) & 1 Email Inbox",
-      "sentViaLiveEmail": true,
-      "createdAt": "2026-11-21T01:50:22.760Z",
-      "updatedAt": "2026-11-21T01:50:22.760Z"
-    },
-    {
-      "id": "MSG-2026-7088",
-      "senderId": "371",
-      "senderName": "Jan Eric Saladaga",
-      "senderRole": "HR Admin",
-      "senderEmail": "saladagajaneric@gmail.com",
-      "category": "HR Message",
-      "subject": "hello testing",
-      "body": "Hello testing",
-      "bodyHtml": "Hello testing",
-      "attachments": [],
-      "ccEmails": [],
-      "bccEmails": [],
-      "deliveryChannels": {
-        "gmail": true,
-        "website": true
-      },
-      "recipients": [
-        {
-          "userId": "371",
-          "fullName": "Jan Eric Saladaga",
-          "email": "saladagajaneric@gmail.com",
-          "company": "BSII Employee",
-          "department": "HR Admin",
-          "role": "HR Admin",
-          "isStaff": true
-        }
-      ],
-      "readBy": [
-        "371"
-      ],
-      "replies": [],
-      "emailDeliveryStatus": "Delivered to Website Account (My Activities) & Email Queued",
-      "sentViaLiveEmail": false,
-      "createdAt": "2026-11-21T01:17:05.490Z",
-      "updatedAt": "2026-11-21T01:17:05.490Z"
-    },
-    {
-      "id": "MSG-2026-4234",
-      "senderId": "371",
-      "senderName": "Jan Eric Saladaga",
-      "senderRole": "HR Admin",
-      "senderEmail": "saladagajaneric@gmail.com",
-      "category": "HR Message",
-      "subject": "Testing Testing",
-      "body": "testing",
-      "bodyHtml": "testing",
-      "attachments": [],
-      "ccEmails": [],
-      "bccEmails": [],
-      "deliveryChannels": {
-        "gmail": true,
-        "website": true
-      },
-      "recipients": [
-        {
-          "userId": "371",
-          "fullName": "Jan Eric Saladaga",
-          "email": "saladagajaneric@gmail.com",
-          "company": "BSII Employee",
-          "department": "HR Admin",
-          "role": "HR Admin",
-          "isStaff": true
-        }
-      ],
-      "readBy": [
-        "371"
-      ],
-      "replies": [],
-      "emailDeliveryStatus": "Delivered to Website Account (My Activities) & Email Queued",
-      "sentViaLiveEmail": false,
-      "createdAt": "2026-11-21T01:14:35.604Z",
-      "updatedAt": "2026-11-21T01:14:35.604Z"
-    },
-    {
-      "id": "MSG-2026-2986",
-      "senderId": "371",
-      "senderName": "Jan Eric Saladaga",
-      "senderRole": "HR Admin",
-      "senderEmail": "saladagajaneric@gmail.com",
-      "category": "HR Message",
-      "subject": "Testing",
-      "body": "Hello Testing",
-      "bodyHtml": "Hello Testing",
-      "attachments": [],
-      "ccEmails": [],
-      "bccEmails": [],
-      "deliveryChannels": {
-        "gmail": true,
-        "website": true
-      },
-      "recipients": [
-        {
-          "userId": "371",
-          "fullName": "Jan Eric Saladaga",
-          "email": "saladagajaneric@gmail.com",
-          "company": "BSII Employee",
-          "department": "HR Admin",
-          "role": "HR Admin",
-          "isStaff": true
-        }
-      ],
-      "readBy": [
-        "371"
-      ],
-      "replies": [],
-      "emailDeliveryStatus": "Delivered to Website Account (My Activities) & Email Queued",
-      "sentViaLiveEmail": false,
-      "createdAt": "2026-11-21T01:01:29.541Z",
-      "updatedAt": "2026-11-21T01:01:29.541Z",
-      "deletedAt": "2026-11-21T01:12:25.372Z",
-      "deletedBy": "Jan Eric Saladaga"
-    }
-  ]
+  "hrMessages": []
 }
