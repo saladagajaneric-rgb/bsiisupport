@@ -1,5 +1,5 @@
 {
-  "_lastSavedTs": 1795223545372,
+  "_lastSavedTs": 1795223675607,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
@@ -1483,6 +1483,18 @@
   },
   "emailDispatchLog": [
     {
+      "id": "DISP-1795223675605-596",
+      "requestId": "MSG-2026-4234",
+      "to": [
+        "saladagajaneric@gmail.com"
+      ],
+      "subject": "Testing Testing",
+      "body": "testing\n\n----------------------------------------\nFrom: Jan Eric Saladaga (HR Admin)\nAlso available in your BSIISUPPORT Website Account under \"My Activities\":\nhttps://bsiisupport.vercel.app/requests",
+      "deliveryStatus": "Delivered in Portal",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-21T01:14:35.605Z"
+    },
+    {
       "id": "DISP-1795222889542-811",
       "requestId": "MSG-2026-2986",
       "to": [
@@ -1574,6 +1586,43 @@
   ],
   "pendingEmailVerifications": {},
   "hrMessages": [
+    {
+      "id": "MSG-2026-4234",
+      "senderId": "371",
+      "senderName": "Jan Eric Saladaga",
+      "senderRole": "HR Admin",
+      "senderEmail": "saladagajaneric@gmail.com",
+      "category": "HR Message",
+      "subject": "Testing Testing",
+      "body": "testing",
+      "bodyHtml": "testing",
+      "attachments": [],
+      "ccEmails": [],
+      "bccEmails": [],
+      "deliveryChannels": {
+        "gmail": true,
+        "website": true
+      },
+      "recipients": [
+        {
+          "userId": "371",
+          "fullName": "Jan Eric Saladaga",
+          "email": "saladagajaneric@gmail.com",
+          "company": "BSII Employee",
+          "department": "HR Admin",
+          "role": "HR Admin",
+          "isStaff": true
+        }
+      ],
+      "readBy": [
+        "371"
+      ],
+      "replies": [],
+      "emailDeliveryStatus": "Delivered to Website Account (My Activities) & Email Queued",
+      "sentViaLiveEmail": false,
+      "createdAt": "2026-11-21T01:14:35.604Z",
+      "updatedAt": "2026-11-21T01:14:35.604Z"
+    },
     {
       "id": "MSG-2026-2986",
       "senderId": "371",
