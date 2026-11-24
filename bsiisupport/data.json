@@ -1,5 +1,5 @@
 {
-  "_lastSavedTs": 1795493264396,
+  "_lastSavedTs": 1795497075945,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
@@ -1671,6 +1671,18 @@
   },
   "emailDispatchLog": [
     {
+      "id": "DISP-1795497075877-840",
+      "requestId": "VERIFY-000001",
+      "to": [
+        "saladagajaneric@gmail.com"
+      ],
+      "subject": "[BSIISUPPORT] Security Verification Code: 374396",
+      "body": "Hello Jan Eric Saladaga,\n\nYou requested to verify changes to your BSIISUPPORT account or password.\n\nYOUR 6-DIGIT VERIFICATION CODE: 374396\n\nOr click the secure link below in your Gmail to verify with 1 click:\nhttps://bsiisupport.vercel.app/api/account/verify-link?v=bGkq2-9nTedU7dnluY_ZErs3hMKAGNHrKU1F7nWPZTXR6jrKoUvN1hw7ZWPBxGiX2gX6npBDi55DoVmdRFS0YZED2nmtjK0qCvwSNfSMzjvVkyPymVBM8j348xjItYWsWFpwSJxdOklWZqcYlx3gIYk\n\nThis security code expires in 10 minutes. If you did not request this, please ignore this email.",
+      "deliveryStatus": "Failed: saladagajaneric@gmail.com: <!DOCTYPE html><html lang=\"en-US\"><head><title>Just a moment...</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta http-equiv=\"X-UA",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-24T05:11:15.877Z"
+    },
+    {
       "id": "DISP-1795493264393-130",
       "requestId": "REQ-2026-8423",
       "to": [
@@ -1715,6 +1727,15 @@
       "sentAt": "2026-11-24T04:07:44.342Z"
     }
   ],
-  "pendingEmailVerifications": {},
+  "pendingEmailVerifications": {
+    "000001": {
+      "codeHash": "62b63870d2f975341c53bcb12d13ca1c88bdc7ed55525c5c8485a93044419dec",
+      "email": "saladagajaneric@gmail.com",
+      "sentAt": 1795497075875,
+      "expiresAt": 1795497675875,
+      "approved": false,
+      "approvedCode": null
+    }
+  },
   "hrMessages": []
 }
