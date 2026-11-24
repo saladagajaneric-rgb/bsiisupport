@@ -4214,61 +4214,72 @@
                 </button>
               </div>
 
-              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap:12px;">
-                <div class="form-group" style="margin-bottom:4px;">
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap:16px 20px; align-items:start;">
+                <div class="form-group" style="margin-bottom:0;">
                   <label>ID Number</label>
-                  <input type="text" id="newEmpId" class="input-control" placeholder="e.g., 777123" required />
+                  <input type="text" id="newEmpId" class="input-control" style="min-height:42px;" placeholder="e.g., 777123" required />
                 </div>
-                <div class="form-group" style="margin-bottom:4px;">
+                <div class="form-group" style="margin-bottom:0;">
                   <label>Full Name</label>
-                  <input type="text" id="newEmpFull" class="input-control" placeholder="e.g., Carlo Dela Cruz" oninput="updateAdminPwChecklist()" required />
+                  <input type="text" id="newEmpFull" class="input-control" style="min-height:42px;" placeholder="e.g., Carlo Dela Cruz" oninput="updateAdminPwChecklist()" required />
                 </div>
                 ${!isRegAdmin ? `
-                  <div class="form-group" style="margin-bottom:4px;">
+                  <div class="form-group" style="margin-bottom:0;">
                     <label>Password <span class="label-hint">(Last Name — no spaces, ALL CAPS)</span></label>
-                    <input type="text" id="newEmpLast" class="input-control" placeholder="e.g., DELACRUZ" oninput="this.value = this.value.replace(/\\s+/g, '').toUpperCase()" required />
+                    <input type="text" id="newEmpLast" class="input-control" style="min-height:42px;" placeholder="e.g., DELACRUZ" oninput="this.value = this.value.replace(/\\s+/g, '').toUpperCase()" required />
                   </div>
                 ` : ''}
                 ${regType === 'officer' ? `
-                  <div class="form-group" style="margin-bottom:4px;">
+                  <div class="form-group" style="margin-bottom:0;">
                     <label>Department / Role</label>
-                    <select id="newEmpDeptSelect" class="input-control" onchange="onOfficerDeptSelectChange()" required>
+                    <select id="newEmpDeptSelect" class="input-control" style="min-height:42px; white-space:nowrap;" onchange="onOfficerDeptSelectChange()" required>
                       ${Object.keys(DEPARTMENT_CONFIG || {})
                         .filter((d) => d !== 'HR Admin')
                         .map((d) => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`)
                         .join('')}
                       <option value="__NEW_DEPT__">+ Add New Department...</option>
                     </select>
-                    <div id="newDeptHint" style="margin-top:4px; font-size:0.72rem; color:var(--text-muted);">
+                    <div id="newDeptHint" style="margin-top:6px; font-size:0.73rem; line-height:1.35; color:var(--text-muted);">
                       Existing department — shares its Support Request section &amp; queue.
                     </div>
                   </div>
-                  <div id="newCustomDeptWrap" class="form-group" style="margin-bottom:4px; display:none;">
+                  <div id="newCustomDeptWrap" class="form-group" style="margin-bottom:0; display:none; grid-column: 1 / -1;">
                     <label>New Department Name &amp; Company Scope</label>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                      <input type="text" id="newEmpDept" class="input-control" style="flex:1; min-width:140px;" placeholder="e.g., IT Support / Logistics" />
-                      <select id="newEmpDeptScope" class="input-control" style="width:auto; min-width:130px;" onchange="onOfficerScopeChange()">
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                      <input type="text" id="newEmpDept" class="input-control" style="flex:1; min-width:200px; min-height:42px;" placeholder="e.g., IT Support / Logistics" />
+                      <select id="newEmpDeptScope" class="input-control" style="width:auto; min-width:160px; min-height:42px;" onchange="onOfficerScopeChange()">
                         <option value="BSII">BSII Only</option>
                         <option value="Esteems">Esteems Only</option>
                         <option value="Both">Both (Shared)</option>
                       </select>
                     </div>
-                    <div style="margin-top:4px; font-size:0.72rem; color:#0369a1;">
+                    <div style="margin-top:6px; font-size:0.73rem; color:#0369a1;">
                       Automatically creates a new Support Request section for the selected company.
                     </div>
                   </div>
                 ` : `
-                  <div class="form-group" style="margin-bottom:4px;">
+                  <div class="form-group" style="margin-bottom:0;">
                     <label>Department / Role</label>
-                    <input type="text" id="newEmpDept" class="input-control" placeholder="${regType === 'hr' ? 'e.g., HR Admin' : 'e.g., Operations'}" value="${regType === 'hr' ? 'HR Admin' : ''}" required />
+                    <input type="text" id="newEmpDept" class="input-control" style="min-height:42px;" placeholder="${regType === 'hr' ? 'e.g., HR Admin' : 'e.g., Operations'}" value="${regType === 'hr' ? 'HR Admin' : ''}" required />
                   </div>
                 `}
-                <div class="form-group" style="margin-bottom:4px;">
+                <div class="form-group" style="margin-bottom:0;">
                   <label>Classification</label>
-                  <select id="newEmpComp" class="input-control">
-                    ${classOptionsHtml}
+                  <select id="newEmpComp" class="input-control" style="min-height:42px;">
+                    ${(() => {
+                      const list = getClassifications();
+                      const firstOfficerDept = regType === 'officer'
+                        ? (Object.keys(DEPARTMENT_CONFIG || {}).find((d) => d !== 'HR Admin') || '')
+                        : '';
+                      const preferBsii = /\bbsii\b/i.test(firstOfficerDept);
+                      const preferEsteems = /\besteems\b/i.test(firstOfficerDept);
+                      return list.map((c) => {
+                        const isSel = (preferBsii && /bsii/i.test(c)) || (preferEsteems && /esteems/i.test(c));
+                        return `<option value="${escapeHtml(c)}" ${isSel ? 'selected' : ''}>${escapeHtml(c)}</option>`;
+                      }).join('');
+                    })()}
                   </select>
-                  <div style="margin-top:4px; display:flex; align-items:center; gap:8px; font-size:0.74rem; color:var(--text-muted);">
+                  <div style="margin-top:6px; display:flex; align-items:center; gap:8px; font-size:0.74rem; color:var(--text-muted);">
                     <button type="button" onclick="addClassificationOption()" style="background:none; border:none; padding:0; color:#475569; cursor:pointer; font-size:0.74rem; text-decoration:underline;">Add</button>
                     <span>&middot;</span>
                     <button type="button" onclick="editClassificationOption()" style="background:none; border:none; padding:0; color:#475569; cursor:pointer; font-size:0.74rem; text-decoration:underline;">Edit</button>
@@ -4276,18 +4287,18 @@
                     <button type="button" onclick="deleteClassificationOption()" style="background:none; border:none; padding:0; color:#94a3b8; cursor:pointer; font-size:0.74rem; text-decoration:underline;">Delete</button>
                   </div>
                 </div>
-                <div class="form-group" style="margin-bottom:4px;">
+                <div class="form-group" style="margin-bottom:0;">
                   <label>Email</label>
-                  <input type="email" id="newEmpEmail" class="input-control" placeholder="employee@bsii.com.ph" />
+                  <input type="email" id="newEmpEmail" class="input-control" style="min-height:42px;" placeholder="employee@bsii.com.ph" />
                 </div>
-                <div class="form-group" style="margin-bottom:4px;">
+                <div class="form-group" style="margin-bottom:0;">
                   <label>Mobile</label>
-                  <input type="text" id="newEmpMobile" class="input-control" placeholder="0917-XXX-XXXX" />
+                  <input type="text" id="newEmpMobile" class="input-control" style="min-height:42px;" placeholder="0917-XXX-XXXX" />
                 </div>
               </div>
 
               ${isRegAdmin ? `
-                <div style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:14px; margin-top:12px;">
+                <div style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:16px 18px; margin-top:18px;">
                   <div style="font-size:0.82rem; font-weight:800; color:var(--navy-primary); margin-bottom:4px;">
                     Admin / Officer Portal Credentials (1 unique Username &amp; 1 Strong Password)
                   </div>
