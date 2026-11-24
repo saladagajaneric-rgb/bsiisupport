@@ -3246,13 +3246,47 @@ const server = http.createServer(async (req, res) => {
         return sendJson(res, 400, { error: pwErr });
       }
     }
+    let finalDept = String(department || (isHR ? 'HR Admin' : 'Operations')).trim();
+    let createdDepartmentSection = false;
+
+    if (isAdminOrOfficer && finalDept) {
+      const existingKeys = Object.keys(data.departmentConfig || {});
+      const matchedExisting = existingKeys.find((k) => k.toLowerCase() === finalDept.toLowerCase());
+      if (matchedExisting) {
+        // Department already exists — reuse it without creating a duplicate Support Request section
+        finalDept = matchedExisting;
+      } else {
+        // New department added by HR — automatically create a Support Request section
+        if (!data.departmentConfig) data.departmentConfig = {};
+        data.departmentConfig[finalDept] = {
+          subtitle: `Internal support requests and departmental inquiries for ${finalDept}.`,
+          categories: {
+            'General Request': [
+              { name: 'Subject', type: 'text', required: true, placeholder: `Brief summary of your request for ${finalDept}...` },
+              { name: 'Urgency', type: 'select', options: ['Low', 'Standard', 'Urgent', 'Critical'] },
+              { name: 'Request Details', type: 'textarea', required: true, placeholder: `Provide full details for ${finalDept}...` }
+            ],
+            'Other / Not Listed': [
+              { name: 'Confirm Category', type: 'checkbox', required: true, options: ['My request is not listed above (Specify below)'] },
+              { name: 'Requested Category Name', type: 'text', required: true, placeholder: 'e.g., Name of the category you were looking for' },
+              { name: 'Request Details', type: 'textarea', required: true, placeholder: `Describe your request for ${finalDept}...` }
+            ]
+          }
+        };
+        if (email && String(email).trim() && data.settings && data.settings.departmentEmails) {
+          data.settings.departmentEmails[finalDept] = String(email).trim();
+        }
+        createdDepartmentSection = true;
+      }
+    }
+
     const newEmp = {
       id: String(id).trim(),
       lastName: derivedLast,
       fullName: cleanFull,
       company: company || 'BSII Employee',
-      role: role || (isHR ? 'HR Admin' : (isAdminOrOfficer ? 'Department Officer' : 'Employee')),
-      department: department || 'Operations',
+      role: role || (isHR ? 'HR Admin' : (isAdminOrOfficer ? finalDept : 'Employee')),
+      department: finalDept,
       isStaff: isAdminOrOfficer,
       isHR: Boolean(isHR),
       isMasterAdmin: Boolean(isMasterAdmin),
@@ -3266,7 +3300,12 @@ const server = http.createServer(async (req, res) => {
     }
     data.users.push(newEmp);
     saveData(data);
-    sendJson(res, 201, { success: true, employee: newEmp });
+    sendJson(res, 201, {
+      success: true,
+      employee: newEmp,
+      departmentConfig: data.departmentConfig,
+      createdDepartmentSection
+    });
     return;
   }
 

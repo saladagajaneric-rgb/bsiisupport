@@ -2328,6 +2328,19 @@
       // Top action bar: Oncall has NO Profile/account; employees/admins see Profile + Sign Out
       const isOncall = state.user.type === 'oncall';
       topUserArea.style.display = 'flex';
+      const getAdminCompanyScopeBadge = (u) => {
+        if (!u || !u.isStaff) return u ? (u.company === 'BSII Employee' ? 'Brightstar Employee' : u.company) : '';
+        if (u.isHR || u.department === 'HR Admin') return `${u.role || 'HR Admin'} · BSII & Esteems`;
+        const deptStr = String(u.department || '');
+        const hasBsii = /\bbsii\b/i.test(deptStr);
+        const hasEsteems = /\besteems\b/i.test(deptStr);
+        if (hasBsii && !hasEsteems) return `${u.role || deptStr} · BSII`;
+        if (hasEsteems && !hasBsii) return `${u.role || deptStr} · Esteems`;
+        if (u.company === 'Esteems Employee') return `${u.role || deptStr} · Esteems`;
+        if (u.company === 'BSII Employee') return `${u.role || deptStr} · BSII`;
+        return `${u.role || deptStr} · BSII & Esteems`;
+      };
+
       topUserArea.innerHTML = isOncall ? `
         <div class="employee-pill">
           <span>${escapeHtml(state.user.fullName)}</span>
@@ -2337,7 +2350,7 @@
       ` : `
         <div class="employee-pill">
           <span>${escapeHtml(state.user.fullName)}</span>
-          <span class="role-tag">${escapeHtml(state.user.isStaff ? state.user.role : state.user.company)}</span>
+          <span class="role-tag">${escapeHtml(getAdminCompanyScopeBadge(state.user))}</span>
         </div>
         <button type="button" class="top-btn" onclick="openProfileModal()">Profile</button>
         <a href="/api/logout" class="top-btn signout-btn">Sign Out</a>
@@ -4216,10 +4229,40 @@
                     <input type="text" id="newEmpLast" class="input-control" placeholder="e.g., DELACRUZ" oninput="this.value = this.value.replace(/\\s+/g, '').toUpperCase()" required />
                   </div>
                 ` : ''}
-                <div class="form-group" style="margin-bottom:4px;">
-                  <label>Department / Role</label>
-                  <input type="text" id="newEmpDept" class="input-control" placeholder="${regType === 'hr' ? 'e.g., HR Admin' : (regType === 'officer' ? 'e.g., Team Leader, BSII or Purchasing Officer, Esteems' : 'e.g., Operations')}" value="${regType === 'hr' ? 'HR Admin' : ''}" required />
-                </div>
+                ${regType === 'officer' ? `
+                  <div class="form-group" style="margin-bottom:4px;">
+                    <label>Department / Role</label>
+                    <select id="newEmpDeptSelect" class="input-control" onchange="onOfficerDeptSelectChange()" required>
+                      ${Object.keys(DEPARTMENT_CONFIG || {})
+                        .filter((d) => d !== 'HR Admin')
+                        .map((d) => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`)
+                        .join('')}
+                      <option value="__NEW_DEPT__">+ Add New Department...</option>
+                    </select>
+                    <div id="newDeptHint" style="margin-top:4px; font-size:0.72rem; color:var(--text-muted);">
+                      Existing department — shares its Support Request section &amp; queue.
+                    </div>
+                  </div>
+                  <div id="newCustomDeptWrap" class="form-group" style="margin-bottom:4px; display:none;">
+                    <label>New Department Name &amp; Company Scope</label>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                      <input type="text" id="newEmpDept" class="input-control" style="flex:1; min-width:140px;" placeholder="e.g., IT Support / Logistics" />
+                      <select id="newEmpDeptScope" class="input-control" style="width:auto; min-width:130px;" onchange="onOfficerScopeChange()">
+                        <option value="BSII">BSII Only</option>
+                        <option value="Esteems">Esteems Only</option>
+                        <option value="Both">Both (Shared)</option>
+                      </select>
+                    </div>
+                    <div style="margin-top:4px; font-size:0.72rem; color:#0369a1;">
+                      Automatically creates a new Support Request section for the selected company.
+                    </div>
+                  </div>
+                ` : `
+                  <div class="form-group" style="margin-bottom:4px;">
+                    <label>Department / Role</label>
+                    <input type="text" id="newEmpDept" class="input-control" placeholder="${regType === 'hr' ? 'e.g., HR Admin' : 'e.g., Operations'}" value="${regType === 'hr' ? 'HR Admin' : ''}" required />
+                  </div>
+                `}
                 <div class="form-group" style="margin-bottom:4px;">
                   <label>Classification</label>
                   <select id="newEmpComp" class="input-control">
@@ -5429,13 +5472,80 @@
       });
     }
 
+    function onOfficerDeptSelectChange() {
+      const sel = document.getElementById('newEmpDeptSelect');
+      const wrap = document.getElementById('newCustomDeptWrap');
+      const customInput = document.getElementById('newEmpDept');
+      const hint = document.getElementById('newDeptHint');
+      const compSel = document.getElementById('newEmpComp');
+      if (!sel) return;
+      const val = sel.value;
+      if (val === '__NEW_DEPT__') {
+        if (wrap) wrap.style.display = 'block';
+        if (customInput) {
+          customInput.required = true;
+          customInput.focus();
+        }
+        if (hint) hint.textContent = 'Creates a new Support Request section visible to the selected company.';
+        onOfficerScopeChange();
+      } else {
+        if (wrap) wrap.style.display = 'none';
+        if (customInput) customInput.required = false;
+        if (hint) hint.textContent = 'Existing department — shares its Support Request section & queue.';
+        if (compSel) {
+          if (/\besteems\b/i.test(val)) {
+            const estOpt = Array.from(compSel.options).find((o) => /esteems/i.test(o.value));
+            if (estOpt) compSel.value = estOpt.value;
+          } else if (/\bbsii\b/i.test(val)) {
+            const bsiiOpt = Array.from(compSel.options).find((o) => /bsii/i.test(o.value));
+            if (bsiiOpt) compSel.value = bsiiOpt.value;
+          }
+        }
+      }
+    }
+
+    function onOfficerScopeChange() {
+      const scopeSel = document.getElementById('newEmpDeptScope');
+      const compSel = document.getElementById('newEmpComp');
+      if (!scopeSel || !compSel) return;
+      if (scopeSel.value === 'Esteems') {
+        const estOpt = Array.from(compSel.options).find((o) => /esteems/i.test(o.value));
+        if (estOpt) compSel.value = estOpt.value;
+      } else if (scopeSel.value === 'BSII') {
+        const bsiiOpt = Array.from(compSel.options).find((o) => /bsii/i.test(o.value));
+        if (bsiiOpt) compSel.value = bsiiOpt.value;
+      }
+    }
+
     async function createHrEmployee(e) {
       e.preventDefault();
       const regType = state.registerAccountType || 'employee';
       const isOfficer = regType === 'officer';
       const isHR = regType === 'hr';
       const isAdmin = isOfficer || isHR;
-      const deptVal = document.getElementById('newEmpDept').value.trim();
+      let deptVal = '';
+      if (isOfficer) {
+        const deptSel = document.getElementById('newEmpDeptSelect');
+        if (deptSel && deptSel.value !== '__NEW_DEPT__') {
+          deptVal = deptSel.value.trim();
+        } else {
+          const rawNew = (document.getElementById('newEmpDept')?.value || '').trim();
+          const scope = document.getElementById('newEmpDeptScope')?.value || 'BSII';
+          if (!rawNew) {
+            alert('Please enter a name for the new department.');
+            return;
+          }
+          if (scope === 'BSII' && !/\bbsii\b/i.test(rawNew)) {
+            deptVal = `${rawNew}, BSII`;
+          } else if (scope === 'Esteems' && !/\besteems\b/i.test(rawNew)) {
+            deptVal = `${rawNew}, Esteems`;
+          } else {
+            deptVal = rawNew;
+          }
+        }
+      } else {
+        deptVal = (document.getElementById('newEmpDept')?.value || '').trim();
+      }
       const payload = {
         id: document.getElementById('newEmpId').value,
         fullName: document.getElementById('newEmpFull').value,
@@ -5461,9 +5571,15 @@
       });
       const data = await res.json();
       if (res.ok) {
+        if (data.departmentConfig) {
+          DEPARTMENT_CONFIG = data.departmentConfig;
+        }
         state.registerAccountType = null;
         await refreshHrData();
-        renderHrAdminView(`Account ${data.employee.fullName} (ID: ${data.employee.id}) created.`);
+        const extraMsg = data.createdDepartmentSection
+          ? ` New Support Request section "${data.employee.department}" was automatically created.`
+          : '';
+        renderHrAdminView(`Account ${data.employee.fullName} (ID: ${data.employee.id}) created.${extraMsg}`);
       } else {
         alert(data.error || 'Could not create account.');
       }
