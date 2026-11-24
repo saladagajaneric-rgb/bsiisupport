@@ -2432,7 +2432,7 @@
           <div class="portal-type-grid">
             <button type="button" class="portal-option-card" onclick="selectLoginCategory('BSII Employee')">
               <div>
-                <h4>BSII Employee</h4>
+                <h4>Brightstar Employee</h4>
                 <p>Bright Star Industries Inc. Regular &amp; Departmental Personnel</p>
               </div>
               <span class="option-arrow">&rarr;</span>
@@ -2510,7 +2510,7 @@
         stepContent = `
           <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
             <span style="background:#f0f6ff; color:var(--navy-primary); font-weight:800; font-size:0.82rem; padding:4px 12px; border-radius:999px; border:1px solid #bfdbfe;">
-              Selected: ${escapeHtml(state.loginStepChoice)}
+              Selected: ${escapeHtml(state.loginStepChoice === 'BSII Employee' ? 'Brightstar Employee' : state.loginStepChoice)}
             </span>
             <button type="button" class="btn-secondary" style="padding:5px 12px; font-size:0.78rem;" onclick="selectLoginCategory(null)">
               &larr; Change Option
