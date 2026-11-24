@@ -2042,8 +2042,8 @@
           ]
         }
       },
-      'Purchasing Officer': {
-        subtitle: 'Internal Office Supplies & Operational Equipment Requests (Strictly for Office Supplies, not for trade).',
+      'Purchasing Officer, BSII': {
+        subtitle: 'BSII Internal Office Supplies & Operational Equipment Requests (Strictly for Office Supplies, not for trade).',
         categories: {
           'Item / Supply Request': [
             { name: 'Item Description (Office Supplies Only — Not For Trade)', type: 'text', placeholder: 'e.g., A4 Bond Paper, Printer Toner, Desk Staplers' },
@@ -2051,6 +2051,18 @@
             { name: 'Estimated Budget (PHP / ₱)', type: 'text', placeholder: 'e.g., ₱2,500.00' },
             { name: 'Urgency', type: 'select', options: ['Low (Next Monthly Cycle)', 'Standard (Within 7 Days)', 'Urgent (Within 48 Hours)', 'Critical (Same Day)'] },
             { name: 'Business Justification', type: 'textarea', placeholder: 'Explain how these office supplies support departmental operations...' }
+          ]
+        }
+      },
+      'Purchasing Officer, Esteems': {
+        subtitle: 'Esteems Internal Office Supplies & Operational Equipment Requests (Strictly for Office Supplies, not for trade).',
+        categories: {
+          'Item / Supply Request': [
+            { name: 'Item Description (Office Supplies Only — Not For Trade)', type: 'text', placeholder: 'e.g., A4 Bond Paper, Printer Toner, Desk Staplers' },
+            { name: 'Quantity', type: 'text', placeholder: 'e.g., 10 Reams / 4 Units' },
+            { name: 'Estimated Budget (PHP / ₱)', type: 'text', placeholder: 'e.g., ₱2,500.00' },
+            { name: 'Urgency', type: 'select', options: ['Low (Next Monthly Cycle)', 'Standard (Within 7 Days)', 'Urgent (Within 48 Hours)', 'Critical (Same Day)'] },
+            { name: 'Business Justification', type: 'textarea', placeholder: 'Explain how these office supplies support Esteems operations...' }
           ]
         }
       },
@@ -2074,8 +2086,36 @@
           ]
         }
       },
-      'Team Leader': {
-        subtitle: 'Accounting & Payroll of Employees, Overtime Approvals, Attendance Adjustments & Reimbursements.',
+      'Team Leader, BSII': {
+        subtitle: 'BSII Accounting & Payroll of Employees, Overtime Approvals, Attendance Adjustments & Reimbursements.',
+        categories: {
+          'Overtime Approval': [
+            { name: 'Date Rendered', type: 'date' },
+            { name: 'Hours Rendered', type: 'number', placeholder: 'e.g., 4' },
+            { name: 'Tasks Completed', type: 'textarea', placeholder: 'List specific deliverables completed during overtime...' }
+          ],
+          'Attendance Adjustment / Discrepancy': [
+            { name: 'Date of Discrepancy', type: 'date' },
+            { name: 'Biometric / Timekeeping Issue', type: 'select', options: ['Missed Time-In', 'Missed Time-Out', 'Missed Both Time-In & Time-Out', 'Biometric Scanner Offline', 'Official Field Assignment', 'Work From Home / Remote Log', 'Schedule / Shift Change'] },
+            { name: 'Supervisor Remarks', type: 'textarea', placeholder: 'Provide verification details or supervisor endorsement...' }
+          ],
+          'Reimbursement Pre-endorsement': [
+            { name: 'Expense Details', type: 'textarea', placeholder: 'Itemize planned or incurred operational expenses...' },
+            { name: 'Receipt Attachments Reference', type: 'text', placeholder: 'e.g., Official Receipt #10492 / Attached Scan filename' }
+          ],
+          'Expense Reimbursement': [
+            { name: 'Amount (PHP / ₱)', type: 'text', placeholder: 'e.g., ₱3,450.00' },
+            { name: 'Invoice / Receipt Attachments', type: 'text', placeholder: 'e.g., OR-88231 / Digital Receipt Link or Filename' },
+            { name: 'Disbursement Bank / Details', type: 'text', placeholder: 'e.g., BDO Payroll Account / GCash Corporate Disbursement' }
+          ],
+          'Payroll / Payslip Inquiry': [
+            { name: 'Pay Period', type: 'text', placeholder: 'e.g., November 1–15, 2026' },
+            { name: 'Inquiry Issues', type: 'textarea', placeholder: 'Describe your payroll or payslip question for Accounting & Payroll...' }
+          ]
+        }
+      },
+      'Team Leader, Esteems': {
+        subtitle: 'Esteems Accounting & Payroll of Employees, Overtime Approvals, Attendance Adjustments & Reimbursements.',
         categories: {
           'Overtime Approval': [
             { name: 'Date Rendered', type: 'date' },
@@ -2106,8 +2146,10 @@
 
     const CC_OPTIONS = [
       'HR Admin',
-      'Purchasing Officer',
-      'Team Leader',
+      'Purchasing Officer, BSII',
+      'Purchasing Officer, Esteems',
+      'Team Leader, BSII',
+      'Team Leader, Esteems',
       'Office of the Vice President, BSII',
       'Office of the Vice President, Esteems'
     ];
@@ -2580,14 +2622,39 @@
     /* ==========================================
        4. 3-STEP EMPLOYEE REQUEST SUBMISSION WIZARD
        ========================================== */
+    function isTeamLeaderDept(deptName) {
+      return deptName === 'Team Leader, BSII' || deptName === 'Team Leader, Esteems' || deptName === 'Team Leader';
+    }
+
     function isOwnDepartmentHiddenForCurrentUser(deptName) {
       if (!state.user) return false;
       const isHrUser = Boolean(state.user.isHR || state.user.department === 'HR Admin');
       return isHrUser && deptName === 'HR Admin';
     }
 
+    function isDepartmentAllowedForCurrentUser(deptName) {
+      if (!state.user) return true;
+      // Oncall personnel must ONLY contact HR Admin
+      if (state.user.type === 'oncall') {
+        return deptName === 'HR Admin';
+      }
+      if (isOwnDepartmentHiddenForCurrentUser(deptName)) return false;
+      // HR Admin / Master Admin / Moderator can reach all BSII & Esteems departments
+      if (state.user.isHR || state.user.isMasterAdmin || state.user.isModerator) {
+        return true;
+      }
+      // Automatic company routing: BSII employees only see BSII + shared HR; Esteems only see Esteems + shared HR
+      if (state.user.company === 'BSII Employee') {
+        return !/esteems/i.test(deptName);
+      }
+      if (state.user.company === 'Esteems Employee') {
+        return !/bsii/i.test(deptName);
+      }
+      return true;
+    }
+
     function getVisibleWizardDepartments() {
-      return Object.keys(DEPARTMENT_CONFIG).filter((d) => !isOwnDepartmentHiddenForCurrentUser(d));
+      return Object.keys(DEPARTMENT_CONFIG).filter((d) => isDepartmentAllowedForCurrentUser(d));
     }
 
     function syncDepartmentHandInHandDefaults(dept) {
@@ -2600,13 +2667,19 @@
       state.wizard.category = firstCategory;
       state.wizard.details = {};
 
+      if (state.user && state.user.type === 'oncall') {
+        state.wizard.ccDepartments = [];
+        state.wizard.colleagueEmail = '';
+        return;
+      }
+
       // Hand-in-Hand Logic:
-      // 1. Remove primary selected department and hidden self-department from CC list
+      // 1. Remove primary selected department and disallowed/hidden departments from CC list
       state.wizard.ccDepartments = state.wizard.ccDepartments.filter(
-        (d) => d !== dept && !isOwnDepartmentHiddenForCurrentUser(d)
+        (d) => d !== dept && isDepartmentAllowedForCurrentUser(d)
       );
-      // 2. If non-HR user selects Team Leader in Step 1, HR Admin CC chip is pre-checked by default
-      if (dept === 'Team Leader' && !isOwnDepartmentHiddenForCurrentUser('HR Admin') && !state.wizard.ccDepartments.includes('HR Admin')) {
+      // 2. If non-HR user selects a Team Leader in Step 1, HR Admin CC chip is pre-checked by default
+      if (isTeamLeaderDept(dept) && isDepartmentAllowedForCurrentUser('HR Admin') && !state.wizard.ccDepartments.includes('HR Admin')) {
         state.wizard.ccDepartments.push('HR Admin');
       }
     }
@@ -2634,10 +2707,17 @@
           `;
         }).join('');
 
+        const isOncallUser = state.user && state.user.type === 'oncall';
+        const step1Subtitle = isOncallUser
+          ? 'Oncall personnel can only contact <strong>HR Admin</strong> directly.'
+          : (state.user && !state.user.isHR && !state.user.isMasterAdmin && !state.user.isModerator && (state.user.company === 'BSII Employee' || state.user.company === 'Esteems Employee'))
+            ? `Showing departments automatically routed for <strong>${escapeHtml(state.user.company)}</strong> plus shared <strong>HR Admin</strong>.`
+            : 'Choose the primary Bright Star Industries Inc. / Esteems department that will handle your internal request.';
+
         stepBodyHtml = `
           <h3 style="color:var(--navy-primary); font-size:1.25rem; margin-bottom:6px;">Step 1: Select Target Department</h3>
           <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:20px;">
-            Choose the primary Bright Star Industries Inc. department that will handle your internal request.
+            ${step1Subtitle}
           </p>
           <div class="dept-grid">${cardsHtml}</div>
           <div style="display:flex; justify-content:flex-end;">
@@ -2757,9 +2837,14 @@
           </div>
         `;
       } else if (w.step === 3) {
-        // Ensure primary department chip and hidden HR self-chip are excluded
-        const visibleCcOptions = CC_OPTIONS.filter((d) => d !== w.department && !isOwnDepartmentHiddenForCurrentUser(d));
-        const activeCcList = w.ccDepartments.filter((d) => d !== w.department && !isOwnDepartmentHiddenForCurrentUser(d));
+        const isOncallUser = state.user && state.user.type === 'oncall';
+        // Ensure primary department chip and disallowed departments are excluded
+        const visibleCcOptions = isOncallUser
+          ? []
+          : getVisibleWizardDepartments().filter((d) => d !== w.department);
+        const activeCcList = isOncallUser
+          ? []
+          : w.ccDepartments.filter((d) => d !== w.department && visibleCcOptions.includes(d));
         const selectedCount = activeCcList.length;
         const badgeLabel = selectedCount > 0 ? `${selectedCount} Selected` : 'None (Direct Only)';
 
@@ -2802,23 +2887,29 @@
             </div>
           </div>
 
-          <div style="border:1px solid var(--border-subtle); border-radius:10px; padding:20px; margin-bottom:22px;">
-            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
-              <h4 style="color:var(--navy-primary); font-size:1rem;">Keep in the Loop (CC Department Officers)</h4>
-              <span class="cc-count-badge">${escapeHtml(badgeLabel)}</span>
+          ${isOncallUser ? `
+            <div style="border:1px solid #bfdbfe; background:#eff6ff; border-radius:10px; padding:16px 20px; margin-bottom:22px; color:#1e3a8a; font-size:0.88rem;">
+              <strong>Direct to HR Admin Only:</strong> Oncall personnel requests are routed exclusively to <strong>HR Admin</strong>.
             </div>
-            ${w.department === 'Team Leader' && !isOwnDepartmentHiddenForCurrentUser('HR Admin') ? `
-              <p style="font-size:0.82rem; color:var(--navy-primary); margin-top:6px; background:#f0f6ff; padding:8px 12px; border-radius:6px;">
-                <strong>Hand-in-Hand Policy Active:</strong> Because Team Leader is selected as your primary department, <strong>HR Admin</strong> is pre-checked by default so HR and Team Leader co-manage your request together.
-              </p>
-            ` : ''}
-            <div class="cc-chips-wrap">${chipsHtml}</div>
+          ` : `
+            <div style="border:1px solid var(--border-subtle); border-radius:10px; padding:20px; margin-bottom:22px;">
+              <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+                <h4 style="color:var(--navy-primary); font-size:1rem;">Keep in the Loop (CC Department Officers)</h4>
+                <span class="cc-count-badge">${escapeHtml(badgeLabel)}</span>
+              </div>
+              ${isTeamLeaderDept(w.department) && isDepartmentAllowedForCurrentUser('HR Admin') ? `
+                <p style="font-size:0.82rem; color:var(--navy-primary); margin-top:6px; background:#f0f6ff; padding:8px 12px; border-radius:6px;">
+                  <strong>Hand-in-Hand Policy Active:</strong> Because ${escapeHtml(w.department)} is selected as your primary department, <strong>HR Admin</strong> is pre-checked by default so HR and your Team Leader co-manage your request together.
+                </p>
+              ` : ''}
+              <div class="cc-chips-wrap">${chipsHtml}</div>
 
-            <div class="form-group" style="margin-bottom:0;">
-              <label>Other Colleague / Supervisor Email <span class="label-hint">(Optional)</span></label>
-              <input type="email" id="colleagueEmailInput" class="input-control" placeholder="e.g., colleague@bsii.com.ph" value="${escapeHtml(w.colleagueEmail)}" oninput="state.wizard.colleagueEmail = this.value" />
+              <div class="form-group" style="margin-bottom:0;">
+                <label>Other Colleague / Supervisor Email <span class="label-hint">(Optional)</span></label>
+                <input type="email" id="colleagueEmailInput" class="input-control" placeholder="e.g., colleague@bsii.com.ph" value="${escapeHtml(w.colleagueEmail)}" oninput="state.wizard.colleagueEmail = this.value" />
+              </div>
             </div>
-          </div>
+          `}
 
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
             <button type="button" class="btn-secondary" onclick="goWizardStep(2)">&larr; Back to Step 2</button>
@@ -4123,7 +4214,7 @@
                 ` : ''}
                 <div class="form-group" style="margin-bottom:4px;">
                   <label>Department / Role</label>
-                  <input type="text" id="newEmpDept" class="input-control" placeholder="${regType === 'hr' ? 'e.g., HR Admin' : (regType === 'officer' ? 'e.g., Purchasing Officer' : 'e.g., Operations')}" value="${regType === 'hr' ? 'HR Admin' : ''}" required />
+                  <input type="text" id="newEmpDept" class="input-control" placeholder="${regType === 'hr' ? 'e.g., HR Admin' : (regType === 'officer' ? 'e.g., Team Leader, BSII or Purchasing Officer, Esteems' : 'e.g., Operations')}" value="${regType === 'hr' ? 'HR Admin' : ''}" required />
                 </div>
                 <div class="form-group" style="margin-bottom:4px;">
                   <label>Classification</label>
@@ -5913,7 +6004,9 @@
         }
         renderHeaderAndNav();
         renderCurrentRoute();
-        renderCurrentRoute();
+        setTimeout(() => {
+          closeProfileModal();
+        }, 1200);
       } else {
         document.getElementById('profileModalAlert').innerHTML = `
           <div class="alert-box" style="background:#fef2f2; color:#991b1b; border-color:#fecaca;">${escapeHtml(data.error || 'Could not update account.')}</div>

@@ -1,16 +1,18 @@
 {
-  "_lastSavedTs": 1795229447194,
+  "_lastSavedTs": 1795493264396,
   "settings": {
     "globalCcEmail": "admin.brightstar@gmail.com",
     "globalCcEnabled": false,
     "seasonalRoleNote": "Team Leader currently acts as Accounting & Payroll Officer (editable per season).",
     "departmentEmails": {
       "HR Admin": "hr@bsii.com.ph",
-      "Purchasing Officer": "purchasing@bsii.com.ph",
       "Office of the Vice President, BSII": "vp.bsii@bsii.com.ph",
       "Office of the Vice President, Esteems": "vp.esteems@bsii.com.ph",
-      "Team Leader": "accounting@bsii.com.ph",
-      "Accounting & Payroll": "accounting@bsii.com.ph"
+      "Accounting & Payroll": "accounting@bsii.com.ph",
+      "Purchasing Officer, BSII": "purchasing@bsii.com.ph",
+      "Purchasing Officer, Esteems": "purchasing.esteems@esteems.com.ph",
+      "Team Leader, BSII": "accounting@bsii.com.ph",
+      "Team Leader, Esteems": "teamlead.esteems@esteems.com.ph"
     },
     "classifications": [
       "Esteems Employee",
@@ -43,8 +45,8 @@
       "adminPassword": "TeamLead!2026",
       "fullName": "Elena Santos",
       "company": "BSII Employee",
-      "role": "Team Leader & Accounting Officer",
-      "department": "Team Leader",
+      "role": "Team Leader, BSII & Accounting Officer",
+      "department": "Team Leader, BSII",
       "secondaryDepartments": [
         "Accounting & Payroll"
       ],
@@ -64,8 +66,8 @@
       "adminPassword": "Purchaser!2026",
       "fullName": "Marco Reyes",
       "company": "BSII Employee",
-      "role": "Purchasing Officer",
-      "department": "Purchasing Officer",
+      "role": "Purchasing Officer, BSII",
+      "department": "Purchasing Officer, BSII",
       "isStaff": true,
       "isHR": false,
       "isMasterAdmin": false,
@@ -161,6 +163,45 @@
       "email": "moderator@bsii.com.ph",
       "mobile": "0917-000-0001",
       "updatedAt": "2026-11-21T02:50:47.193Z"
+    },
+    {
+      "id": "200003",
+      "lastName": "MENDOZA",
+      "adminUsername": "esteems.teamlead",
+      "adminPassword": "EsteemsLead!2026",
+      "fullName": "Carla Mendoza",
+      "company": "Esteems Employee",
+      "role": "Team Leader, Esteems & Accounting Officer",
+      "department": "Team Leader, Esteems",
+      "secondaryDepartments": [
+        "Accounting & Payroll"
+      ],
+      "isStaff": true,
+      "isHR": false,
+      "isMasterAdmin": false,
+      "email": "teamlead.esteems@esteems.com.ph",
+      "mobile": "0917-200-0003",
+      "updatedAt": "2026-11-01T08:00:00.000Z",
+      "needsProfileSync": true,
+      "hasCompletedFirstSelfUpdate": false
+    },
+    {
+      "id": "300004",
+      "lastName": "VILLANUEVA",
+      "adminUsername": "esteems.purchasing",
+      "adminPassword": "EsteemsPurch!2026",
+      "fullName": "Paolo Villanueva",
+      "company": "Esteems Employee",
+      "role": "Purchasing Officer, Esteems",
+      "department": "Purchasing Officer, Esteems",
+      "isStaff": true,
+      "isHR": false,
+      "isMasterAdmin": false,
+      "email": "purchasing.esteems@esteems.com.ph",
+      "mobile": "0917-300-0004",
+      "updatedAt": "2026-11-01T08:00:00.000Z",
+      "needsProfileSync": true,
+      "hasCompletedFirstSelfUpdate": false
     }
   ],
   "requests": [],
@@ -404,203 +445,6 @@
             "type": "textarea",
             "required": true,
             "placeholder": "Describe your HR Admin request..."
-          }
-        ]
-      }
-    },
-    "Purchasing Officer": {
-      "subtitle": "Office Supplies, Pantry/Cleaning, Equipment Notices, Furniture, Borrowing & Uniforms (Office use only, not trade).",
-      "categories": {
-        "Item / Supply Request": [
-          {
-            "name": "Item Description (Office Supplies Only — Not For Trade)",
-            "type": "text",
-            "placeholder": "e.g., A4 Bond Paper, Pens, Folders, Printer Ink"
-          },
-          {
-            "name": "Quantity",
-            "type": "text",
-            "placeholder": "e.g., 10 Reams / 4 Units"
-          },
-          {
-            "name": "Estimated Budget (PHP / ₱)",
-            "type": "text",
-            "placeholder": "e.g., ₱2,500.00"
-          },
-          {
-            "name": "Urgency",
-            "type": "select",
-            "options": [
-              "Low (Next Monthly Cycle)",
-              "Standard (Within 7 Days)",
-              "Urgent (Within 48 Hours)",
-              "Critical (Same Day)"
-            ]
-          },
-          {
-            "name": "Business Justification",
-            "type": "textarea",
-            "placeholder": "Explain how these office supplies support departmental operations..."
-          }
-        ],
-        "Purchase Reimbursements": [
-          {
-            "name": "Item(s) Purchased (Office Use Only)",
-            "type": "text",
-            "required": true,
-            "placeholder": "e.g., Emergency bond paper, HDMI cable"
-          },
-          {
-            "name": "Amount (PHP / ₱)",
-            "type": "text",
-            "required": true,
-            "placeholder": "e.g., ₱1,200.00"
-          },
-          {
-            "name": "Receipt / OR Reference",
-            "type": "text",
-            "placeholder": "e.g., OR-55412"
-          },
-          {
-            "name": "Justification",
-            "type": "textarea",
-            "placeholder": "Reason for direct office purchase..."
-          }
-        ],
-        "Pantry & Cleaning Supplies": [
-          {
-            "name": "Supply Category",
-            "type": "select",
-            "options": [
-              "Pantry Consumables (Coffee, Water, Cups)",
-              "Cleaning & Sanitation Supplies",
-              "Restroom Supplies"
-            ]
-          },
-          {
-            "name": "Items & Quantity",
-            "type": "textarea",
-            "required": true,
-            "placeholder": "List items and quantities needed..."
-          },
-          {
-            "name": "Urgency",
-            "type": "select",
-            "options": [
-              "Low",
-              "Standard",
-              "Urgent"
-            ]
-          }
-        ],
-        "Office Equipment Notice": [
-          {
-            "name": "Equipment / Asset",
-            "type": "text",
-            "required": true,
-            "placeholder": "e.g., 2nd Floor Printer, Scanner, Shredder"
-          },
-          {
-            "name": "Location",
-            "type": "text",
-            "placeholder": "e.g., Accounting Area / Reception"
-          },
-          {
-            "name": "Issue / Notice",
-            "type": "textarea",
-            "required": true,
-            "placeholder": "Describe the issue (e.g., broken printer, paper jam, offline)..."
-          }
-        ],
-        "Furniture Purchases": [
-          {
-            "name": "Furniture Type",
-            "type": "select",
-            "options": [
-              "Office Chair",
-              "Desk / Workstation",
-              "Filing Cabinet / Storage",
-              "Meeting Table",
-              "Other Office Furniture"
-            ]
-          },
-          {
-            "name": "Quantity & Specifications",
-            "type": "textarea",
-            "required": true,
-            "placeholder": "Specify quantity, dimensions, or model..."
-          },
-          {
-            "name": "Business Justification",
-            "type": "textarea",
-            "placeholder": "Explain operational need..."
-          }
-        ],
-        "Equipment Borrowing": [
-          {
-            "name": "Equipment Needed",
-            "type": "text",
-            "required": true,
-            "placeholder": "e.g., Laptop, Projector, Extension Cord"
-          },
-          {
-            "name": "Borrow Date",
-            "type": "date",
-            "required": true
-          },
-          {
-            "name": "Return Date",
-            "type": "date",
-            "required": true
-          },
-          {
-            "name": "Purpose",
-            "type": "textarea",
-            "placeholder": "Meeting, event, or field task..."
-          }
-        ],
-        "Uniform Requests": [
-          {
-            "name": "Request Type",
-            "type": "select",
-            "options": [
-              "New Hire Uniform",
-              "Replacement Uniform",
-              "Additional Set"
-            ]
-          },
-          {
-            "name": "Size & Quantity",
-            "type": "text",
-            "required": true,
-            "placeholder": "e.g., Medium - 2 pcs"
-          },
-          {
-            "name": "Notes",
-            "type": "textarea",
-            "placeholder": "Department or color/cut notes..."
-          }
-        ],
-        "Other / Not Listed": [
-          {
-            "name": "Confirm Category",
-            "type": "checkbox",
-            "required": true,
-            "options": [
-              "My request is not listed above (Specify below)"
-            ]
-          },
-          {
-            "name": "Requested Category Name",
-            "type": "text",
-            "required": true,
-            "placeholder": "e.g., Name of the category you were looking for"
-          },
-          {
-            "name": "Request Details",
-            "type": "textarea",
-            "required": true,
-            "placeholder": "Describe your Purchasing request..."
           }
         ]
       }
@@ -998,7 +842,617 @@
         ]
       }
     },
-    "Team Leader": {
+    "Purchasing Officer, BSII": {
+      "subtitle": "Office Supplies, Pantry/Cleaning, Equipment Notices, Furniture, Borrowing & Uniforms (Office use only, not trade).",
+      "categories": {
+        "Item / Supply Request": [
+          {
+            "name": "Item Description (Office Supplies Only — Not For Trade)",
+            "type": "text",
+            "placeholder": "e.g., A4 Bond Paper, Pens, Folders, Printer Ink"
+          },
+          {
+            "name": "Quantity",
+            "type": "text",
+            "placeholder": "e.g., 10 Reams / 4 Units"
+          },
+          {
+            "name": "Estimated Budget (PHP / ₱)",
+            "type": "text",
+            "placeholder": "e.g., ₱2,500.00"
+          },
+          {
+            "name": "Urgency",
+            "type": "select",
+            "options": [
+              "Low (Next Monthly Cycle)",
+              "Standard (Within 7 Days)",
+              "Urgent (Within 48 Hours)",
+              "Critical (Same Day)"
+            ]
+          },
+          {
+            "name": "Business Justification",
+            "type": "textarea",
+            "placeholder": "Explain how these office supplies support departmental operations..."
+          }
+        ],
+        "Purchase Reimbursements": [
+          {
+            "name": "Item(s) Purchased (Office Use Only)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Emergency bond paper, HDMI cable"
+          },
+          {
+            "name": "Amount (PHP / ₱)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., ₱1,200.00"
+          },
+          {
+            "name": "Receipt / OR Reference",
+            "type": "text",
+            "placeholder": "e.g., OR-55412"
+          },
+          {
+            "name": "Justification",
+            "type": "textarea",
+            "placeholder": "Reason for direct office purchase..."
+          }
+        ],
+        "Pantry & Cleaning Supplies": [
+          {
+            "name": "Supply Category",
+            "type": "select",
+            "options": [
+              "Pantry Consumables (Coffee, Water, Cups)",
+              "Cleaning & Sanitation Supplies",
+              "Restroom Supplies"
+            ]
+          },
+          {
+            "name": "Items & Quantity",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "List items and quantities needed..."
+          },
+          {
+            "name": "Urgency",
+            "type": "select",
+            "options": [
+              "Low",
+              "Standard",
+              "Urgent"
+            ]
+          }
+        ],
+        "Office Equipment Notice": [
+          {
+            "name": "Equipment / Asset",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., 2nd Floor Printer, Scanner, Shredder"
+          },
+          {
+            "name": "Location",
+            "type": "text",
+            "placeholder": "e.g., Accounting Area / Reception"
+          },
+          {
+            "name": "Issue / Notice",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe the issue (e.g., broken printer, paper jam, offline)..."
+          }
+        ],
+        "Furniture Purchases": [
+          {
+            "name": "Furniture Type",
+            "type": "select",
+            "options": [
+              "Office Chair",
+              "Desk / Workstation",
+              "Filing Cabinet / Storage",
+              "Meeting Table",
+              "Other Office Furniture"
+            ]
+          },
+          {
+            "name": "Quantity & Specifications",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Specify quantity, dimensions, or model..."
+          },
+          {
+            "name": "Business Justification",
+            "type": "textarea",
+            "placeholder": "Explain operational need..."
+          }
+        ],
+        "Equipment Borrowing": [
+          {
+            "name": "Equipment Needed",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Laptop, Projector, Extension Cord"
+          },
+          {
+            "name": "Borrow Date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "Return Date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "Purpose",
+            "type": "textarea",
+            "placeholder": "Meeting, event, or field task..."
+          }
+        ],
+        "Uniform Requests": [
+          {
+            "name": "Request Type",
+            "type": "select",
+            "options": [
+              "New Hire Uniform",
+              "Replacement Uniform",
+              "Additional Set"
+            ]
+          },
+          {
+            "name": "Size & Quantity",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Medium - 2 pcs"
+          },
+          {
+            "name": "Notes",
+            "type": "textarea",
+            "placeholder": "Department or color/cut notes..."
+          }
+        ],
+        "Other / Not Listed": [
+          {
+            "name": "Confirm Category",
+            "type": "checkbox",
+            "required": true,
+            "options": [
+              "My request is not listed above (Specify below)"
+            ]
+          },
+          {
+            "name": "Requested Category Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Name of the category you were looking for"
+          },
+          {
+            "name": "Request Details",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe your Purchasing request..."
+          }
+        ]
+      }
+    },
+    "Purchasing Officer, Esteems": {
+      "subtitle": "Office Supplies, Pantry/Cleaning, Equipment Notices, Furniture, Borrowing & Uniforms (Office use only, not trade).",
+      "categories": {
+        "Item / Supply Request": [
+          {
+            "name": "Item Description (Office Supplies Only — Not For Trade)",
+            "type": "text",
+            "placeholder": "e.g., A4 Bond Paper, Pens, Folders, Printer Ink"
+          },
+          {
+            "name": "Quantity",
+            "type": "text",
+            "placeholder": "e.g., 10 Reams / 4 Units"
+          },
+          {
+            "name": "Estimated Budget (PHP / ₱)",
+            "type": "text",
+            "placeholder": "e.g., ₱2,500.00"
+          },
+          {
+            "name": "Urgency",
+            "type": "select",
+            "options": [
+              "Low (Next Monthly Cycle)",
+              "Standard (Within 7 Days)",
+              "Urgent (Within 48 Hours)",
+              "Critical (Same Day)"
+            ]
+          },
+          {
+            "name": "Business Justification",
+            "type": "textarea",
+            "placeholder": "Explain how these office supplies support departmental operations..."
+          }
+        ],
+        "Purchase Reimbursements": [
+          {
+            "name": "Item(s) Purchased (Office Use Only)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Emergency bond paper, HDMI cable"
+          },
+          {
+            "name": "Amount (PHP / ₱)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., ₱1,200.00"
+          },
+          {
+            "name": "Receipt / OR Reference",
+            "type": "text",
+            "placeholder": "e.g., OR-55412"
+          },
+          {
+            "name": "Justification",
+            "type": "textarea",
+            "placeholder": "Reason for direct office purchase..."
+          }
+        ],
+        "Pantry & Cleaning Supplies": [
+          {
+            "name": "Supply Category",
+            "type": "select",
+            "options": [
+              "Pantry Consumables (Coffee, Water, Cups)",
+              "Cleaning & Sanitation Supplies",
+              "Restroom Supplies"
+            ]
+          },
+          {
+            "name": "Items & Quantity",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "List items and quantities needed..."
+          },
+          {
+            "name": "Urgency",
+            "type": "select",
+            "options": [
+              "Low",
+              "Standard",
+              "Urgent"
+            ]
+          }
+        ],
+        "Office Equipment Notice": [
+          {
+            "name": "Equipment / Asset",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., 2nd Floor Printer, Scanner, Shredder"
+          },
+          {
+            "name": "Location",
+            "type": "text",
+            "placeholder": "e.g., Accounting Area / Reception"
+          },
+          {
+            "name": "Issue / Notice",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe the issue (e.g., broken printer, paper jam, offline)..."
+          }
+        ],
+        "Furniture Purchases": [
+          {
+            "name": "Furniture Type",
+            "type": "select",
+            "options": [
+              "Office Chair",
+              "Desk / Workstation",
+              "Filing Cabinet / Storage",
+              "Meeting Table",
+              "Other Office Furniture"
+            ]
+          },
+          {
+            "name": "Quantity & Specifications",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Specify quantity, dimensions, or model..."
+          },
+          {
+            "name": "Business Justification",
+            "type": "textarea",
+            "placeholder": "Explain operational need..."
+          }
+        ],
+        "Equipment Borrowing": [
+          {
+            "name": "Equipment Needed",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Laptop, Projector, Extension Cord"
+          },
+          {
+            "name": "Borrow Date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "Return Date",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "Purpose",
+            "type": "textarea",
+            "placeholder": "Meeting, event, or field task..."
+          }
+        ],
+        "Uniform Requests": [
+          {
+            "name": "Request Type",
+            "type": "select",
+            "options": [
+              "New Hire Uniform",
+              "Replacement Uniform",
+              "Additional Set"
+            ]
+          },
+          {
+            "name": "Size & Quantity",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Medium - 2 pcs"
+          },
+          {
+            "name": "Notes",
+            "type": "textarea",
+            "placeholder": "Department or color/cut notes..."
+          }
+        ],
+        "Other / Not Listed": [
+          {
+            "name": "Confirm Category",
+            "type": "checkbox",
+            "required": true,
+            "options": [
+              "My request is not listed above (Specify below)"
+            ]
+          },
+          {
+            "name": "Requested Category Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Name of the category you were looking for"
+          },
+          {
+            "name": "Request Details",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe your Purchasing request..."
+          }
+        ]
+      }
+    },
+    "Team Leader, BSII": {
+      "subtitle": "Payroll/Payslips, Overtime, Attendance Adjustments, Reimbursements, Cash Advance, Salary Loans & Schedules.",
+      "categories": {
+        "Overtime Approval": [
+          {
+            "name": "Date Rendered",
+            "type": "date"
+          },
+          {
+            "name": "Hours Rendered",
+            "type": "number",
+            "placeholder": "e.g., 4"
+          },
+          {
+            "name": "Tasks Completed",
+            "type": "textarea",
+            "placeholder": "List specific deliverables completed during overtime..."
+          }
+        ],
+        "Attendance Adjustment / Discrepancy": [
+          {
+            "name": "Date of Discrepancy",
+            "type": "date"
+          },
+          {
+            "name": "Biometric / Timekeeping Issue",
+            "type": "select",
+            "options": [
+              "Missed Time-In",
+              "Missed Time-Out",
+              "Missed Both Time-In & Time-Out",
+              "Late / Undertime Correction",
+              "Biometric Scanner Offline",
+              "Official Field Assignment",
+              "Work From Home / Remote Log",
+              "Schedule / Shift Change"
+            ]
+          },
+          {
+            "name": "Supervisor Remarks",
+            "type": "textarea",
+            "placeholder": "Provide verification details or supervisor endorsement..."
+          }
+        ],
+        "Reimbursement Pre-endorsement": [
+          {
+            "name": "Expense Details",
+            "type": "textarea",
+            "placeholder": "Itemize planned or incurred operational expenses..."
+          },
+          {
+            "name": "Receipt Attachments Reference",
+            "type": "text",
+            "placeholder": "e.g., Official Receipt #10492 / Attached Scan filename"
+          }
+        ],
+        "Expense Reimbursement": [
+          {
+            "name": "Expense Category",
+            "type": "select",
+            "options": [
+              "Transportation",
+              "Meals",
+              "Client Expenses",
+              "Operational Supplies",
+              "Other Work Expense"
+            ]
+          },
+          {
+            "name": "Amount (PHP / ₱)",
+            "type": "text",
+            "placeholder": "e.g., ₱3,450.00"
+          },
+          {
+            "name": "Invoice / Receipt Attachments",
+            "type": "text",
+            "placeholder": "e.g., OR-88231 / Digital Receipt Link or Filename"
+          },
+          {
+            "name": "Disbursement Bank / Details",
+            "type": "text",
+            "placeholder": "e.g., BDO Payroll Account / GCash Corporate Disbursement"
+          }
+        ],
+        "Payroll / Payslip Inquiry": [
+          {
+            "name": "Inquiry Type",
+            "type": "select",
+            "options": [
+              "Payslip Request",
+              "Payroll Discrepancy",
+              "Tax / Deduction Inquiry",
+              "13th Month / Bonus Inquiry"
+            ]
+          },
+          {
+            "name": "Pay Period",
+            "type": "text",
+            "placeholder": "e.g., November 1–15, 2026"
+          },
+          {
+            "name": "Inquiry Issues",
+            "type": "textarea",
+            "placeholder": "Describe your payroll or payslip question for Accounting & Payroll..."
+          }
+        ],
+        "Cash Advance Requests": [
+          {
+            "name": "Amount Requested (PHP / ₱)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., ₱5,000.00"
+          },
+          {
+            "name": "Purpose",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Explain purpose of cash advance..."
+          },
+          {
+            "name": "Repayment / Liquidation Schedule",
+            "type": "text",
+            "placeholder": "e.g., Next payroll / upon receipt liquidation"
+          }
+        ],
+        "Salary Loan Requests": [
+          {
+            "name": "Loan Amount (PHP / ₱)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., ₱10,000.00"
+          },
+          {
+            "name": "Preferred Term",
+            "type": "select",
+            "options": [
+              "3 Months",
+              "6 Months",
+              "12 Months"
+            ]
+          },
+          {
+            "name": "Reason / Notes",
+            "type": "textarea",
+            "placeholder": "Brief reason for salary loan request..."
+          }
+        ],
+        "Schedule Changes & Shift Swaps": [
+          {
+            "name": "Change Type",
+            "type": "select",
+            "options": [
+              "Shift Swap",
+              "Schedule Adjustment",
+              "Rest Day Offset"
+            ]
+          },
+          {
+            "name": "Affected Date(s)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Nov 20–21, 2026"
+          },
+          {
+            "name": "Details / Swap Partner",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Specify new hours or coworker agreeing to swap..."
+          }
+        ],
+        "Work-From-Home / Off-Site Requests": [
+          {
+            "name": "Setup Type",
+            "type": "select",
+            "options": [
+              "Work From Home (WFH)",
+              "Off-Site / Field Work"
+            ]
+          },
+          {
+            "name": "Date(s)",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Nov 22, 2026"
+          },
+          {
+            "name": "Deliverables / Reason",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Planned deliverables and reason..."
+          }
+        ],
+        "Other / Not Listed": [
+          {
+            "name": "Confirm Category",
+            "type": "checkbox",
+            "required": true,
+            "options": [
+              "My request is not listed above (Specify below)"
+            ]
+          },
+          {
+            "name": "Requested Category Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g., Name of the category you were looking for"
+          },
+          {
+            "name": "Request Details",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "Describe your request for Team Leader / Accounting..."
+          }
+        ]
+      }
+    },
+    "Team Leader, Esteems": {
       "subtitle": "Payroll/Payslips, Overtime, Attendance Adjustments, Reimbursements, Cash Advance, Salary Loans & Schedules.",
       "categories": {
         "Overtime Approval": [
@@ -1215,7 +1669,52 @@
       }
     }
   },
-  "emailDispatchLog": [],
+  "emailDispatchLog": [
+    {
+      "id": "DISP-1795493264393-130",
+      "requestId": "REQ-2026-8423",
+      "to": [
+        "hr@bsii.com.ph",
+        "hr.admin@bsii.com.ph",
+        "moderator@bsii.com.ph"
+      ],
+      "subject": "[BSIISUPPORT REQ-2026-8423] HR Admin — Leave Request (Test Oncall)",
+      "body": "A new support request related to your department/role was submitted.\n\nRequest ID: REQ-2026-8423\nDate & Time Sent: Nov 24, 2026, 12:07 PM\nDepartment: HR Admin\nCategory: Leave Request\nStatus: Submitted / Pending Officer Review\nPriority: Standard\n\nSubmitted By: Test Oncall (ID: ONCALL-2311, Oncall Personnel)\nSubmitter Email: N/A\nSubmitter Mobile: 0917-000-1111\n\nRequest Details:\n- (No extra form fields)",
+      "deliveryStatus": "Failed: hr@bsii.com.ph: getaddrinfo ENOTFOUND formsubmit.co; hr.admin@bsii.com.ph: getaddrinfo ENOTFOUND formsubmit.co; moderator@bsii.com.ph: getaddrinfo ENOTFOUND formsubmit.co",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-24T04:07:44.393Z"
+    },
+    {
+      "id": "DISP-1795493264370-669",
+      "requestId": "REQ-2026-3317",
+      "to": [
+        "purchasing.esteems@esteems.com.ph",
+        "hr@bsii.com.ph",
+        "hr.admin@bsii.com.ph",
+        "moderator@bsii.com.ph"
+      ],
+      "subject": "[BSIISUPPORT REQ-2026-3317] Purchasing Officer, Esteems — Item / Supply Request (Maria Clara Cruz)",
+      "body": "A new support request related to your department/role was submitted.\n\nRequest ID: REQ-2026-3317\nDate & Time Sent: Nov 24, 2026, 12:07 PM\nDepartment: Purchasing Officer, Esteems\nCategory: Item / Supply Request\nStatus: Submitted / Pending Officer Review\nPriority: Standard\n\nSubmitted By: Maria Clara Cruz (ID: 888888, Esteems Employee)\nSubmitter Email: maria.cruz@esteems.com.ph\nSubmitter Mobile: 0918-888-8888\nCC Departments: HR Admin\n\nRequest Details:\n- (No extra form fields)",
+      "deliveryStatus": "Failed: purchasing.esteems@esteems.com.ph: getaddrinfo ENOTFOUND formsubmit.co; hr@bsii.com.ph: getaddrinfo ENOTFOUND formsubmit.co; hr.admin@bsii.com.ph: getaddrinfo ENOTFOUND formsubmit.co; moderator@bsii.com.ph: getaddrinfo ENOTFOUND formsubmit.co",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-24T04:07:44.370Z"
+    },
+    {
+      "id": "DISP-1795493264342-949",
+      "requestId": "REQ-2026-4651",
+      "to": [
+        "accounting@bsii.com.ph",
+        "hr@bsii.com.ph",
+        "hr.admin@bsii.com.ph",
+        "moderator@bsii.com.ph"
+      ],
+      "subject": "[BSIISUPPORT REQ-2026-4651] Team Leader, BSII — Overtime Approval (Juan Dela Cruz)",
+      "body": "A new support request related to your department/role was submitted.\n\nRequest ID: REQ-2026-4651\nDate & Time Sent: Nov 24, 2026, 12:07 PM\nDepartment: Team Leader, BSII\nCategory: Overtime Approval\nStatus: Submitted / Pending Officer Review\nPriority: Standard\n\nSubmitted By: Juan Dela Cruz (ID: 676767, BSII Employee)\nSubmitter Email: juan.delacruz@bsii.com.ph\nSubmitter Mobile: 0917-676-7676\nCC Departments: HR Admin\n\nRequest Details:\n- (No extra form fields)",
+      "deliveryStatus": "Failed: accounting@bsii.com.ph: getaddrinfo ENOTFOUND formsubmit.co; hr@bsii.com.ph: getaddrinfo ENOTFOUND formsubmit.co; hr.admin@bsii.com.ph: getaddrinfo ENOTFOUND formsubmit.co; moderator@bsii.com.ph: getaddrinfo ENOTFOUND formsubmit.co",
+      "sentViaLiveEmail": false,
+      "sentAt": "2026-11-24T04:07:44.342Z"
+    }
+  ],
   "pendingEmailVerifications": {},
   "hrMessages": []
 }

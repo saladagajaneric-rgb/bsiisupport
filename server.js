@@ -36,10 +36,12 @@ const DEFAULT_DATA = {
     classifications: ['BSII Employee', 'Esteems Employee'],
     departmentEmails: {
       'HR Admin': 'hr@bsii.com.ph',
-      'Purchasing Officer': 'purchasing@bsii.com.ph',
+      'Purchasing Officer, BSII': 'purchasing.bsii@bsii.com.ph',
+      'Purchasing Officer, Esteems': 'purchasing.esteems@esteems.com.ph',
       'Office of the Vice President, BSII': 'vp.bsii@bsii.com.ph',
       'Office of the Vice President, Esteems': 'vp.esteems@bsii.com.ph',
-      'Team Leader': 'accounting@bsii.com.ph',
+      'Team Leader, BSII': 'teamlead.bsii@bsii.com.ph',
+      'Team Leader, Esteems': 'teamlead.esteems@esteems.com.ph',
       'Accounting & Payroll': 'accounting@bsii.com.ph'
     }
   },
@@ -67,14 +69,31 @@ const DEFAULT_DATA = {
       adminPassword: 'TeamLead!2026',
       fullName: 'Elena Santos',
       company: 'BSII Employee',
-      role: 'Team Leader & Accounting Officer',
-      department: 'Team Leader',
+      role: 'Team Leader, BSII & Accounting Officer',
+      department: 'Team Leader, BSII',
       secondaryDepartments: ['Accounting & Payroll'],
       isStaff: true,
       isHR: false,
       isMasterAdmin: false,
-      email: 'accounting@bsii.com.ph',
+      email: 'teamlead.bsii@bsii.com.ph',
       mobile: '0917-200-0002',
+      updatedAt: '2026-11-01T08:00:00.000Z'
+    },
+    {
+      id: '200003',
+      lastName: 'MENDOZA',
+      adminUsername: 'esteems.teamlead',
+      adminPassword: 'EsteemsLead!2026',
+      fullName: 'Carla Mendoza',
+      company: 'Esteems Employee',
+      role: 'Team Leader, Esteems & Accounting Officer',
+      department: 'Team Leader, Esteems',
+      secondaryDepartments: ['Accounting & Payroll'],
+      isStaff: true,
+      isHR: false,
+      isMasterAdmin: false,
+      email: 'teamlead.esteems@esteems.com.ph',
+      mobile: '0917-200-0003',
       updatedAt: '2026-11-01T08:00:00.000Z'
     },
     {
@@ -84,13 +103,29 @@ const DEFAULT_DATA = {
       adminPassword: 'Purchaser!2026',
       fullName: 'Marco Reyes',
       company: 'BSII Employee',
-      role: 'Purchasing Officer',
-      department: 'Purchasing Officer',
+      role: 'Purchasing Officer, BSII',
+      department: 'Purchasing Officer, BSII',
       isStaff: true,
       isHR: false,
       isMasterAdmin: false,
-      email: 'purchasing@bsii.com.ph',
+      email: 'purchasing.bsii@bsii.com.ph',
       mobile: '0917-300-0003',
+      updatedAt: '2026-11-01T08:00:00.000Z'
+    },
+    {
+      id: '300004',
+      lastName: 'VILLANUEVA',
+      adminUsername: 'esteems.purchasing',
+      adminPassword: 'EsteemsPurch!2026',
+      fullName: 'Paolo Villanueva',
+      company: 'Esteems Employee',
+      role: 'Purchasing Officer, Esteems',
+      department: 'Purchasing Officer, Esteems',
+      isStaff: true,
+      isHR: false,
+      isMasterAdmin: false,
+      email: 'purchasing.esteems@esteems.com.ph',
+      mobile: '0917-300-0004',
       updatedAt: '2026-11-01T08:00:00.000Z'
     },
     {
@@ -181,7 +216,7 @@ const DEFAULT_DATA = {
       employeeCompany: 'BSII Employee',
       employeeEmail: 'juan.delacruz@bsii.com.ph',
       employeeMobile: '0917-676-7676',
-      department: 'Team Leader',
+      department: 'Team Leader, BSII',
       category: 'Expense Reimbursement',
       details: {
         'Amount (PHP / ₱)': '₱4,250.00',
@@ -246,7 +281,7 @@ const DEFAULT_DATA = {
       employeeCompany: 'BSII Employee',
       employeeEmail: 'juan.delacruz@bsii.com.ph',
       employeeMobile: '0917-676-7676',
-      department: 'Purchasing Officer',
+      department: 'Purchasing Officer, BSII',
       category: 'Item / Supply Request',
       details: {
         'Item Description': 'Ergonomic Keyboard & A4 Bond Paper (5 Reams)',
@@ -325,8 +360,8 @@ const DEFAULT_DATA = {
         ]
       }
     },
-    'Purchasing Officer': {
-      subtitle: 'Office Supplies, Pantry/Cleaning, Equipment Notices, Furniture, Borrowing & Uniforms (Office use only, not trade).',
+    'Purchasing Officer, BSII': {
+      subtitle: 'BSII Office Supplies, Pantry/Cleaning, Equipment Notices, Furniture, Borrowing & Uniforms (Office use only, not trade).',
       categories: {
         'Item / Supply Request': [
           { name: 'Item Description (Office Supplies Only — Not For Trade)', type: 'text', placeholder: 'e.g., A4 Bond Paper, Pens, Folders, Printer Ink' },
@@ -371,6 +406,55 @@ const DEFAULT_DATA = {
           { name: 'Confirm Category', type: 'checkbox', required: true, options: ['My request is not listed above (Specify below)'] },
           { name: 'Requested Category Name', type: 'text', required: true, placeholder: 'e.g., Name of the category you were looking for' },
           { name: 'Request Details', type: 'textarea', required: true, placeholder: 'Describe your Purchasing request...' }
+        ]
+      }
+    },
+    'Purchasing Officer, Esteems': {
+      subtitle: 'Esteems Office Supplies, Pantry/Cleaning, Equipment Notices, Furniture, Borrowing & Uniforms (Office use only, not trade).',
+      categories: {
+        'Item / Supply Request': [
+          { name: 'Item Description (Office Supplies Only — Not For Trade)', type: 'text', placeholder: 'e.g., A4 Bond Paper, Pens, Folders, Printer Ink' },
+          { name: 'Quantity', type: 'text', placeholder: 'e.g., 10 Reams / 4 Units' },
+          { name: 'Estimated Budget (PHP / ₱)', type: 'text', placeholder: 'e.g., ₱2,500.00' },
+          { name: 'Urgency', type: 'select', options: ['Low (Next Monthly Cycle)', 'Standard (Within 7 Days)', 'Urgent (Within 48 Hours)', 'Critical (Same Day)'] },
+          { name: 'Business Justification', type: 'textarea', placeholder: 'Explain how these office supplies support Esteems operations...' }
+        ],
+        'Purchase Reimbursements': [
+          { name: 'Item(s) Purchased (Office Use Only)', type: 'text', required: true, placeholder: 'e.g., Emergency bond paper, HDMI cable' },
+          { name: 'Amount (PHP / ₱)', type: 'text', required: true, placeholder: 'e.g., ₱1,200.00' },
+          { name: 'Receipt / OR Reference', type: 'text', placeholder: 'e.g., OR-55412' },
+          { name: 'Justification', type: 'textarea', placeholder: 'Reason for direct office purchase...' }
+        ],
+        'Pantry & Cleaning Supplies': [
+          { name: 'Supply Category', type: 'select', options: ['Pantry Consumables (Coffee, Water, Cups)', 'Cleaning & Sanitation Supplies', 'Restroom Supplies'] },
+          { name: 'Items & Quantity', type: 'textarea', required: true, placeholder: 'List items and quantities needed...' },
+          { name: 'Urgency', type: 'select', options: ['Low', 'Standard', 'Urgent'] }
+        ],
+        'Office Equipment Notice': [
+          { name: 'Equipment / Asset', type: 'text', required: true, placeholder: 'e.g., 2nd Floor Printer, Scanner, Shredder' },
+          { name: 'Location', type: 'text', placeholder: 'e.g., Esteems Office / Reception' },
+          { name: 'Issue / Notice', type: 'textarea', required: true, placeholder: 'Describe the issue (e.g., broken printer, paper jam, offline)...' }
+        ],
+        'Furniture Purchases': [
+          { name: 'Furniture Type', type: 'select', options: ['Office Chair', 'Desk / Workstation', 'Filing Cabinet / Storage', 'Meeting Table', 'Other Office Furniture'] },
+          { name: 'Quantity & Specifications', type: 'textarea', required: true, placeholder: 'Specify quantity, dimensions, or model...' },
+          { name: 'Business Justification', type: 'textarea', placeholder: 'Explain operational need...' }
+        ],
+        'Equipment Borrowing': [
+          { name: 'Equipment Needed', type: 'text', required: true, placeholder: 'e.g., Laptop, Projector, Extension Cord' },
+          { name: 'Borrow Date', type: 'date', required: true },
+          { name: 'Return Date', type: 'date', required: true },
+          { name: 'Purpose', type: 'textarea', placeholder: 'Meeting, event, or field task...' }
+        ],
+        'Uniform Requests': [
+          { name: 'Request Type', type: 'select', options: ['New Hire Uniform', 'Replacement Uniform', 'Additional Set'] },
+          { name: 'Size & Quantity', type: 'text', required: true, placeholder: 'e.g., Medium - 2 pcs' },
+          { name: 'Notes', type: 'textarea', placeholder: 'Department or color/cut notes...' }
+        ],
+        'Other / Not Listed': [
+          { name: 'Confirm Category', type: 'checkbox', required: true, options: ['My request is not listed above (Specify below)'] },
+          { name: 'Requested Category Name', type: 'text', required: true, placeholder: 'e.g., Name of the category you were looking for' },
+          { name: 'Request Details', type: 'textarea', required: true, placeholder: 'Describe your Esteems Purchasing request...' }
         ]
       }
     },
@@ -477,8 +561,8 @@ const DEFAULT_DATA = {
         ]
       }
     },
-    'Team Leader': {
-      subtitle: 'Payroll/Payslips, Overtime, Attendance Adjustments, Reimbursements, Cash Advance, Salary Loans & Schedules.',
+    'Team Leader, BSII': {
+      subtitle: 'BSII Payroll/Payslips, Overtime, Attendance Adjustments, Reimbursements, Cash Advance, Salary Loans & Schedules.',
       categories: {
         'Overtime Approval': [
           { name: 'Date Rendered', type: 'date' },
@@ -528,7 +612,62 @@ const DEFAULT_DATA = {
         'Other / Not Listed': [
           { name: 'Confirm Category', type: 'checkbox', required: true, options: ['My request is not listed above (Specify below)'] },
           { name: 'Requested Category Name', type: 'text', required: true, placeholder: 'e.g., Name of the category you were looking for' },
-          { name: 'Request Details', type: 'textarea', required: true, placeholder: 'Describe your request for Team Leader / Accounting...' }
+          { name: 'Request Details', type: 'textarea', required: true, placeholder: 'Describe your request for BSII Team Leader / Accounting...' }
+        ]
+      }
+    },
+    'Team Leader, Esteems': {
+      subtitle: 'Esteems Payroll/Payslips, Overtime, Attendance Adjustments, Reimbursements, Cash Advance, Salary Loans & Schedules.',
+      categories: {
+        'Overtime Approval': [
+          { name: 'Date Rendered', type: 'date' },
+          { name: 'Hours Rendered', type: 'number', placeholder: 'e.g., 4' },
+          { name: 'Tasks Completed', type: 'textarea', placeholder: 'List specific deliverables completed during overtime...' }
+        ],
+        'Attendance Adjustment / Discrepancy': [
+          { name: 'Date of Discrepancy', type: 'date' },
+          { name: 'Biometric / Timekeeping Issue', type: 'select', options: ['Missed Time-In', 'Missed Time-Out', 'Missed Both Time-In & Time-Out', 'Late / Undertime Correction', 'Biometric Scanner Offline', 'Official Field Assignment', 'Work From Home / Remote Log', 'Schedule / Shift Change'] },
+          { name: 'Supervisor Remarks', type: 'textarea', placeholder: 'Provide verification details or supervisor endorsement...' }
+        ],
+        'Reimbursement Pre-endorsement': [
+          { name: 'Expense Details', type: 'textarea', placeholder: 'Itemize planned or incurred operational expenses...' },
+          { name: 'Receipt Attachments Reference', type: 'text', placeholder: 'e.g., Official Receipt #10492 / Attached Scan filename' }
+        ],
+        'Expense Reimbursement': [
+          { name: 'Expense Category', type: 'select', options: ['Transportation', 'Meals', 'Client Expenses', 'Operational Supplies', 'Other Work Expense'] },
+          { name: 'Amount (PHP / ₱)', type: 'text', placeholder: 'e.g., ₱3,450.00' },
+          { name: 'Invoice / Receipt Attachments', type: 'text', placeholder: 'e.g., OR-88231 / Digital Receipt Link or Filename' },
+          { name: 'Disbursement Bank / Details', type: 'text', placeholder: 'e.g., BDO Payroll Account / GCash Corporate Disbursement' }
+        ],
+        'Payroll / Payslip Inquiry': [
+          { name: 'Inquiry Type', type: 'select', options: ['Payslip Request', 'Payroll Discrepancy', 'Tax / Deduction Inquiry', '13th Month / Bonus Inquiry'] },
+          { name: 'Pay Period', type: 'text', placeholder: 'e.g., November 1–15, 2026' },
+          { name: 'Inquiry Issues', type: 'textarea', placeholder: 'Describe your payroll or payslip question for Accounting & Payroll...' }
+        ],
+        'Cash Advance Requests': [
+          { name: 'Amount Requested (PHP / ₱)', type: 'text', required: true, placeholder: 'e.g., ₱5,000.00' },
+          { name: 'Purpose', type: 'textarea', required: true, placeholder: 'Explain purpose of cash advance...' },
+          { name: 'Repayment / Liquidation Schedule', type: 'text', placeholder: 'e.g., Next payroll / upon receipt liquidation' }
+        ],
+        'Salary Loan Requests': [
+          { name: 'Loan Amount (PHP / ₱)', type: 'text', required: true, placeholder: 'e.g., ₱10,000.00' },
+          { name: 'Preferred Term', type: 'select', options: ['3 Months', '6 Months', '12 Months'] },
+          { name: 'Reason / Notes', type: 'textarea', placeholder: 'Brief reason for salary loan request...' }
+        ],
+        'Schedule Changes & Shift Swaps': [
+          { name: 'Change Type', type: 'select', options: ['Shift Swap', 'Schedule Adjustment', 'Rest Day Offset'] },
+          { name: 'Affected Date(s)', type: 'text', required: true, placeholder: 'e.g., Nov 20–21, 2026' },
+          { name: 'Details / Swap Partner', type: 'textarea', required: true, placeholder: 'Specify new hours or coworker agreeing to swap...' }
+        ],
+        'Work-From-Home / Off-Site Requests': [
+          { name: 'Setup Type', type: 'select', options: ['Work From Home (WFH)', 'Off-Site / Field Work'] },
+          { name: 'Date(s)', type: 'text', required: true, placeholder: 'e.g., Nov 22, 2026' },
+          { name: 'Deliverables / Reason', type: 'textarea', required: true, placeholder: 'Planned deliverables and reason...' }
+        ],
+        'Other / Not Listed': [
+          { name: 'Confirm Category', type: 'checkbox', required: true, options: ['My request is not listed above (Specify below)'] },
+          { name: 'Requested Category Name', type: 'text', required: true, placeholder: 'e.g., Name of the category you were looking for' },
+          { name: 'Request Details', type: 'textarea', required: true, placeholder: 'Describe your request for Esteems Team Leader / Accounting...' }
         ]
       }
     }
@@ -807,6 +946,148 @@ function loadData(req) {
         });
         changed = true;
       }
+
+      // Migrate legacy single Team Leader / Purchasing Officer departments to company-specific BSII & Esteems departments
+      parsed.users.forEach((u) => {
+        if (u.department === 'Team Leader') {
+          u.department = u.company === 'Esteems Employee' ? 'Team Leader, Esteems' : 'Team Leader, BSII';
+          if (u.role === 'Team Leader & Accounting Officer') {
+            u.role = `${u.department} & Accounting Officer`;
+          }
+          changed = true;
+        }
+        if (u.department === 'Purchasing Officer') {
+          u.department = u.company === 'Esteems Employee' ? 'Purchasing Officer, Esteems' : 'Purchasing Officer, BSII';
+          if (u.role === 'Purchasing Officer') {
+            u.role = u.department;
+          }
+          changed = true;
+        }
+      });
+
+      const hasEsteemsTeamLead = parsed.users.some(
+        (u) => u.department === 'Team Leader, Esteems' || u.adminUsername === 'esteems.teamlead'
+      );
+      if (!hasEsteemsTeamLead) {
+        parsed.users.push({
+          id: '200003',
+          lastName: 'MENDOZA',
+          adminUsername: 'esteems.teamlead',
+          adminPassword: 'EsteemsLead!2026',
+          fullName: 'Carla Mendoza',
+          company: 'Esteems Employee',
+          role: 'Team Leader, Esteems & Accounting Officer',
+          department: 'Team Leader, Esteems',
+          secondaryDepartments: ['Accounting & Payroll'],
+          isStaff: true,
+          isHR: false,
+          isMasterAdmin: false,
+          email: 'teamlead.esteems@esteems.com.ph',
+          mobile: '0917-200-0003',
+          updatedAt: '2026-11-01T08:00:00.000Z',
+          needsProfileSync: true,
+          hasCompletedFirstSelfUpdate: false
+        });
+        changed = true;
+      }
+
+      const hasEsteemsPurchasing = parsed.users.some(
+        (u) => u.department === 'Purchasing Officer, Esteems' || u.adminUsername === 'esteems.purchasing'
+      );
+      if (!hasEsteemsPurchasing) {
+        parsed.users.push({
+          id: '300004',
+          lastName: 'VILLANUEVA',
+          adminUsername: 'esteems.purchasing',
+          adminPassword: 'EsteemsPurch!2026',
+          fullName: 'Paolo Villanueva',
+          company: 'Esteems Employee',
+          role: 'Purchasing Officer, Esteems',
+          department: 'Purchasing Officer, Esteems',
+          isStaff: true,
+          isHR: false,
+          isMasterAdmin: false,
+          email: 'purchasing.esteems@esteems.com.ph',
+          mobile: '0917-300-0004',
+          updatedAt: '2026-11-01T08:00:00.000Z',
+          needsProfileSync: true,
+          hasCompletedFirstSelfUpdate: false
+        });
+        changed = true;
+      }
+    }
+
+    if (parsed.departmentConfig) {
+      if (parsed.departmentConfig['Purchasing Officer']) {
+        const legacyPurch = parsed.departmentConfig['Purchasing Officer'];
+        if (!parsed.departmentConfig['Purchasing Officer, BSII']) {
+          parsed.departmentConfig['Purchasing Officer, BSII'] = JSON.parse(JSON.stringify(legacyPurch));
+        }
+        if (!parsed.departmentConfig['Purchasing Officer, Esteems']) {
+          parsed.departmentConfig['Purchasing Officer, Esteems'] = JSON.parse(JSON.stringify(legacyPurch));
+        }
+        delete parsed.departmentConfig['Purchasing Officer'];
+        changed = true;
+      }
+      if (parsed.departmentConfig['Team Leader']) {
+        const legacyTl = parsed.departmentConfig['Team Leader'];
+        if (!parsed.departmentConfig['Team Leader, BSII']) {
+          parsed.departmentConfig['Team Leader, BSII'] = JSON.parse(JSON.stringify(legacyTl));
+        }
+        if (!parsed.departmentConfig['Team Leader, Esteems']) {
+          parsed.departmentConfig['Team Leader, Esteems'] = JSON.parse(JSON.stringify(legacyTl));
+        }
+        delete parsed.departmentConfig['Team Leader'];
+        changed = true;
+      }
+      ['Purchasing Officer, BSII', 'Purchasing Officer, Esteems', 'Team Leader, BSII', 'Team Leader, Esteems'].forEach((deptKey) => {
+        if (!parsed.departmentConfig[deptKey] && DEFAULT_DATA.departmentConfig[deptKey]) {
+          parsed.departmentConfig[deptKey] = JSON.parse(JSON.stringify(DEFAULT_DATA.departmentConfig[deptKey]));
+          changed = true;
+        }
+      });
+    }
+
+    if (parsed.settings && parsed.settings.departmentEmails) {
+      const de = parsed.settings.departmentEmails;
+      if (de['Purchasing Officer']) {
+        if (!de['Purchasing Officer, BSII']) de['Purchasing Officer, BSII'] = de['Purchasing Officer'];
+        if (!de['Purchasing Officer, Esteems']) de['Purchasing Officer, Esteems'] = 'purchasing.esteems@esteems.com.ph';
+        delete de['Purchasing Officer'];
+        changed = true;
+      }
+      if (de['Team Leader']) {
+        if (!de['Team Leader, BSII']) de['Team Leader, BSII'] = de['Team Leader'];
+        if (!de['Team Leader, Esteems']) de['Team Leader, Esteems'] = 'teamlead.esteems@esteems.com.ph';
+        delete de['Team Leader'];
+        changed = true;
+      }
+    }
+
+    if (Array.isArray(parsed.requests)) {
+      parsed.requests.forEach((r) => {
+        const isEsteemsReq = r.employeeCompany === 'Esteems Employee';
+        if (r.department === 'Team Leader') {
+          r.department = isEsteemsReq ? 'Team Leader, Esteems' : 'Team Leader, BSII';
+          changed = true;
+        } else if (r.department === 'Purchasing Officer') {
+          r.department = isEsteemsReq ? 'Purchasing Officer, Esteems' : 'Purchasing Officer, BSII';
+          changed = true;
+        }
+        if (Array.isArray(r.ccDepartments)) {
+          r.ccDepartments = r.ccDepartments.map((d) => {
+            if (d === 'Team Leader') {
+              changed = true;
+              return isEsteemsReq ? 'Team Leader, Esteems' : 'Team Leader, BSII';
+            }
+            if (d === 'Purchasing Officer') {
+              changed = true;
+              return isEsteemsReq ? 'Purchasing Officer, Esteems' : 'Purchasing Officer, BSII';
+            }
+            return d;
+          });
+        }
+      });
     }
     if (changed) saveData(parsed);
     applyIncomingSyncedState(parsed, req);
@@ -1908,11 +2189,24 @@ const server = http.createServer(async (req, res) => {
         (currentUser.secondaryDepartments && currentUser.secondaryDepartments.includes(r.department));
       const isCCDept = (r.ccDepartments || []).includes(currentUser.department) ||
         (Array.isArray(currentUser.secondaryDepartments) && currentUser.secondaryDepartments.some((sd) => (r.ccDepartments || []).includes(sd)));
+      const isBsiiTeamLead = currentUser.department === 'Team Leader, BSII';
+      const isEsteemsTeamLead = currentUser.department === 'Team Leader, Esteems';
+      const isLegacyTeamLead = currentUser.department === 'Team Leader';
       const isFinancialAuditForTeamLead =
-        currentUser.department === 'Team Leader' &&
-        (r.department === 'Accounting & Payroll' ||
-          (r.ccDepartments || []).includes('Team Leader') ||
-          /reimbursement|petty cash|financial|payroll|expense/i.test(r.category));
+        (isBsiiTeamLead &&
+          r.employeeCompany === 'BSII Employee' &&
+          (r.department === 'Accounting & Payroll' ||
+            (r.ccDepartments || []).includes('Team Leader, BSII') ||
+            /reimbursement|petty cash|financial|payroll|expense/i.test(r.category))) ||
+        (isEsteemsTeamLead &&
+          r.employeeCompany === 'Esteems Employee' &&
+          (r.department === 'Accounting & Payroll' ||
+            (r.ccDepartments || []).includes('Team Leader, Esteems') ||
+            /reimbursement|petty cash|financial|payroll|expense/i.test(r.category))) ||
+        (isLegacyTeamLead &&
+          (r.department === 'Accounting & Payroll' ||
+            (r.ccDepartments || []).includes('Team Leader') ||
+            /reimbursement|petty cash|financial|payroll|expense/i.test(r.category)));
 
       if (isInTrash) {
         if (currentUser.isStaff && (isPrimaryDept || isCCDept || isFinancialAuditForTeamLead)) {
@@ -2346,13 +2640,31 @@ const server = http.createServer(async (req, res) => {
     }
 
     const isHrSubmitter = Boolean(currentUser.isHR || currentUser.department === 'HR Admin');
+    const isAdminOverview = Boolean(currentUser.isHR || currentUser.isMasterAdmin || currentUser.isModerator);
+    const isAllowedDeptForSubmitter = (deptName) => {
+      if (currentUser.type === 'oncall') return deptName === 'HR Admin';
+      if (isHrSubmitter && deptName === 'HR Admin') return false;
+      if (isAdminOverview) return true;
+      if (currentUser.company === 'BSII Employee') return !/esteems/i.test(deptName);
+      if (currentUser.company === 'Esteems Employee') return !/bsii/i.test(deptName);
+      return true;
+    };
+
+    if (currentUser.type === 'oncall' && department !== 'HR Admin') {
+      return sendJson(res, 400, { error: 'Oncall personnel can only submit requests to HR Admin.' });
+    }
     if (isHrSubmitter && department === 'HR Admin') {
       return sendJson(res, 400, { error: 'HR Admin accounts cannot select HR Admin as the target department.' });
     }
+    if (!isAllowedDeptForSubmitter(department)) {
+      return sendJson(res, 400, { error: `Your account (${currentUser.company}) cannot submit requests to "${department}".` });
+    }
 
-    const cleanCcDepts = Array.isArray(ccDepartments)
-      ? ccDepartments.filter((d) => d !== department && !(isHrSubmitter && d === 'HR Admin'))
-      : [];
+    const cleanCcDepts = (currentUser.type === 'oncall')
+      ? []
+      : (Array.isArray(ccDepartments)
+        ? ccDepartments.filter((d) => d !== department && isAllowedDeptForSubmitter(d))
+        : []);
 
     const ccEmails = [];
     cleanCcDepts.forEach((d) => {
@@ -2370,7 +2682,7 @@ const server = http.createServer(async (req, res) => {
     });
 
     const customMonitoringEmails = [];
-    if (colleagueEmail && String(colleagueEmail).trim()) {
+    if (currentUser.type !== 'oncall' && colleagueEmail && String(colleagueEmail).trim()) {
       const cleanCol = String(colleagueEmail).trim();
       if (!ccEmails.includes(cleanCol)) ccEmails.push(cleanCol);
       customMonitoringEmails.push(cleanCol);
