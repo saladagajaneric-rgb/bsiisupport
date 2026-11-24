@@ -2643,7 +2643,11 @@
       if (state.user.isHR || state.user.isMasterAdmin || state.user.isModerator) {
         return true;
       }
-      // Automatic company routing: BSII employees only see BSII + shared HR; Esteems only see Esteems + shared HR
+      // Both BSII and Esteems employees can select either Office of the Vice President
+      if (/^Office of the Vice President/i.test(deptName)) {
+        return true;
+      }
+      // Automatic company routing: BSII employees only see BSII Team Leader/Purchasing; Esteems only see Esteems Team Leader/Purchasing
       if (state.user.company === 'BSII Employee') {
         return !/esteems/i.test(deptName);
       }

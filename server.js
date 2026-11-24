@@ -2645,6 +2645,8 @@ const server = http.createServer(async (req, res) => {
       if (currentUser.type === 'oncall') return deptName === 'HR Admin';
       if (isHrSubmitter && deptName === 'HR Admin') return false;
       if (isAdminOverview) return true;
+      // Both BSII and Esteems employees can contact either Office of the Vice President
+      if (/^Office of the Vice President/i.test(deptName)) return true;
       if (currentUser.company === 'BSII Employee') return !/esteems/i.test(deptName);
       if (currentUser.company === 'Esteems Employee') return !/bsii/i.test(deptName);
       return true;
