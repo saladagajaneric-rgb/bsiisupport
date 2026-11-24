@@ -4131,7 +4131,14 @@
           </div>
         `;
       } else if (tab === 'employees') {
-        const empRows = state.hrEmployees.map((emp) => {
+        const sortedEmployees = [...(state.hrEmployees || [])].sort((a, b) => {
+          const aId = String((a && a.id) || '').trim();
+          const bId = String((b && b.id) || '').trim();
+          if (aId < bId) return -1;
+          if (aId > bId) return 1;
+          return 0;
+        });
+        const empRows = sortedEmployees.map((emp) => {
           const isAdminAcct = Boolean(emp.isProtectedAdmin || emp.isStaff || emp.isHR || emp.isMasterAdmin || emp.isModerator);
           const loginCell = emp.credentialsHidden
             ? `<span style="color:var(--text-muted); font-size:0.78rem;">HR Only</span>`

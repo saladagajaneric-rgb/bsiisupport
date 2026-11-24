@@ -1098,7 +1098,22 @@ function loadData(req) {
   }
 }
 
+function sortUsersByIdSequence(users) {
+  if (!Array.isArray(users)) return users;
+  users.sort((a, b) => {
+    const aId = String((a && a.id) || '').trim();
+    const bId = String((b && b.id) || '').trim();
+    if (aId < bId) return -1;
+    if (aId > bId) return 1;
+    return 0;
+  });
+  return users;
+}
+
 function saveData(data, bumpTimestamp = true, syncToCloud = true) {
+  if (data && Array.isArray(data.users)) {
+    sortUsersByIdSequence(data.users);
+  }
   if (bumpTimestamp) {
     data._lastSavedTs = Date.now();
   }
@@ -3164,8 +3179,9 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 403, { error: 'Strictly for authorized Admins and HR only.' });
     }
     const isHR = Boolean(currentUser.isHR || currentUser.isMasterAdmin || currentUser.isModerator);
+    const sortedUsers = sortUsersByIdSequence([...(data.users || [])]);
     if (!isHR) {
-      const readOnlyEmployees = data.users.map((u) => ({
+      const readOnlyEmployees = sortedUsers.map((u) => ({
         id: u.id,
         fullName: u.fullName,
         company: u.company,
@@ -3196,7 +3212,7 @@ const server = http.createServer(async (req, res) => {
     sendJson(res, 200, {
       requiresPassword: false,
       readOnly: false,
-      employees: data.users.map(formatDirectoryUser),
+      employees: sortedUsers.map(formatDirectoryUser),
       settings: sanitizeSettingsForClient(data.settings, true)
     });
     return;
